@@ -1,0 +1,22 @@
+{
+    "zk":"p12.local.com:2181",
+    "pigeons": [
+        {
+            "host": "localhost",
+            "type": "fileserver",
+            "shardFullPath":"/pigeon40/pigeonSaas/file_cluster/shard1",
+            "serviceHost":"localhost",
+            "servicePort":8876,
+            "master": true,
+            "nodeName": "shard1_s2",
+            "instanceName": "/file1",
+            "version": "1",
+            "logDir": "shard1_s2/file1_verlog",
+            "baseDir": "shard1_s2/files",
+            "shardExternalUrl":"https://img1.p12.com",
+            "externalUrl":"https://img1_s2.p12.com",
+            "shardInternalUrl":"http://img1.p12local.com",
+            "internalUrl":"http://img1_s2.p12local.com"
+        }
+    ]
+}

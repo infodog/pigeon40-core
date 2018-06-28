@@ -1,0 +1,1 @@
+java -Djava.util.logging.config.file=logging.properties -jar pigeonserver.4.0-SNAPSHOT-jar-with-dependencies.jar  pigeonserver.conf 8879  50 1>pigeonserver.out 2>pigeonserver.err

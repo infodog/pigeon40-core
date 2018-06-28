@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="lowleveldatasource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName">
+            <value>org.gjt.mm.mysql.Driver</value>
+        </property>
+        <property name="url">
+            <value>jdbc:mysql://127.0.0.1/pigeonStore?autoReconnect=true</value>
+        </property>
+        <property name="username">
+            <value>root</value>
+        </property>
+        <property name="password">
+            <value>123456</value>
+        </property>
+        <property name="poolPreparedStatements">
+            <value>true</value>
+        </property>
+        <property name="maxActive">
+            <value>100</value>
+        </property>
+        <property name="removeAbandoned">
+            <value>false</value>
+        </property>
+        <property name="defaultAutoCommit">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="datasource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <constructor-arg index="0">
+            <ref local="lowleveldatasource"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref local="datasource"/>
+        </property>
+    </bean>
+
+    <bean id="idlowleveldatasource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName">
+            <value>org.gjt.mm.mysql.Driver</value>
+        </property>
+        <property name="url">
+            <value>jdbc:mysql://127.0.0.1/pigeonStore?autoReconnect=true</value>
+        </property>
+        <property name="username">
+            <value>root</value>
+        </property>
+        <property name="password">
+            <value>123456</value>
+        </property>
+        <property name="poolPreparedStatements">
+            <value>true</value>
+        </property>
+        <property name="maxActive">
+            <value>100</value>
+        </property>
+        <property name="removeAbandoned">
+            <value>false</value>
+        </property>
+        <property name="defaultAutoCommit">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="iddatasource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <constructor-arg index="0">
+            <ref local="idlowleveldatasource"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="idtransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref local="iddatasource"/>
+        </property>
+    </bean>
+
+
+    <bean id="defaultDao" class="net.xinshi.pigeonStore.list.bandlist.ListBandDao">
+        <property name="tableName" value="t_listband"></property>
+        <property name="ds" ref="datasource"></property>
+    </bean>
+
+    <bean id="serializer" class="net.xinshi.pigeonStore.list.bandlist.SortBandStringSerializer">
+
+
+    </bean>
+
+    <!--
+    <bean id="bdbListDao" class="net.xinshi.pigeonStore.list.bandlist.flexobjectServer.BerkleyDBListDao">
+        <property name="dataDir" value="d:\pigeonData\dbdao"/>
+        <property name="serializer" ref="serializer"/>
+
+    </bean>
+-->
+
+    <bean id="bandSerializer" class="net.xinshi.pigeonStore.list.bandlist.SortBandStringSerializer"/>
+    <bean id="pigeonlistfactory" class="net.xinshi.pigeonStore.list.bandlist.SortBandListFactory">
+        <property name="dao" ref="defaultDao"></property>
+        <property name="txManager" ref="transactionManager"/>
+        <property name="factoryName" value="pigeonDefaultList"></property>
+        <property name="logDirectory" value="./pigeonlist/"></property>
+
+        <property name="bandSerializer" ref="bandSerializer"></property>
+        <property name="maxBandInfosPerBand" value="500"></property>
+        <property name="maxObjectsPerBand" value="500"></property>
+        <property name="maxListCacheSize" value="8000"/>
+        <property name="maxBandCacheSize" value="3000"/>
+        <property name="idDataSource" ref="iddatasource"/>
+        <property name="idTxManager" ref="idtransactionManager"/>
+    </bean>
+
+    <bean id="listTools" class="net.xinshi.pigeonStore.util.ListTools">
+        <property name="dao" ref="defaultDao"></property>
+        <property name="txManager" ref="transactionManager"/>
+        <property name="bandSerializer" ref="bandSerializer"></property>
+        <property name="listFactory" ref="pigeonlistfactory"/>
+        <property name="treatBlankBandAsError" value="false"></property>
+
+    </bean>
+
+    <bean id="simpleAtom" class="net.xinshi.pigeonStore.atom.impls.dbatom.SimpleDBAtom">
+        <property name="ds" ref="datasource"/>
+        <property name="tableName" value="t_simpleatom"/>
+    </bean>
+
+    <bean id="fastAtom" class="net.xinshi.pigeonStore.atom.impls.dbatom.FastAtom">
+        <property name="ds" ref="datasource"/>
+        <property name="tableName" value="t_simpleatom"/>
+        <property name="logDirectory" value="./atom/"/>
+        <property name="txManager" ref="transactionManager"/>
+        <property name="versionTableName" value="t_pigeontransaction"/>
+        <property name="versionKeyName" value="fastAtom1"/>
+        <property name="fastCreate" value="false"/>
+    </bean>
+
+    <bean id="resourceLock" class="net.xinshi.pigeonStore.resourcelock.impl.LocalResourceLock"/>
+    <!--
+     <bean id="flexObjectFactory" class="net.xinshi.pigeonStore.flexobjectclient.impls.fastsimple.FileBaseFlexObjectFactory" >
+        <property name="listFactory" ref="pigeonlistfactory"/>
+         <property name="sortListName" value="FlexObjectList"></property>
+        <property name="tableName" value="t_flexobject"/>
+        <property name="logDirectory" value="d:/pigeonData/fastflexobject/"/>
+
+        <property name="maxCacheNumber" value="10000"/>
+    </bean>
+    -->
+
+    <bean id="flexObjectFactory" class="net.xinshi.pigeonStore.flexobject.impls.fastsimple.SimpleFlexObjectFactory">
+
+        <property name="tableName" value="t_flexobject"/>
+        <property name="logDirectory" value="./flexObject/"/>
+        <property name="txManager" ref="transactionManager"/>
+        <property name="maxCacheNumber" value="10000"/>
+        <property name="ds" ref="datasource"/>
+    </bean>
+
+
+</beans>

@@ -1,0 +1,102 @@
+{
+    "zk":"p12.local.com:2181",
+    "pigeons": [
+        /*{
+            "host": "localhost",
+            "type": "flexobject",
+            "shardFullPath":"/pigeon40/pigeonSaas/object_cluster/shard0",
+            "serviceHost":"localhost",
+            "servicePort":8879,
+            "master": true,
+            "nodeName": "shard0_s1",
+            "instanceName": "/flexobject1",
+            "version": "1",
+            "table": "t_flexobject",
+            "logDir": "../data/shard0_s1/flexobject1/",
+            "maxCacheNumber": 10000,
+            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard0_s1?autoReconnect=true",
+            "dbUserName": "root",
+            "dbPassword": "123456"
+        },
+        {
+            "host": "localhost",
+            "type": "list",
+            "shardFullPath":"/pigeon40/pigeonSaas/list_cluster/shard0",
+            "serviceHost":"localhost",
+            "servicePort":8879,
+            "master": true,
+            "nodeName": "shard0_s1",
+            "instanceName": "/list1",
+            "version": "1",
+            "table": "t_listband",
+            "logDir": "../data/shard0_s1/list1/",
+            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard0_s1?autoReconnect=true",
+            "dbUserName": "root",
+            "dbPassword": "123456"
+        },
+        {
+            "host": "localhost",
+            "type": "atom",
+            "shardFullPath":"/pigeon40/pigeonSaas/atom_cluster/shard0",
+            "serviceHost":"localhost",
+            "servicePort":8879,
+            "master": true,
+            "nodeName": "shard0_s1",
+            "instanceName": "/atom1",
+            "version": "1",
+            "table": "t_simpleatom",
+            "logDir": "../data/shard0_s1/atom1/",
+            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard0_s1?autoReconnect=true",
+            "dbUserName": "root",
+            "dbPassword": "123456"
+        },
+        {
+            "host": "localhost",
+            "type": "lock",
+            "shardFullPath":"/pigeon40/pigeonSaas/locks_cluster/shard0",
+            "serviceHost":"localhost",
+            "servicePort":8879,
+            "master": true,
+            "nodeName": "shard0_s1",
+            "instanceName": "/lock1",
+            "version": "1"
+        },
+        {
+            "host": "localhost",
+            "type": "idserver",
+            "shardFullPath":"/pigeon40/pigeonSaas/id_cluster/shard0",
+            "serviceHost":"localhost",
+            "servicePort":8879,
+            "master": true,
+            "nodeName": "shard0_s1",
+            "instanceName": "/idserver1",
+            "idNumPerRound": "10000",
+            "version": "1",
+            "logDir": "../data/shard0_s1/idserver1",
+            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard0_s1?autoReconnect=true&rewriteBatchedStatements=true",
+            "dbUserName": "root",
+            "dbPassword": "123456"
+        }
+    ,*/
+        {
+            "host": "localhost",
+            "type": "fileserver",
+            "shardFullPath":"/pigeon40/pigeonSaas/file_cluster/shard0",
+            "serviceHost":"localhost",
+            "servicePort":8879,
+            "master": true,
+            "nodeName": "shard0_s1",
+            "instanceName": "/file1",
+            "version": "1",
+            "logDir": "shard0_s1/file1_verlog",
+            "baseDir": "shard0_s1/files",
+            "shardExternalUrl":"https://img0.p12.com",
+            "externalUrl":"https://img0_s1.p12.com",
+            "shardInternalUrl":"http://img0.p12local.com",
+            "internalUrl":"http://img0_s1.p12local.com"
+
+
+
+        }
+    ]
+}

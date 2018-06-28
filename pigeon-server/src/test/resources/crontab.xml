@@ -1,0 +1,2446 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<crontab>
+
+    <crontabentry id="1">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.MerchantIndexingProcess</parameters>
+        <description>商家信息自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="2">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.InfoIndexingProcess</parameters>
+        <description>信息自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="3">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.UserIndexingProcess</parameters>
+        <description>会员自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="4">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.AdminIndexingProcess</parameters>
+        <description>管理员自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="5">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ExchangeProductDataToDssProcess</parameters>
+        <description>商品对接到DSS</description>
+    </crontabentry>
+
+    <crontabentry id="6">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.ProductIndexingProcess</parameters>
+        <description>商品自动索引.</description>
+    </crontabentry>
+
+    <!-- <crontabentry id="7">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.DiyIndexingProcess</parameters>
+        <description>DIY自动索引.</description>
+    </crontabentry>       0929注 -->
+
+    <crontabentry id="8">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.isone.lucene.process.OrderIndexingProcess</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.OrderIndexingProcess</parameters>
+        <description>订单自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="9">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.RefundIndexingProcess</parameters>
+        <description>退款自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="10">
+        <seconds>1</seconds>
+        <minutes>10</minutes>
+        <hours>0</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.merchant.process.MerchantOpenQueProcess</parameters>
+        <description>自动开通关闭商家等级.</description>
+    </crontabentry>
+
+    <crontabentry id="11">
+        <seconds>1</seconds>
+        <minutes>30</minutes>
+        <hours>0</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.merchant.process.MerchantOpenQueExtProcess</parameters>
+        <description>自动开通关闭商家等级,处理前一个月内未处理的队列.</description>
+    </crontabentry>
+
+    <crontabentry id="12">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.merchant.process.MerchantGradeRolesChangeProcess</parameters>
+        <description>商家等级角色改变时促发的进程.</description>
+    </crontabentry>
+
+    <!--  <crontabentry id="13">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.HotelIndexingProcess</parameters>
+        <description>酒店自动索引.</description>
+    </crontabentry>-->
+
+    <crontabentry id="14">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.DeliveryRuleIndexingProcess</parameters>
+        <description>配送规则自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="20">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.mail.process.MailNormalQueProcess</parameters>
+        <description>邮件普通发送队列的进程.</description>
+    </crontabentry>
+
+    <crontabentry id="21">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.mail.process.MailQuickQueProcess</parameters>
+        <description>邮件快速发送队列的进程.</description>
+    </crontabentry>
+
+    <crontabentry id="22">
+        <seconds>5</seconds>
+        <minutes>30</minutes>
+        <hours>0</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.info.process.InfoPublishQueueProcess</parameters>
+        <description>信息自动在前台发布与不发布队列.</description>
+    </crontabentry>
+
+    <crontabentry id="30">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.filemanagement.process.ImageChangeSizeProcess</parameters>
+        <description>对原图生成大小图队列.</description>
+    </crontabentry>
+
+    <!-- <crontabentry id="31">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.filemanagement.process.ImageAddWatermarkProcess</parameters>
+        <description>给原图生成相应的大小图并打水印进程.</description>
+    </crontabentry>
+
+    <crontabentry id="32">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.filemanagement.process.ImageReAddWatermarkProcess</parameters>
+        <description>重新给原图生成相应的大小图并打水印进程.</description>
+    </crontabentry>-->
+
+    <crontabentry id="33">
+        <seconds>5</seconds>
+        <minutes>30</minutes>
+        <hours>0</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.product.process.ProductPublishQueueProcess</parameters>
+        <description>商品上架14天后自动下架.</description>
+    </crontabentry>
+
+
+    <crontabentry id="35">
+        <seconds>0</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.groupon.process.GroupOnTodayQueueProcess</parameters>
+        <description>自动生成今日团购</description>
+    </crontabentry>
+
+    <crontabentry id="37">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.panicbuy.process.PanicBuyPublishQueueProcess</parameters>
+        <description>把过期的抢购活动移动到往期列表</description>
+    </crontabentry>
+
+    <crontabentry id="38">
+        <seconds>0</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.panicbuy.process.PanicBuyTodayQueueProcess</parameters>
+        <description>自动生成今日抢购</description>
+    </crontabentry>
+
+    <!-- 留用 -->
+    <!--<crontabentry id="36">-->
+    <!--<seconds>59</seconds>-->
+    <!--<minutes>59</minutes>-->
+    <!--<hours>2</hours>-->
+    <!--<daysofmonth>*</daysofmonth>-->
+    <!--<months>*</months>-->
+    <!--<daysofweek>*</daysofweek>-->
+    <!--<years>*</years>-->
+    <!--<bussinesdays>true</bussinesdays>-->
+    <!--<startDate></startDate>-->
+    <!--<endDate></endDate>-->
+    <!--<class>net.xinshi.saasadmin.cron.CronAgent</class>-->
+    <!--<method>run</method>-->
+    <!--<parameters>net.xinshi.isone.modules.keyctgradv.process.KeyCtgrAdvProcess</parameters>-->
+    <!--<description>关键分类广告日周期操作</description>-->
+    <!--</crontabentry>-->
+
+    <!-- 留用 -->
+    <!--<crontabentry id="37">-->
+    <!--<seconds>30</seconds>-->
+    <!--<minutes>30</minutes>-->
+    <!--<hours>*</hours>-->
+    <!--<daysofmonth>*</daysofmonth>-->
+    <!--<months>*</months>-->
+    <!--<daysofweek>*</daysofweek>-->
+    <!--<years>*</years>-->
+    <!--<bussinesdays>true</bussinesdays>-->
+    <!--<startDate></startDate>-->
+    <!--<endDate></endDate>-->
+    <!--<class>net.xinshi.saasadmin.cron.CronAgent</class>-->
+    <!--<method>run</method>-->
+    <!--<parameters>net.xinshi.isone.modules.keyctgradv.process.KCARemoveClickedIPsProcess</parameters>-->
+    <!--<description>关键分类广告搜索的商品点击限制,每个不同的IP对这些商品每天点击同一商品只扣费一次</description>-->
+    <!--</crontabentry>-->
+
+
+    <crontabentry id="40">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.CreditIndexingProcess</parameters>
+        <description>信用评价自动索引.</description>
+    </crontabentry>
+    <crontabentry id="41">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.LogIndexingProcess</parameters>
+        <description>日志自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="42">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.credit.process.CreditAppraiseRealTimeProcess</parameters>
+        <description>信用评价换算积分实时进程.</description>
+    </crontabentry>
+
+    <crontabentry id="43">
+        <seconds>5</seconds>
+        <minutes>5</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.credit.process.CreditAppraiseDailyProcess</parameters>
+        <description>信用评价换算积分每天进程.</description>
+    </crontabentry>
+
+    <crontabentry id="44">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.credit.process.CreditAppraiseOnRealTimeProcess</parameters>
+        <description>信用评价换算积分实时进程(新)</description>
+    </crontabentry>
+
+    <crontabentry id="45">
+        <seconds>5</seconds>
+        <minutes>5</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.credit.process.CreditAppraiseOnDailyProcess</parameters>
+        <description>信用评价换算积分每天进程(新)</description>
+    </crontabentry>
+
+    <crontabentry id="46">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.credit.process.CreditAppraiseIndexingProcess</parameters>
+        <description>商家评价与商品评价自动建索引进程(新)</description>
+    </crontabentry>
+
+    <crontabentry id="47">
+        <seconds>5</seconds>
+        <minutes>10</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.credit.process.AutoAppraiseOnHourProcess</parameters>
+        <description>买家确认收货后没有评论系统自动好评进程---处理精确到小时的订单评价</description>
+    </crontabentry>
+
+    <crontabentry id="48">
+        <seconds>5</seconds>
+        <minutes>10</minutes>
+        <hours>2</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.credit.process.AutoAppraiseOnDailyProcess</parameters>
+        <description>买家确认收货后没有评论系统自动好评进程---重新处理48小时内漏掉的按小时计算的自动好评</description>
+    </crontabentry>
+
+    <crontabentry id="50">
+        <seconds>0</seconds>
+        <minutes>30</minutes>
+        <hours>3</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderAutoCompletedProcess</parameters>
+        <description>订单出库后到了指定时间自动确认收货.凌晨3:30执行</description>
+    </crontabentry>
+
+    <!-- <crontabentry id="53">
+        <seconds>59</seconds>
+        <minutes>59</minutes>
+        <hours>0</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.orderrefund.process.RefundExecuteProcess</parameters>
+        <description>退款订单的最终处理</description>
+    </crontabentry>-->
+
+    <crontabentry id="54">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.AccountIndexingProcess</parameters>
+        <description>帐号管理自动索引</description>
+    </crontabentry>
+
+    <crontabentry id="55">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.AccountLogsIndexingProcess</parameters>
+        <description>帐号操作日志自动索引</description>
+    </crontabentry>
+
+
+    <crontabentry id="56">
+        <seconds>59</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.commend.process.CommendStartProcess</parameters>
+        <description>自动推荐到相应的推荐列表</description>
+    </crontabentry>
+
+    <crontabentry id="57">
+        <seconds>59</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.commend.process.CommendEndProcess</parameters>
+        <description>自动从相应的推荐列表删除推荐</description>
+    </crontabentry>
+
+    <!-- <crontabentry id="58">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.MovieCodeIndexingProcess</parameters>
+        <description>兑换编号自动索引.</description>
+    </crontabentry>      0929注 -->
+
+    <!--  <crontabentry id="59">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.MovieIndexingProcess</parameters>
+        <description>电影自动索引.</description>
+    </crontabentry>-->
+
+    <!--  <crontabentry id="60">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.CinemaIndexingProcess</parameters>
+        <description>影院自动索引.</description>
+    </crontabentry>-->
+
+    <!--   <crontabentry id="61">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.MovieArrangeIndexingProcess</parameters>
+        <description>电影排期自动索引.</description>
+    </crontabentry>-->
+
+    <!--   <crontabentry id="62">
+        <seconds>5</seconds>
+        <minutes>10</minutes>
+        <hours>0</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.movie.process.MovieArrangeQueueProcess</parameters>
+        <description>电影排期自动移动到往期.</description>
+    </crontabentry>-->
+
+    <!--   <crontabentry id="63">
+        <seconds>30</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.movie.process.MovieArrangeUnLockQueueProcess</parameters>
+        <description>座位自动解锁.</description>
+    </crontabentry>-->
+
+    <!-- <crontabentry id="66">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.ServiceIndexingProcess</parameters>
+        <description>Service自动索引.</description>
+    </crontabentry>
+-->
+    <crontabentry id="67">
+        <seconds>59</seconds>
+        <minutes>59</minutes>
+        <hours>2</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderNoPayMailProcess</parameters>
+        <description>下单成功后未支付自动发送提醒.</description>
+    </crontabentry>
+
+    <crontabentry id="68">
+        <seconds>10,20,30,40,50,59</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.sms.process.SmsSendProcess</parameters>
+        <description>短信群发</description>
+    </crontabentry>
+
+
+    <!-- <crontabentry id="69">    //不需要索引，因为卡类型数量不会太多
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.CardTypeIndexingProcess</parameters>
+        <description>卡类型自动索引</description>
+    </crontabentry>-->
+
+    <crontabentry id="70">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.CardBatchIndexingProcess</parameters>
+        <description>卡批次自动索引</description>
+    </crontabentry>
+
+    <crontabentry id="71">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.CardIndexingProcess</parameters>
+        <description>卡信息自动索引</description>
+    </crontabentry>
+
+    <crontabentry id="75">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.BrandIndexingProcess</parameters>
+        <description>品牌自动索引</description>
+    </crontabentry>
+
+    <crontabentry id="76">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.MessageIndexingProcess</parameters>
+        <description>留言评论信息自动索引</description>
+    </crontabentry>
+
+    <!-- <crontabentry id="72">
+        <seconds>10</seconds>
+        <minutes>0,30</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.movie.process.MovieGetSessionProcess</parameters>
+        <description>每30分钟自动获取院线的排期</description>
+    </crontabentry>-->
+
+    <crontabentry id="73">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ExchangeProductDataProcess</parameters>
+        <description>商品自动对接</description>
+    </crontabentry>
+
+    <crontabentry id="74">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ExchangeOrderDataProcess</parameters>
+        <description>订单自动对接</description>
+    </crontabentry>
+
+    <!--  邮件发送     -->
+    <crontabentry id="80">
+        <seconds>30,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.email.process.EmailSendQuickProcess</parameters>
+        <description>邮件发送</description>
+    </crontabentry>
+
+
+    <!--  自动加上平台活动促销图标     -->
+    <crontabentry id="76">
+        <seconds>0,30</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.product.process.ProductAutoAddPromotionLogoProcess</parameters>
+        <description>自动加上平台活动促销图标</description>
+    </crontabentry>
+
+    <!-- 处理特价过期时，让商品重建索引 -->
+    <crontabentry id="78">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.SpecialProductIndexingProcess</parameters>
+        <description>处理特价过期时，让商品重建索引</description>
+    </crontabentry>
+
+    <!--售后服务索引-->
+    <crontabentry id="79">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.AfterServiceIndexingProcess</parameters>
+        <description>订单自动索引.</description>
+    </crontabentry>
+
+    <!--文件库索引-->
+    <crontabentry id="80">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.FileIndexingProcess</parameters>
+        <description>文件库自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="81">
+        <seconds>5</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderAutoCloseProcess 10 30</parameters>
+        <description>订单自动取消.</description>
+    </crontabentry>
+
+    <crontabentry id="82">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderAutoGiveUserIntegralProcess 10 30</parameters>
+        <description>订单完成自动赠送积分</description>
+    </crontabentry>
+
+    <crontabentry id="83">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderAutoGiveUserCardProcess 10 30</parameters>
+        <description>订单完成自动赠送购物券</description>
+    </crontabentry>
+
+    <!-- -->
+    <crontabentry id="100">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.InteractionLogIndexingProcess</parameters>
+        <description>对接日志自动索引</description>
+    </crontabentry>
+
+    <crontabentry id="101">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ExchangeReturnProductOrderDataProcess</parameters>
+        <description>退货自动对接</description>
+    </crontabentry>
+
+    <crontabentry id="103">
+        <seconds>10,20,30,40,50,59</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.sms.process.SmsTaskProcess</parameters>
+        <description>短信任务发送</description>
+    </crontabentry>
+
+    <crontabentry id="104">
+        <seconds>0</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.email.process.EmailTaskProcess</parameters>
+        <description>邮件任务发送</description>
+    </crontabentry>
+
+    <!--
+    <crontabentry id="106">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ReadCardInfoProcStateProcess</parameters>
+        <description>线下会员卡卡信息自动对接</description>
+    </crontabentry>
+
+    <crontabentry id="107">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ReadMemberInfoProcStateProcess</parameters>
+        <description>线下会员卡的用户资料自动对接</description>
+    </crontabentry>
+
+    <crontabentry id="108">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ReadCardScoreProcStateProcess</parameters>
+        <description>线下会员卡积分余额自动对焦</description>
+    </crontabentry>-->
+
+    <crontabentry id="109">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ExchangeProductSellableCountProcess</parameters>
+        <description>定时同步erp的可卖数到商城这边</description>
+    </crontabentry>
+
+    <crontabentry id="110">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderStatisticsProcessDss</parameters>
+        <description>订单dss对接</description>
+    </crontabentry>
+
+
+    <crontabentry id="111">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ReadDataEntryProcess cardProcess</parameters>
+        <description>线下会员卡读取数据对接</description>
+    </crontabentry>
+
+    <crontabentry id="112">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.SendDataEntryProcess dataSendProcess</parameters>
+        <description>ERP对接数据发送进程</description>
+    </crontabentry>
+
+    <!--<crontabentry id="113">-->
+    <!--<seconds>50</seconds>-->
+    <!--<minutes>50</minutes>-->
+    <!--<hours>23</hours>-->
+    <!--<daysofmonth>*</daysofmonth>-->
+    <!--<months>*</months>-->
+    <!--<daysofweek>*</daysofweek>-->
+    <!--<years>*</years>-->
+    <!--<bussinesdays>true</bussinesdays>-->
+    <!--<startDate></startDate>-->
+    <!--<endDate></endDate>-->
+    <!--<class>net.xinshi.saasadmin.cron.CronAgent</class>-->
+    <!--<method>run</method>-->
+    <!--<parameters>net.xinshi.isone.statistics.process.ProductSalesProcess</parameters>-->
+    <!--<description>订单销量dss对接进程</description>-->
+    <!--</crontabentry>-->
+
+    <crontabentry id="114">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.user.process.UserStatisticsProcessDss dataSendProcess</parameters>
+        <description>会员统计对接进程</description>
+    </crontabentry>
+
+    <crontabentry id="115">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.product.process.ProductSpecialPriceProcess</parameters>
+        <description>商品特价进程</description>
+    </crontabentry>
+
+    <!--
+     todo:此进程目前没有用到，如需使用需要检查实现
+    <crontabentry id="116">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.AfterOrderRollBackIntegralProcess</parameters>
+        <description>售后订单积分赠送回扣</description>
+    </crontabentry>
+
+    <crontabentry id="117">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.AfterOrderRollPayIntegralProcess</parameters>
+        <description>售后订单积分支付回退</description>
+    </crontabentry>-->
+
+    <crontabentry id="118">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.GroupOnIndexingProcess</parameters>
+        <description>团购自动索引</description>
+    </crontabentry>
+
+    <crontabentry id="119">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.PanicBuyIndexingProcess</parameters>
+        <description>抢购自动索引</description>
+    </crontabentry>
+
+    <crontabentry id="120">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.SmsLogIndexingProcess</parameters>
+        <description>短信发送记录自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="121">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderRollbackIntegralProcess</parameters>
+        <description>订单异步回退积分索引.</description>
+    </crontabentry>
+
+    <crontabentry id="122">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderRollbackEWalletProcess</parameters>
+        <description>订单异步回退预存款索引.</description>
+    </crontabentry>
+
+
+    <crontabentry id="123">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderRollbackTicketProcess</parameters>
+        <description>订单异步回退购物券索引.</description>
+    </crontabentry>
+
+    <crontabentry id="124">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderRollbackIntegralForUpProcess</parameters>
+        <description>订单修改异步回退积分索引.</description>
+    </crontabentry>
+
+    <crontabentry id="125">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderRollbackEWalletForUpProcess</parameters>
+        <description>订单修改异步回退预存款索引.</description>
+    </crontabentry>
+
+    <crontabentry id="126">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderRollbackTicketForUpProcess</parameters>
+        <description>订单修改异步回退购物券索引.</description>
+    </crontabentry>
+
+    <crontabentry id="127">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ERPInventoryRollbackProcess</parameters>
+        <description>ERP库存回滚进程（主要用于下单失败回滚库存，和修改超时重复再修改订单）.</description>
+    </crontabentry>
+
+    <crontabentry id="128">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.LocalInventoryRollbackProcess</parameters>
+        <description>下单锁定，下单失败释放，修改库存问题异步处理.</description>
+    </crontabentry>
+
+    <crontabentry id="129">
+        <seconds>10,20,30,40,50,59</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.TransferAccountRecordProcess</parameters>
+        <description>线上线下积分转入转出处理队列</description>
+    </crontabentry>
+
+    <crontabentry id="130">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderAddCloseInfoProcess</parameters>
+        <description>异步设置订单关闭信息</description>
+    </crontabentry>
+
+    <crontabentry id="131">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.sysargument.process.SynMerGeneralSysArgumentProcess 10 30</parameters>
+        <description>同步商家通用参数进程.</description>
+    </crontabentry>
+
+    <crontabentry id="132">
+        <seconds>1</seconds>
+        <minutes>0,5,10,15,20,25,30,35,40,45,50,55</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.user.process.MemberGroupUpdateByRuleProcess</parameters>
+        <description>会员升降级进程---根据升降级规则修改会员等级.</description>
+    </crontabentry>
+
+    <crontabentry id="133">
+        <seconds>1</seconds>
+        <minutes>20</minutes>
+        <hours>0</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.user.process.MemberGroupAutoUpdateByRuleProcess</parameters>
+        <description>会员自动降级进程---根据等级有效期到期后自动执行</description>
+    </crontabentry>
+
+    <crontabentry id="140">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.businessruleEx.plan.task.process.SetOrCancelEffectivePlanProcess setOrCancelEffectivePlanTaskQue</parameters>
+        <description>設置有效的業務方案，並且對業務方案進行索引！</description>
+    </crontabentry>
+
+    <crontabentry id="141">
+        <seconds>10,20,30,40,50,59</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.DeliveryTicketTypeIndexingProcess</parameters>
+        <description>提货券类型建索引</description>
+    </crontabentry>
+
+    <crontabentry id="142">
+        <seconds>10,20,30,40,50,59</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.DeliveryTicketBatchIndexingProcess</parameters>
+        <description>提货券批次建索引</description>
+    </crontabentry>
+
+    <crontabentry id="143">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.DeliveryTicketIndexingProcess</parameters>
+        <description>提货券建索引</description>
+    </crontabentry>
+
+    <crontabentry id="144">
+        <seconds>00,30</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.sms.process.GetSmsProcess</parameters>
+        <description>获取上行短信</description>
+    </crontabentry>
+
+    <crontabentry id="145">
+        <seconds>0</seconds>
+        <minutes>0</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.SynDiscuzProcess</parameters>
+        <description>防止discuz挂掉以后用户资料未同步。</description>
+    </crontabentry>
+
+    <crontabentry id="146">
+        <seconds>0</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.trialon.process.TrialOnTodayQueueProcess</parameters>
+        <description>自动生成今日试用</description>
+    </crontabentry>
+    <crontabentry id="147">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.TrialOnIndexingProcess</parameters>
+        <description>试用自动索引</description>
+    </crontabentry>
+    <crontabentry id="148">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.export.process.ExportOrderProcess 60000</parameters>
+        <description>生成订单excel进程</description>
+    </crontabentry>
+
+    <crontabentry id="149">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.ColumnIndexingProcess</parameters>
+        <description>栏目索引</description>
+    </crontabentry>
+
+    <crontabentry id="150">
+        <seconds>0</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.product.process.ProductPromotionLogoAddProcess</parameters>
+        <description>异步批量添加促销图标进程</description>
+    </crontabentry>
+
+    <crontabentry id="151">
+        <seconds>0</seconds>
+        <minutes>0</minutes>
+        <hours>4</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.session.process.AutoDeleteTempSessionProcess</parameters>
+        <description>每天凌晨4点定时删除掉所有pigeon保存的临时session对象</description>
+    </crontabentry>
+
+
+    <crontabentry id="152">
+        <seconds>0,5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.interaction.process.ExchangeRegionDataProcess</parameters>
+        <description>地区自动对接</description>
+    </crontabentry>
+
+    <crontabentry id="154">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.ImportExcelOrderProcess</parameters>
+        <description>excel订单导入</description>
+    </crontabentry>
+
+
+    <!--
+       按项目需要进行打开并配置合理的触发时间
+       <crontabentry id="155">
+            <seconds>0</seconds>
+            <minutes>0,15,30,45</minutes>
+            <hours>*</hours>
+            <daysofmonth>*</daysofmonth>
+            <months>*</months>
+            <daysofweek>*</daysofweek>
+            <years>*</years>
+            <bussinesdays>true</bussinesdays>
+            <startDate></startDate>
+            <endDate></endDate>
+            <class>net.xinshi.saasadmin.cron.CronAgent</class>
+            <method>run</method>
+            <parameters>net.xinshi.isone.lucene.process.ProductStockoutStateSetProcess</parameters>
+            <description>商品缺货状态标识进程,todo:这个需要重新设计，目前每15秒重建所有商品的索引</description>
+        </crontabentry>-->
+
+    <crontabentry id="156">
+        <seconds>10,20,30,40,50</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.openapi.app.process.NotifyClientProcess</parameters>
+        <description>通知其他网站，用户已经登录的进程</description>
+    </crontabentry>
+    <crontabentry id="157">
+        <seconds>1</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.OrderAutoGiveUserCpsCommissionRateProcess</parameters>
+        <description>订单完成自动赠送CPS佣金</description>
+    </crontabentry>
+
+    <crontabentry id="165">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.ASYNEventProcess 30 50 5 50 60</parameters>
+        <description>执行添加订单后事件及分派订单.</description>
+    </crontabentry>
+
+    <crontabentry id="166">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isonepayclient.process.DoOnlineChargeProcess</parameters>
+        <description>执行向泛卡服务器充值的进程</description>
+    </crontabentry>
+    <crontabentry id="167">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.DeliveryTemplateIndexingProcess</parameters>
+        <description>配送模版自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="168">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.SaasMerchantInfoIndexingProcess</parameters>
+        <description>SAAS商家建索引</description>
+    </crontabentry>
+    <crontabentry id="169">
+        <seconds>0</seconds>
+        <minutes>0</minutes>
+        <hours>2</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.syt.process.SytErpImportProductInfoProcess</parameters>
+        <description>南京上元堂时空ERP商品对接</description>
+    </crontabentry>
+    <crontabentry id="170">
+        <seconds>0</seconds>
+        <minutes>0</minutes>
+        <hours>2</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.syt.process.SytErpImportMemberIntegralProcess</parameters>
+        <description>南京上元堂时空ERP会员积分对接</description>
+    </crontabentry>
+
+    <crontabentry id="171">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <parameters>net.xinshi.isone.lucene.process.OrderFinancialIndexingProcess</parameters>
+        <method>run</method>
+        <description>订单支付账务索引进程</description>
+    </crontabentry>
+
+    <crontabentry id="172">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <parameters>net.xinshi.isone.modules.orderfinancial.process.OrderFinancialCacheBuilderProcess</parameters>
+        <method>run</method>
+        <description>订单支付账务进程</description>
+    </crontabentry>
+
+    <crontabentry id="173">
+        <seconds>0,30</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.isone.modules.appmarket.process.InstallerProcess</class>
+        <method>run</method>
+        <parameters></parameters>
+        <description>appMarket安装程序</description>
+    </crontabentry>
+
+    <crontabentry id="174">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <parameters>net.xinshi.isone.lucene.process.FavoriteIndexingProcess</parameters>
+        <method>run</method>
+        <description>收藏商品标签</description>
+    </crontabentry>
+    <crontabentry id="175">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.SupplierIndexingProcess</parameters>
+        <description>供应商信息自动索引.</description>
+    </crontabentry>
+
+    <crontabentry id="176">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.ExchangeConfirmOrderDataToAngJieProcess</parameters>
+        <description>已支付订单或已确认订单对接到ERP（昂捷）.</description>
+    </crontabentry>
+
+    <crontabentry id="179">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.ExchangeCancelOrderDataToAngJieProcess</parameters>
+        <description>已取消订单对接到ERP（昂捷）.</description>
+    </crontabentry>
+
+    <crontabentry id="178">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.ExchangeUpdateOrderDataToAngJieProcess</parameters>
+        <description>已修改订单对接到ERP（昂捷）.</description>
+    </crontabentry>
+
+    <crontabentry id="177">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.ExchangeAngJieProductDataProcess</parameters>
+        <description>商品基础信息对接（昂捷）.</description>
+    </crontabentry>
+
+    <crontabentry id="180">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.ExchangeAngJieProductPriceDataProcess</parameters>
+        <description>价格基础信息对接（昂捷）.</description>
+    </crontabentry>
+
+    <crontabentry id="181">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.ExchangeConfirmReturnOrderDataToAngJieProcess</parameters>
+        <description>已确认退货订单对接到ERP（昂捷）.</description>
+    </crontabentry>
+
+    <crontabentry id="182">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.UpdateOrderProcessStatusWithERPProcess</parameters>
+        <description>对接已出库/已签收订单状态（昂捷）.</description>
+    </crontabentry>
+
+    <crontabentry id="183">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.UpdateRetOrderWareHouseStatusWithERPProcess</parameters>
+        <description>对接退货单入库状态（昂捷）.</description>
+    </crontabentry>
+
+    <crontabentry id="184">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.jobs.process.NormalTaskProcess</parameters>
+        <description>app使用的定时任务</description>
+    </crontabentry>
+
+    <crontabentry id="185">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.syt.process.SytErpSaveProcess</parameters>
+        <description>南京上元堂已支付未发货订单对接到erp</description>
+    </crontabentry>
+    <crontabentry id="186">
+        <seconds>0</seconds>
+        <minutes>0,10,20,30,40,50</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.syt.process.SytErpUpdateOrderStatusProcess</parameters>
+        <description>检查官网上已传至ERP系统且未处理完成的订单状态是否发生变化,如果发生变化，把官网的订单状态同步到erp中间表</description>
+    </crontabentry>
+    <crontabentry id="187">
+        <seconds>0</seconds>
+        <minutes>0,10,20,30,40,50</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.syt.process.UpdateOrderStatusFromSytErpProcess</parameters>
+        <description>将南京上元堂erp中间表已完成处理的订单状态更新至官网</description>
+    </crontabentry>
+
+    <crontabentry id="188">
+        <seconds>0,20,40</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.StoredCardTypeIndexingProcess</parameters>
+        <description>储值卡类型、批次自动索引</description>
+    </crontabentry>
+
+    <crontabentry id="189">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.lucene.process.StoredCardIndexingProcess</parameters>
+        <description>储值卡自动索引</description>
+    </crontabentry>
+    <crontabentry id="190">
+        <seconds>5,10,15,20,25,30,35,40,45,50,55</seconds>
+        <minutes>*</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.thirdinterface.angjie.process.ExchangeCardDataToAngJieProcess</parameters>
+        <description>对接虚拟储值卡(预存款)售出/消费记录信息（昂捷）.</description>
+    </crontabentry>
+    <crontabentry id="200">
+        <seconds>0</seconds>
+        <minutes>0</minutes>
+        <hours>5</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.product.process.Build360GooddoctorSearchProcess</parameters>
+        <description>360良医搜索文件生成.</description>
+    </crontabentry>
+
+    <crontabentry id="201">
+        <seconds>0</seconds>
+        <minutes>5,10,15,20,25,30,35,40,45,50,55</minutes>
+        <hours>*</hours>
+        <daysofmonth>*</daysofmonth>
+        <months>*</months>
+        <daysofweek>*</daysofweek>
+        <years>*</years>
+        <bussinesdays>true</bussinesdays>
+        <startDate></startDate>
+        <endDate></endDate>
+        <class>net.xinshi.saasadmin.cron.CronAgent</class>
+        <method>run</method>
+        <parameters>net.xinshi.isone.modules.order.process.AutoGiveUserIntegralFailAfterProcess</parameters>
+        <description>当商家帐户余额不足时添加到失败队列再定时赠送积分</description>
+    </crontabentry>
+</crontab>
+
+

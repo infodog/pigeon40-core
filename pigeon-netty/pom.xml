@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <parent>
+            <groupId>pigeon</groupId>
+            <artifactId>pigeon</artifactId>
+            <version>4.0</version>
+    </parent>
+
+    <groupId>pigeon</groupId>
+    <artifactId>pigeon-netty</artifactId>
+    <version>${pigeon-version}</version>
+
+     <dependencies>
+        <dependency>
+           <groupId>pigeon</groupId>
+           <artifactId>pigeon-json</artifactId>
+           <version>${pigeon-version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.jboss.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.2.10.Final</version>
+        </dependency>
+
+         <dependency>
+            <groupId>pigeon</groupId>
+            <artifactId>pigeon-commons</artifactId>
+            <version>${pigeon-version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
