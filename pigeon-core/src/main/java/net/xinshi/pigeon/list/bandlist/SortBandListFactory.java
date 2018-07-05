@@ -26,8 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static net.xinshi.pigeon.status.Constants.getStateString;
 
@@ -41,7 +41,7 @@ import static net.xinshi.pigeon.status.Constants.getStateString;
 
 public class SortBandListFactory implements IListFactory, IListBandService, IPigeonPersistence {
     //    Logger logger = Logger.getLogger(Flusher.class.getName());
-    private static Logger log = Logger.getLogger(SortBandListFactory.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SortBandListFactory.class);
     IListBandDao dao;
     IBandSerializer bandSerializer;
     String factoryName;
@@ -76,6 +76,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
     Object globalLocker = new Object();
     CriticalSection listMutex = new CriticalSection(1000);
     boolean migration = false;
+    static final Logger logger = LoggerFactory.getLogger(SortBandListFactory.class);
 
     private String getCacheString() {
         return "listCache = " + listCache.size() + ", bandCache = " + bandCache.size() +
@@ -150,9 +151,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
         this.maxBandCacheSize = maxBandCacheSize;
     }
 
-    public ByteArrayOutputStream pullDataItems(long min, long max) throws Exception {
-        return verLogger.rangeVersionHistory(this, min, max);
-    }
+
 
     public void set_state_word(int state_word) throws Exception {
         log.info("SortBandListFactory set_state_word : " + state_word);
@@ -206,7 +205,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
                 }
                 dirtyHeadBands.clear();
             } else {
-                log.warning("takeSnapShot() dirtyHeadBandsSnapShot not empty .... ");
+                log.info("takeSnapShot() dirtyHeadBandsSnapShot not empty .... ");
             }
         }
     }
@@ -531,9 +530,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
         if (listId.indexOf(";") >= 0 || listId.indexOf(",") >= 0) {
             throw new Exception("listId can not contains ';' name = " + listId);
         }
-        System.out.println("getList try lock:" + listId);
         synchronized (getListLocker(listId)) {
-            System.out.println("getList lock ok:" + listId);
             SortBandList list = (SortBandList) this.getListcache().get(listId);
             if (list != null) {
                 return list;
@@ -630,7 +627,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
             {
                 maxBandID = new AtomicLong(getMaxBandIdFromDB(((ListBandDao) dao).getTableName()));
                 if (maxBandID.intValue() < 0) {
-                    log.log(Level.SEVERE,"can not get max bandId from DB.");
+                    log.error("can not get max bandId from DB.");
                     verInit = false;
                 } else {
                     if (maxBandID.intValue() < 50000) {
@@ -644,7 +641,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
         }
         try {
             if (!verInit) {
-                log.severe("VersionHistoryLogger init failed");
+                log.error("VersionHistoryLogger init failed");
                 set_state_word(Constants.READONLY_STATE);
                 System.exit(-1);
             }
@@ -691,7 +688,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
                 }
             }
             if (b == null) {
-                System.out.println("bandid=" + bandid + " does not exists.");
+                logger.error("bandid=" + bandid + " does not exists.");
             }
             return b;
         }
@@ -720,7 +717,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
     }
 
     synchronized private long getMaxBandIdFromDB(String tableName) throws Exception {
-        System.out.println("getMaxBandIdFromDB tableName = " + tableName);
+        logger.info("getMaxBandIdFromDB tableName = " + tableName);
         long max = -1L;
         Connection _conn = null;
         PreparedStatement stmt = null;
@@ -785,81 +782,9 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
 
     }
 
-    private void addStringToCache(String s) throws Exception {
-        s = s.replace("\n", "");
-        String fields[] = s.split(",");
-        SortBandList list = null;
-        try {
-            if (fields[0].equals(SortBandList.OP_ADD)) {
-                String listId = fields[1];
-                String objid = fields[2];
-                String key = "";
-                if (fields.length > 3) {
-                    key = fields[3];
-                }
-                list = (SortBandList) getList(listId, true);
-                boolean result = false;
-                result = list.internal_add(new SortListObject(key, objid));
-                if (!result) {
-                    System.out.println(listId + " addStringToCache sortObj list add failed ... return == false");
-                }
-            } else if (fields[0].equals(SortBandList.OP_DELETE)) {
-                String listId = fields[1];
-                String objid = fields[2];
-                String key = "";
-                if (fields.length > 3) {
-                    key = fields[3];
-                }
-                list = (SortBandList) getList(listId, true);
-                boolean result = false;
-                result = list.internal_delete(new SortListObject(key, objid));
-                if (!result) {
-                    System.out.println(listId + " addStringToCache sortObj list delete failed ... return == false");
-                }
-            } else if (fields[0].equals(SortBandList.OP_REORDER)) {
-                String listId = fields[1];
-                String old_objid = fields[2];
-                String old_key = fields[3];
-                String new_objid = fields[4];
-                String new_key = "";
-                if (fields.length > 5) {
-                    new_key = fields[5];
-                }
-                list = (SortBandList) getList(listId, true);
-                boolean result = false;
-                result = list.internal_reorder(new SortListObject(old_key, old_objid), new SortListObject(new_key, new_objid));
-                if (!result) {
-                    System.out.println(listId + " addStringToCache sortObj list reorder failed ... return == false");
-                }
-            }
-        } finally {
-        }
-    }
 
-    private void writeLogAndCacheRaw(long version, String s) throws Exception {
-        if (!Constants.canWriteLog(state_word)) {
-            throw new Exception("pigeon is READONLY ...... ");
-        }
-        synchronized (globalLocker) {
-            byte[] data = s.getBytes("UTF-8");
-            if (logfos == null) {
-                logfos = new FileOutputStream(getOperationLogFileName(), true);
-            }
-            long delta = verLogger.getVersionDistance(version);
-            if (delta < 1) {
-                System.out.println("writeLogAndCacheRaw delta = " + delta + ", version = " + version);
-                return;
-            } else if (delta > 1) {
-                throw new Exception("critic! writeLogAndCacheRaw delta = " + delta + ", version = " + version);
-            }
-            long ver = verLogger.logVersionAndData(version, data, logfos);
-            if (ver < 1) {
-                throw new Exception("VersionHistoryLogger version < 1 ...... ");
-            }
-            logfos.flush();
-            addStringToCache(s);
-        }
-    }
+
+
 
     @Override
     public long getVersion() {
@@ -872,41 +797,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
         throw new Exception("not implemented.");
     }
 
-    public void writeLogAndCache(long version, String s) throws Exception {
-        if (!Constants.canWriteLog(state_word)) {
-            throw new Exception("pigeon is READONLY ...... ");
-        }
-        byte[] data = s.getBytes("UTF-8");
-        synchronized (globalLocker) {
-            if (logfos == null) {
-                logfos = new FileOutputStream(getOperationLogFileName(), true);
-            }
-            long delta = verLogger.getVersionDistance(version);
-            if (delta < 1) {
-                System.out.println("writeLogAndCache delta = " + delta);
-                return;
-            }
-            if (delta > 1) {
-                long min = version - delta + 1;
-                long max = version - 1;
-                syncVersion(min, max);
-            }
-            delta = verLogger.getVersionDistance(version);
-            if (delta < 1) {
-                System.out.println("after syncVersion delta = " + delta);
-                return;
-            }
-            if (delta > 1) {
-                throw new Exception("critic! after syncVersion delta = " + delta);
-            }
-            long ver = verLogger.logVersionAndData(version, data, logfos);
-            if (ver < 1) {
-                throw new Exception("VersionHistoryLogger version < 1 ...... ");
-            }
-            logfos.flush();
-            addStringToCache(s);
-        }
-    }
+
 
     public int getMaxObjectsPerBand() {
         return maxObjectsPerBand;
@@ -989,7 +880,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
             e.printStackTrace();
         }
         if (!isOK) {
-            log.warning("rotateVersionHistory failed READONLY ... ");
+            log.warn("rotateVersionHistory failed READONLY ... ");
             try {
                 set_state_word(Constants.READONLY_STATE);
             } catch (Exception e) {
@@ -1009,7 +900,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
             String line = new String(bytes, "UTF-8");
             line = line.replace("\n", "");
             if (lineNum % 10000 == 0) {
-                log.log(Level.INFO, "lineNum=" + lineNum);
+                log.info("lineNum=" + lineNum);
             }
             lineNum++;
             try {
@@ -1042,7 +933,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
                 deleteOldOpLog();
             } catch (Exception e) {
                 e.printStackTrace();
-                log.warning("list replayOldOpLog failed ..... ");
+                log.warn("list replayOldOpLog failed ..... ");
                 set_state_word(Constants.READONLY_STATE);
                 System.exit(-1);
             }
@@ -1167,7 +1058,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
                             takeSnapShot();
                         }
                     } else {
-                        log.log(Level.INFO, "dirtyBandSnapShot.size() exiting flush");
+                        log.info("dirtyBandSnapShot.size() exiting flush");
                     }
                 }
 
@@ -1195,7 +1086,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
                         String cs = getCacheString();
                         if (cs.compareTo(cacheString) != 0) {
                             cacheString = cs;
-                            System.out.println(TimeTools.getNowTimeString() + " List " + cs);
+                            logger.info(TimeTools.getNowTimeString() + " List " + cs);
                         }
                     }
 
@@ -1285,7 +1176,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
 
                 isOk = true;
             } catch (Exception e) {
-                log.log(Level.SEVERE, "fatal,can not insert into db.", e);
+                log.error("fatal,can not insert into db.", e);
                 set_state_word(Constants.READONLY_STATE);
             } finally {
                 long end = System.currentTimeMillis();
@@ -1301,9 +1192,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
 
                 } else {
                     txManager.rollback(status);
-                    log.warning("list flushSnapShotToDataBase failed, fail count : " + savedbfailedcount);
-                    System.out.println("SortBandListFactory rollback");
-                    log.severe("SortBandListFactory rollback.");
+                    log.error("list flushSnapShotToDataBase failed, fail count : " + savedbfailedcount);
                     ++savedbfailedcount;
                     if (savedbfailedcount > 1800) {
                         //log.warning("list flushSnapShotToDataBase savedbfailedcount : " + savedbfailedcount);

@@ -6,6 +6,7 @@ import net.xinshi.pigeon.persistence.IPigeonPersistence;
 import net.xinshi.pigeon.persistence.VersionHistoryLogger;
 import net.xinshi.pigeon.status.Constants;
 import net.xinshi.pigeon.util.CommonTools;
+import net.xinshi.pigeon.util.DBUtils;
 import net.xinshi.pigeon.util.DefaultHashGenerator;
 import net.xinshi.pigeon.util.TimeTools;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,13 +18,11 @@ import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static net.xinshi.pigeon.status.Constants.getStateString;
 
@@ -60,7 +59,7 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
     CacheLogger cacheLogger;
     boolean fastCreate = false;
     long savedbfailedcount = 0;
-    Logger logger = Logger.getLogger(FastAtom.class.getName());
+    Logger logger = LoggerFactory.getLogger(FastAtom.class);
 
     private String getCacheString() {
         return cacheLogger.getCacheString();
@@ -197,9 +196,7 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
         return logDirectory + tableName + ".oldlog";
     }
 
-    public ByteArrayOutputStream pullDataItems(long min, long max) throws Exception {
-        return verLogger.rangeVersionHistory(this, min, max);
-    }
+
 
     @Override
     public long getVersion() {
@@ -244,7 +241,7 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
         if (f.exists()) {
             try {
                 if (!verLogger.rotateVersionHistory(this, f.getAbsolutePath())) {
-                    System.out.println("atom rotateVersionHistory failed enter READONLY");
+                    logger.error("atom rotateVersionHistory failed enter READONLY");
                     set_state_word(Constants.READONLY_STATE);
                     return;
                 }
@@ -278,8 +275,16 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                 isok = true;
                 return true;
             }
-            String updateSQL = String.format("update %s set value=? , txid=?, hash=? where name=? ", this.tableName);
-            String insertSQL = String.format("insert into %s (name,value,txid, hash)values(?,?,?,?) ", this.tableName);
+            String updateSQL = null;
+            String insertSQL = null;
+            if(hasTxidInDB){
+                updateSQL = String.format("update %s set value=? , txid=?, hash=? where name=? ", this.tableName);
+                insertSQL = String.format("insert into %s (name,value,txid, hash)values(?,?,?,?) ", this.tableName);
+            }
+            else{
+                updateSQL = String.format("update %s set value=? , hash=? where name=? ", this.tableName);
+                insertSQL = String.format("insert into %s (name,value, hash)values(?,?,?) ", this.tableName);
+            }
             PreparedStatement updateStmt = conn.prepareStatement(updateSQL);
             PreparedStatement insertStmt = conn.prepareStatement(insertSQL);
             for (Iterator it = cacheLogger.getSavingDirtyCache().entrySet().iterator(); it.hasNext(); ) {
@@ -287,17 +292,31 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                 AtomBean bean = (AtomBean) entry.getValue();
                 String name = (String) entry.getKey();
                 int hash = DefaultHashGenerator.hash(bean.name);
-                updateStmt.setLong(1, bean.value);
-                updateStmt.setLong(2, bean.txid);
-                updateStmt.setLong(3, hash);
-                updateStmt.setString(4, bean.name);
-                updateStmt.execute();
-                if (updateStmt.getUpdateCount() == 0) {
-                    insertStmt.setString(1, name);
-                    insertStmt.setLong(2, bean.value);
-                    insertStmt.setLong(3, bean.txid);
-                    insertStmt.setLong(4, hash);
-                    insertStmt.execute();
+                if(hasTxidInDB) {
+                    updateStmt.setLong(1, bean.value);
+                    updateStmt.setLong(2, bean.txid);
+                    updateStmt.setLong(3, hash);
+                    updateStmt.setString(4, bean.name);
+                    updateStmt.execute();
+                    if (updateStmt.getUpdateCount() == 0) {
+                        insertStmt.setString(1, name);
+                        insertStmt.setLong(2, bean.value);
+                        insertStmt.setLong(3, bean.txid);
+                        insertStmt.setLong(4, hash);
+                        insertStmt.execute();
+                    }
+                }
+                else{
+                    updateStmt.setLong(1, bean.value);
+                    updateStmt.setLong(2, hash);
+                    updateStmt.setString(3, bean.name);
+                    updateStmt.execute();
+                    if (updateStmt.getUpdateCount() == 0) {
+                        insertStmt.setString(1, name);
+                        insertStmt.setLong(2, bean.value);
+                        insertStmt.setLong(3, hash);
+                        insertStmt.execute();
+                    }
                 }
             }
             verLogger.saveDbVersion(conn);
@@ -312,15 +331,15 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                 }
             } else {
                 transactionManager.rollback(ts);
-                System.out.println("fast atom error,rollback.");
-                logger.severe("fast atom error,rollback.");
+                logger.error("fast atom error,rollback.");
             }
             if (conn != null && conn.isClosed() == false) {
                 conn.close();
             }
         }
         if (lastVersion < 1) {
-            System.out.println("panic!!! atom (lastVersion < 1) = " + lastVersion);
+//            System.out.println("panic!!! atom (lastVersion < 1) = " + lastVersion);
+            logger.error("panic!!! atom (lastVersion < 1) = " + lastVersion);
         }
         dbOK = isok;
         return isok;
@@ -385,7 +404,8 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                     long lvalue = Long.parseLong(value);
                     Long v = this.internalGet(name);
                     if (!this.fastCreate && v != null) {
-                        System.out.println("[ignore] createAndSet atom " + name + " old value = " + v);
+//                        System.out.println("[ignore] createAndSet atom " + name + " old value = " + v);
+                        logger.warn("createAndSet atom " + name + " but atom already existed old value = " + v + ", operation ignored.");
                         return;
                     }
                     try {
@@ -470,7 +490,8 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    System.out.println("atom !!!!!!!!! replay file failed : " + f.getAbsolutePath());
+//                    System.out.println("atom !!!!!!!!! replay file failed : " + f.getAbsolutePath());
+                    logger.error("atom !!!!!!!!! replay file failed : " + f.getAbsolutePath());
                     set_state_word(Constants.READONLY_STATE);
                     System.exit(-1);
                 }
@@ -487,9 +508,11 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
     private void replayOldLog() throws Exception {
         executeFile(new File(this.getOldOperationLogFileName()));
         cacheLogger.swapToSaving();
-        System.out.println("DirtyCache size = " + cacheLogger.getDirtyCacheSize() + ", SavingDirtyCache size = " + cacheLogger.getSavingDirtyCacheSize());
+//        System.out.println("DirtyCache size = " + cacheLogger.getDirtyCacheSize() + ", SavingDirtyCache size = " + cacheLogger.getSavingDirtyCacheSize());
+        logger.debug("DirtyCache size = " + cacheLogger.getDirtyCacheSize() + ", SavingDirtyCache size = " + cacheLogger.getSavingDirtyCacheSize());
         if (!this.flushSnapShotToDB()) {
-            System.out.println("atom init flushSnapShotToDB failed");
+//            System.out.println("atom init flushSnapShotToDB failed");
+            logger.error("atom init flushSnapShotToDB failed");
             set_state_word(Constants.READONLY_STATE);
             System.exit(-1);
         }
@@ -513,6 +536,9 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
 
     boolean bInitialized = false;
 
+    boolean hasTxidInDB; //检查数据库中是否有Txid字段
+
+
     public void init() throws Exception {
         if (!bInitialized) {
             bInitialized = true;
@@ -531,13 +557,15 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                 verInit = false;
             }
             if (!verInit) {
-                System.out.println("atom VersionHistoryLogger init failed");
+//                System.out.println("atom VersionHistoryLogger init failed");
+                logger.error("atom VersionHistoryLogger init failed");
                 set_state_word(Constants.READONLY_STATE);
                 System.exit(-1);
             }
+            hasTxidInDB = DBUtils.hasColumn(ds,"t_simpleatom","txid");
             replayOldLog();
             while (!cacheLogger.noSavingDirtyCache()) {
-                System.out.println("wait for flush to db ...... ");
+//                System.out.println("wait for flush to db ...... ");
                 try {
                     Thread.sleep(1000);
                 } catch (Exception e) {
@@ -546,7 +574,7 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
             }
             replayLog();
             while (!cacheLogger.noSavingDirtyCache()) {
-                System.out.println("wait for flush to db ...... ");
+//                System.out.println("wait for flush to db ...... ");
                 try {
                     Thread.sleep(1000);
                 } catch (Exception e) {
@@ -573,7 +601,9 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
     void flush() {
         try {
             if (!dbOK) {
-                System.out.println("atom dbOK == false, flush()");
+//                System.out.println("atom dbOK == false, flush()");
+                logger.error("db is not ok.");
+                return;
             }
             int rc = -1;
             try {
@@ -588,7 +618,8 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
             } catch (Exception e) {
                 if (rc == -1) {
                     e.printStackTrace();
-                    System.out.println("atom swapToSavingAndRenameLog failed");
+//                    System.out.println("atom swapToSavingAndRenameLog failed");
+                    logger.error("atom swapToSavingAndRenameLog failed",e);
                     set_state_word(Constants.READONLY_STATE);
                 }
                 dbOK = false;
@@ -617,7 +648,8 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                         String cs = getCacheString();
                         if (cs.compareTo(cacheString) != 0) {
                             cacheString = cs;
-                            System.out.println(TimeTools.getNowTimeString() + " Atom " + cs);
+//                            System.out.println(TimeTools.getNowTimeString() + " Atom " + cs);
+                            logger.info(TimeTools.getNowTimeString() + " Atom " + cs);
                         }
                     }
                     if (waiting) {

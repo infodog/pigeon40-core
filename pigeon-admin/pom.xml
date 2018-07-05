@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.apache.distributedlog</groupId>
             <artifactId>distributedlog-core</artifactId>
-            <version>4.7.0</version>
+            <version>4.7.1</version>
         </dependency>
 
         <dependency>
@@ -49,4 +49,83 @@
 
 
     </dependencies>
+
+    <build>
+        <finalName>pigeonadmin.${pigeon-version}</finalName>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7.2</version>
+                <configuration>
+                    <argLine>-Xmx512M</argLine>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <!-- this is used for inheritance merges -->
+                        <phase>prepare-package</phase>
+
+
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+
+                            <archive>
+                                <manifest>
+                                    <mainClass>net.xinshi.pigeon.net.xinshi.pigeon.admin.Main</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>make-distribute</id>
+                        <!-- this is used for inheritance merges -->
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assemble/pigeon-admin.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <organization>
+        <name>infoscape</name>
+        <url>http://www.infoscape.com.cn</url>
+    </organization>
 </project>

@@ -39,7 +39,15 @@ public class Main {
         byte[] bytes = new byte[(int) fconf.length()];
         fis.read(bytes);
         String configString = new String(bytes,"utf-8");
+
+        String podName = "pigeon40Default";
+        if(args.length>2){
+            podName = args[2];
+        }
+
+        configString = configString.replaceAll("%podname%",podName);
         JSONObject jconfig = new JSONObject(configString);
+        System.out.println("connectString=" + zooConnectString + ",podName=" + podName + ", configString=" + configString);
 
         try {
             zk.create("/pigeon40", "pigeon40 root".getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
@@ -50,12 +58,13 @@ public class Main {
         //检查jconfig是否和zookeeper商现有的数据冲突
         //如果当前的pod已经存在，那么就退出, 如果当前pod不存在，那么就建立当前的pod
 
+
         JSONArray jpods = jconfig.getJSONArray("pods");
 
         boolean exists = false;
         for(int i=0; i < jpods.length(); i++){
             JSONObject jpod = jpods.getJSONObject(i);
-            String podName = jpod.getString("name");
+//            String podName = jpod.getString("name");
             //检查podName是否已经存在
             Stat stat = zk.exists("/pigeon40/" + podName,null);
             if(stat!=null){
@@ -70,7 +79,9 @@ public class Main {
             JSONObject jpod = jpods.getJSONObject(i);
             createPod(zk,jpod);
         }
-        Thread.sleep(30000);
+        System.out.println("pod created！");
+        Thread.sleep(1000);
+        System.exit(0);
     }
 
     static Namespace buildNamespace(String uriNamespace) throws URISyntaxException, IOException {
@@ -90,7 +101,7 @@ public class Main {
         String podName = jpod.optString("name");
         String podDesc = jpod.optString("desc");
         JSONObject podData = new JSONObject();
-        podData.put("desc",podDesc);
+        podData.put("desc", podDesc);
         String podPath = "/pigeon40/" + podName;
         List<ACL> acl = new ArrayList();
         try {
@@ -98,8 +109,7 @@ public class Main {
 
             String dlogPath = podPath + "/dlog";
             zk.create(dlogPath, "distrubuted log root，unused".getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
@@ -113,19 +123,14 @@ public class Main {
         String namespaceUri = jpod.getString("namespace");
         Namespace namespace = buildNamespace(namespaceUri);
 
-        createCluster(zk,podPath,object_cluster,"object_cluster",namespace);
-        createCluster(zk,podPath,list_cluster,"list_cluster",namespace);
-        createCluster(zk,podPath,id_cluster,"id_cluster",namespace);
-        createCluster(zk,podPath,atom_cluster,"atom_cluster",namespace);
-        createCluster(zk,podPath,locks_cluster,"locks_cluster",namespace);
-        createCluster(zk,podPath,file_cluster,"file_cluster",namespace);
-
-
-
-
-
+        createCluster(zk, podPath, object_cluster, "object_cluster", namespace);
+        createCluster(zk, podPath, list_cluster, "list_cluster", namespace);
+        createCluster(zk, podPath, id_cluster, "id_cluster", namespace);
+        createCluster(zk, podPath, atom_cluster, "atom_cluster", namespace);
+        createCluster(zk, podPath, locks_cluster, "locks_cluster", namespace);
+        createCluster(zk, podPath, file_cluster, "file_cluster", namespace);
+        System.out.println("create pod succeeded.");
     }
-
 
     private static void createCluster(ZooKeeper zk,String parentPath, JSONObject cluster,String type,Namespace namespace) throws JSONException, IOException, KeeperException, InterruptedException {
         JSONObject data = new JSONObject();
@@ -150,6 +155,7 @@ public class Main {
 
                 }
             }
+            System.out.println("create node " + clusterPath + " succeeded!");
         }
         catch(Exception e){
             System.out.println("create cluster failed:" + clusterPath);

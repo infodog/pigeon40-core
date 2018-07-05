@@ -6,10 +6,7 @@ import net.xinshi.pigeon.idgenerator.IIDGeneratorServer;
 import net.xinshi.pigeon.persistence.IPigeonPersistence;
 import net.xinshi.pigeon.persistence.VersionHistoryLogger;
 import net.xinshi.pigeon.status.Constants;
-import net.xinshi.pigeon.util.CommonTools;
-import net.xinshi.pigeon.util.DefaultHashGenerator;
-import net.xinshi.pigeon.util.SoftHashMap;
-import net.xinshi.pigeon.util.TimeTools;
+import net.xinshi.pigeon.util.*;
 
 import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static net.xinshi.pigeon.status.Constants.getStateString;
 
@@ -43,6 +42,7 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
     long savedbfailedcount = 0;
     protected String lock_sql = "Lock tables t_ids write";
     protected String unlock_sql = "Unlock tables";
+    Logger logger = LoggerFactory.getLogger(MysqlIDGenerator.class);
 
     public Map getStatusMap() {
         Map<String, String> mapStatus = new HashMap<String, String>();
@@ -111,7 +111,7 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
             if (isOK) {
                 _conn.commit();
             } else {
-                System.out.println("getId rollback");
+                logger.error("getId rollback");
                 _conn.rollback();
             }
             if (_conn != null && _conn.isClosed() == false) {
@@ -125,6 +125,7 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
     }
 
     boolean bInitialized = false;
+    boolean hasTxidInDB; //检查数据库中是否有Txid字段
 
     public void init() throws Exception {
         if (!bInitialized) {
@@ -142,11 +143,12 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
                 verInit = false;
             }
             if (!verInit) {
-                System.out.println("atom VersionHistoryLogger init failed");
+                logger.error("atom VersionHistoryLogger init failed");
                 set_state_word(Constants.READONLY_STATE);
                 System.exit(-1);
             }
             verLogger.reloadVersion();
+            hasTxidInDB = DBUtils.hasColumn(ds,"t_ids","txid");
         }
     }
 
@@ -177,14 +179,25 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
                 rs.close();
                 stmt.close();
                 if (c == 0) {
-                    stmt = _conn.prepareStatement("Insert into t_ids(TableName,NextValue,txid,hash)values(?,?,?,?)");
-                    int hash = DefaultHashGenerator.hash(Name);
-                    stmt.setString(1, Name);
-                    stmt.setInt(2, 50000);
-                    stmt.setLong(3, txid);
-                    stmt.setLong(4, hash);
-                    stmt.execute();
-                    stmt.close();
+                    if(hasTxidInDB) {
+                        stmt = _conn.prepareStatement("Insert into t_ids(TableName,NextValue,txid,hash)values(?,?,?,?)");
+                        int hash = DefaultHashGenerator.hash(Name);
+                        stmt.setString(1, Name);
+                        stmt.setInt(2, 50000);
+                        stmt.setLong(3, txid);
+                        stmt.setLong(4, hash);
+                        stmt.execute();
+                        stmt.close();
+                    }
+                    else{
+                        stmt = _conn.prepareStatement("Insert into t_ids(TableName,NextValue,hash)values(?,?,?,?)");
+                        int hash = DefaultHashGenerator.hash(Name);
+                        stmt.setString(1, Name);
+                        stmt.setInt(2, 50000);
+                        stmt.setLong(3, hash);
+                        stmt.execute();
+                        stmt.close();
+                    }
                 }
             } else {
                 rs.close();
@@ -206,12 +219,21 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
                     throw new Exception("logVersionHistory failed");
                 }
             }
-            stmt = _conn.prepareStatement("Update t_ids set NextValue = NextValue + ?, txid=? where TableName=?");
-            stmt.setLong(1, forwardNum);
-            stmt.setLong(2, txid);
-            stmt.setString(3, Name);
-            stmt.execute();
-            stmt.close();
+            if(hasTxidInDB) {
+                stmt = _conn.prepareStatement("Update t_ids set NextValue = NextValue + ?, txid=? where TableName=?");
+                stmt.setLong(1, forwardNum);
+                stmt.setLong(2, txid);
+                stmt.setString(3, Name);
+                stmt.execute();
+                stmt.close();
+            }
+            else{
+                stmt = _conn.prepareStatement("Update t_ids set NextValue = NextValue + ? where TableName=?");
+                stmt.setLong(1, forwardNum);
+                stmt.setString(2, Name);
+                stmt.execute();
+                stmt.close();
+            }
             isOK = true;
             savedbfailedcount = 0;
             return ID;
@@ -230,7 +252,7 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
             if (isOK) {
                 _conn.commit();
             } else {
-                System.out.println("getId rollback");
+                logger.error("getId rollback");
                 _conn.rollback();
             }
             if (_conn != null && _conn.isClosed() == false) {

@@ -61,30 +61,5 @@ public class VersionPosition {
         }
     }
 
-    public long hits(String file, long ver) {
-        try {
-            synchronized (this) {
-                LinkedList<VerPos> listVP = mapFileVerPos.get(file);
-                if (listVP != null) {
-                    VerPos near = null;
-                    for (VerPos vp : listVP) {
-                        if (vp.ver <= ver) {
-                            near = vp;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (near != null) {
-                        System.out.println("VersionPosition hits ... " + file + " : " + ver + " = " + near.pos);
-                        return near.pos;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0L;
-    }
-
 }
 

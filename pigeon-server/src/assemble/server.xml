@@ -9,49 +9,44 @@
     <files>
         <file>
             <source>target/pigeonserver.4.0-SNAPSHOT-jar-with-dependencies.jar</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>lib</outputDirectory>
         </file>
         <file>
             <source>src/configs/pigeonserver_shard0_s1.json</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>configs</outputDirectory>
         </file>
         <file>
             <source>src/configs/pigeonserver_shard0_s2.json</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>configs</outputDirectory>
         </file>
         <file>
             <source>src/configs/pigeonserver_shard1_s1.json</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>configs</outputDirectory>
         </file>
         <file>
             <source>src/configs/pigeonserver_shard1_s2.json</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>configs</outputDirectory>
+        </file>
+        <file>
+            <source>src/configs/pigeonServerIsoneV45_develop.json</source>
+            <outputDirectory>configs</outputDirectory>
         </file>
         <file>
             <source>src/configs/logging.properties</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>configs</outputDirectory>
         </file>
          <file>
             <source>src/managescripts/startup.bat</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>bin</outputDirectory>
         </file>
         <file>
             <source>src/managescripts/startup.sh</source>
-            <outputDirectory></outputDirectory>
-        </file>
-
-         <file>
-            <source>src/configs/pigeonfilesystem.conf</source>
-            <outputDirectory></outputDirectory>
-        </file>
-        <file>
-            <source>src/configs/pigeonclient.conf</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>bin</outputDirectory>
         </file>
 
         <file>
             <source>src/configs/log4j.properties</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>configs</outputDirectory>
         </file>
 
         <file>

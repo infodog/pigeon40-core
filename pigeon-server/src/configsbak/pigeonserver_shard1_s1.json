@@ -84,7 +84,7 @@
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
-            "nodeName": "shard0_s1",
+            "nodeName": "shard1_s1",
             "instanceName": "/file1",
             "version": "1",
             "logDir": "shard1_s1/file1_verlog",

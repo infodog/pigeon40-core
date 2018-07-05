@@ -1,7 +1,7 @@
 {
     "zk":"p12.local.com:2181",
     "pigeons": [
-       /* {
+        {
             "host": "localhost",
             "type": "flexobject",
             "shardFullPath":"/pigeon40/pigeonSaas/object_cluster/shard0",
@@ -76,7 +76,7 @@
             "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard0_s2?autoReconnect=true&rewriteBatchedStatements=true",
             "dbUserName": "root",
             "dbPassword": "123456"
-        },*/
+        },
         {
             "host": "localhost",
             "type": "fileserver",
@@ -84,7 +84,7 @@
             "serviceHost":"localhost",
             "servicePort":8877,
             "master": true,
-            "nodeName": "shard0_s1",
+            "nodeName": "shard0_s2",
             "instanceName": "/file1",
             "version": "1",
             "logDir": "shard0_s2/file1_verlog",

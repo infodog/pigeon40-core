@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by IntelliJ IDEA.
  * User: WPF
@@ -45,6 +48,8 @@ public class VersionHistoryLogger {
     private String versionKeyName;
     private long dbVersion = -1L;
     private long lastRotate = 0L;
+
+    static final Logger logger = LoggerFactory.getLogger(VersionHistoryLogger.class);
 
     VersionPosition versionPosition = new VersionPosition(100, 1000);
 
@@ -72,7 +77,7 @@ public class VersionHistoryLogger {
 
     public void setVersion(long version) {
         synchronized (verMutex) {
-            System.out.println("set version to " + version + ", current version=" +Version);
+            logger.debug("set version to " + version + ", current version=" +Version);
             Version = version;
         }
     }
@@ -164,21 +169,6 @@ public class VersionHistoryLogger {
         return null;
     }
 
-    private void listAllVersion() {
-        try {
-            List<String> names = getAllLoggerFile();
-            if (names != null) {
-                for (String name : names) {
-                    long[] minmax = getMinMaxVersion(this.getLoggerDirectory() + "/" + name);
-                    if (minmax != null && minmax.length == 2) {
-                        System.out.println(name + " : [" + minmax[0] + ", " + minmax[1] + "]");
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private synchronized long getLastVersion() {
         try {
@@ -259,7 +249,7 @@ public class VersionHistoryLogger {
             if (isOK) {
                 transactionManager.commit(ts);
             } else {
-                System.out.println("VersionHistoryLogger rollback");
+                logger.error("VersionHistoryLogger rollback");
                 transactionManager.rollback(ts);
                 dbVersion = -1L;
             }
@@ -726,150 +716,6 @@ public class VersionHistoryLogger {
         return false;
     }
 
-    public synchronized VersionHistory[] rangeVersionHistory(long min, long max) throws Exception {
-        if (max < min) {
-            throw new Exception("rangeVersionHistory (max < min) ...... ");
-        }
-        if (min < 1) {
-            min = 1;
-        }
-        if (max > getVersion()) {
-            max = getVersion();
-        }
-        int count = (int) (max - min) + 1;
-        if (count < 1) {
-            throw new Exception("rangeVersionHistory (count < 1) ...... ");
-        }
-        VersionHistory[] vhs = new VersionHistory[count];
-        int index = 0;
-        long cur = min;
-        long ver = min;
-        FileInputStream fis = null;
-        while (true) {
-            try {
-                if (fis != null) {
-                    fis.close();
-                    fis = null;
-                }
-                String filename = getTheLoggerFile(cur);
-                File f = new File(filename);
-                if (!f.exists()) {
-                    //System.out.println("rangeVersionHistory " + filename + " not exists ... cur = " + cur);
-                    return  new VersionHistory[0];
-//                    cur = (cur + RotateNumber) / RotateNumber * RotateNumber;
-//                    if (cur > max) {
-//                        break;
-//                    }
-//                    continue;
-                }
-                fis = new FileInputStream(f);
-                VersionHistory tvh = null;
-                long position = versionPosition.hits(filename, min);
-                if (position > 0) {
-                    fis.skip(position);
-                }
-                while (true) {
-                    VersionHistory vh = getVersionHistoryFromFIS(fis);
-                    if (vh != null) {
-                        tvh = vh;
-                        if (vh.getVersion() < min) {
-                            continue;
-                        }
-                        if (vh.getVersion() >= max) {
-                            long nv = vh.getVersion() + 1;
-                            long np = fis.getChannel().position();
-                            versionPosition.push(filename, nv, np);
-                        }
-                        if (vh.getVersion() > max) {
-                            break;
-                        }
-                        if (index >= vhs.length) {
-                            if (fis != null) {
-                                fis.close();
-                                fis = null;
-                            }
-                            throw new Exception("rangeVersionHistory (index >= vhs.length) ...... ");
-                        }
-                        if (vh.getVersion() >= ver) {
-                            vhs[index++] = vh;
-                            ver = vh.getVersion();
-                        } else {
-                            System.out.println("rangeVersionHistory (vh.getVersion() < ver) ...... " + vh.getVersion());
-                        }
-                    } else {
-                        break;
-                    }
-                }
-                if (tvh != null && tvh.getVersion() >= max) {
-                    break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (cur < max) {
-                cur += RotateNumber;
-                continue;
-            }
-            break;
-        }
-        if (fis != null) {
-            fis.close();
-            fis = null;
-        }
-        return vhs;
-    }
-
-    public synchronized ByteArrayOutputStream rangeVersionHistory(Object obj, long min, long max) throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        VersionHistory[] vhs = rangeVersionHistory(min, max);
-        if (vhs != null) {
-            for (VersionHistory vh : vhs) {
-                if (vh != null) {
-                    CommonTools.writeLong(baos, vh.getVersion());
-                    CommonTools.writeBytes(baos, vh.getData(), 0, vh.getData().length);
-                }
-            }
-        }
-        return baos;
-    }
-
-    public static void main(String[] args) throws Exception {
-        try {
-
-            VersionHistoryLogger vhl = new VersionHistoryLogger();
-
-            vhl.setLoggerDirectory("d:/share/");
-
-            boolean bi = vhl.init();
-
-            boolean br = vhl.rotateVersionHistory("c:/123.bin");
-
-            for (long l = 1L; l <= vhl.getVersion(); l += 1000L) {
-                VersionHistory[] vhs = vhl.rangeVersionHistory(l, l + 999L);
-                if (vhs != null && vhs[0] != null) {
-                    System.out.println(vhs[0].getVersion());
-                }
-            }
-
-            FileOutputStream fos = null;
-
-            String filename = "c:/123.bin";
-
-            fos = new FileOutputStream(new File(filename));
-
-            String s = StringUtils.repeat(".", 1024);
-
-            for (int i = 0; i < 1000; i++) {
-                long ver = vhl.logVersionHistory(s.getBytes(), fos,i);
-                if (ver < 0) {
-                    System.out.println("ver < 0");
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void saveDbVersion(Connection conn) throws SQLException {
         long lastVersion = 0L;

@@ -7,10 +7,7 @@ import net.xinshi.pigeon.idgenerator.IIDGenerator;
 import net.xinshi.pigeon.persistence.IPigeonPersistence;
 import net.xinshi.pigeon.persistence.VersionHistoryLogger;
 import net.xinshi.pigeon.status.Constants;
-import net.xinshi.pigeon.util.CommonTools;
-import net.xinshi.pigeon.util.DefaultHashGenerator;
-import net.xinshi.pigeon.util.SoftHashMap;
-import net.xinshi.pigeon.util.TimeTools;
+import net.xinshi.pigeon.util.*;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -25,8 +22,8 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static net.xinshi.pigeon.status.Constants.getStateString;
 
@@ -38,7 +35,7 @@ import static net.xinshi.pigeon.status.Constants.getStateString;
  * To change this template use File | Settings | File Templates.
  */
 public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersistence {
-    java.util.logging.Logger logger = java.util.logging.Logger.getLogger("CommonFlexObjectFactory");
+    Logger logger = LoggerFactory.getLogger(CommonFlexObjectFactory.class);
     Map cache = null;
     String logSaveDir;
     IIDGenerator idgenerator;
@@ -272,31 +269,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         cache.put(entry.getName(), entry);
     }
 
-    synchronized void writeLogAndCacheRaw(long version, FlexObjectEntry entry) throws Exception {
-        if (!Constants.canWriteLog(state_word)) {
-            throw new Exception("pigeon is READONLY ...... ");
-        }
-        long delta = verLogger.getVersionDistance(version);
-        if (delta < 1) {
-            System.out.println("writeLogAndCacheRaw delta = " + delta + ", version = " + version);
-            return;
-        } else if (delta > 1) {
-            throw new Exception("critic! writeLogAndCacheRaw delta = " + delta + ", version = " + version);
-        }
-        ensureLogfileOpen();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(5120);
-        CommonTools.writeEntry(baos, entry);
-        byte[] data = baos.toByteArray();
-        long ver = verLogger.logVersionAndData(version, data, logfos);
-        if (ver < 1) {
-            throw new Exception("VersionHistoryLogger version < 1 ...... ");
-        }
-        logfos.flush();
-        if (entry != FlexObjectEntry.empty) {
-            saveToCache(entry);
-            putToDirtyCache(entry.getName(), entry);
-        }
-    }
+
 
     @Override
     public long getVersion() {
@@ -309,43 +282,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         //do nothing intentionally, do not sync in core
     }
 
-    synchronized void writeLogAndCache(long version, FlexObjectEntry entry) throws Exception {
-        if (!Constants.canWriteLog(state_word)) {
-            throw new Exception("pigeon is READONLY ...... ");
-        }
-        long delta = verLogger.getVersionDistance(version);
-        if (delta < 1) {
-            System.out.println("writeLogAndCache delta = " + delta + ", version = " + version);
-            return;
-        }
-        ensureLogfileOpen();
-//        entry.setTxid(txid++);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(5120);
-        CommonTools.writeEntry(baos, entry);
-        byte[] data = baos.toByteArray();
-        if (delta > 1) {
-            long min = version - delta + 1;
-            long max = version - 1;
-            syncVersion(min, max);
-        }
-        delta = verLogger.getVersionDistance(version);
-        if (delta < 1) {
-            System.out.println("after syncVersion delta = " + delta);
-            return;
-        }
-        if (delta > 1) {
-            throw new Exception("critic! after syncVersion delta = " + delta + ", version = " + version);
-        }
-        long ver = verLogger.logVersionAndData(version, data, logfos);
-        if (ver < 1) {
-            throw new Exception("VersionHistoryLogger version < 1 ...... ");
-        }
-        logfos.flush();
-        if (entry != FlexObjectEntry.empty) {
-            saveToCache(entry);
-            putToDirtyCache(entry.getName(), entry);
-        }
-    }
+
 
     void writeLogAndCache(FlexObjectEntry entry) throws Exception {
         long ver = 0L;
@@ -652,7 +589,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
             e.printStackTrace();
         }
         if (!isOK) {
-            logger.warning("rotateVersionHistory failed enter READONLY ... ");
+            logger.warn("rotateVersionHistory failed enter READONLY ... ");
             set_state_word(Constants.READONLY_STATE);
         }
     }
@@ -701,7 +638,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
 //            PreparedStatement updateStmt = conn.prepareStatement(merge_insert_sql);
             PreparedStatement deleteStmt = conn.prepareStatement(deleteSQL);
             for (FlexObjectEntry en : entries) {
-                logger.fine(en.getName());
+                logger.debug(en.getName());
                 if (en.getBytesContent().length < 1) {
                     deleteEntries.add(en);
                 } else {
@@ -726,8 +663,8 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
                 deleteOldLog();
             } else {
                 txManager.rollback(ts);
-                System.out.println(" CommonFlexObjectFactory rollback.");
-                logger.severe("FlexObject:System error,can not insert into mysql......");
+//                System.out.println(" CommonFlexObjectFactory rollback.");
+                logger.error("FlexObject:System error,can not insert into mysql......");
             }
             if (conn != null && conn.isClosed() == false) {
                 conn.close();
@@ -744,9 +681,9 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         long begin = System.currentTimeMillis();
         if (!saveEntries(olddirtycache.values())) {
             ++savedbfailedcount;
-            logger.warning("saveEntries failed, for " + savedbfailedcount + "times");
+            logger.warn("saveEntries failed, for " + savedbfailedcount + "times");
             if (savedbfailedcount > 1800) {
-                logger.warning("saveEntries failed, for savedbfailedcount > 1800 enter READONLY");
+                logger.warn("saveEntries failed, for savedbfailedcount > 1800 enter READONLY");
                 //System.out.println("putOldDirtyBandToDB savedbfailedcount > 1800 enter READONLY");
                 set_state_word(Constants.READONLY_STATE);
             }
@@ -838,7 +775,8 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         List<FlexObjectEntry> existedEntries = new Vector<FlexObjectEntry>();
         List<FlexObjectEntry> newEntries = new Vector<FlexObjectEntry>();
         if (!splitEntries(updateEntries, conn, existedEntries, newEntries)) {
-            System.out.println("doUpdateToDB.splitEntries() == false");
+//            System.out.println("doUpdateToDB.splitEntries() == false");
+            logger.error("doUpdateToDB.splitEntries() == false");
             return false;
         }
 
@@ -846,11 +784,11 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
 
         try{
             if (!realUpdateToDB(existedEntries, conn, updateStmt)) {
-                System.out.println("doUpdateToDB.realUpdateToDB() == false");
+               logger.error("doUpdateToDB.realUpdateToDB() == false");
                 return false;
             }
             if (!doAddToDB(newEntries, conn, null)) {
-                System.out.println("doUpdateToDB.doAddToDB() == false");
+                logger.error("doUpdateToDB.doAddToDB() == false");
                 return false;
             }
             return true;
@@ -868,18 +806,29 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
             for (FlexObjectEntry entry : updateEntries) {
                 int hash = DefaultHashGenerator.hash(entry.getName());
                 entry.setHash(hash);
-                updateStmt.setBytes(1, entry.getBytesContent());
-                updateStmt.setBoolean(2, entry.isCompressed());
-                updateStmt.setBoolean(3, entry.isString());
-                updateStmt.setLong(4, entry.getHash());
-                updateStmt.setLong(5, entry.getTxid());
-                updateStmt.setBytes(6, entry.getName().getBytes("utf-8"));
+                if(hasTxidInDB) {
+                    updateStmt.setBytes(1, entry.getBytesContent());
+                    updateStmt.setBoolean(2, entry.isCompressed());
+                    updateStmt.setBoolean(3, entry.isString());
+                    updateStmt.setLong(4, entry.getHash());
+                    updateStmt.setLong(5, entry.getTxid());
+                    updateStmt.setBytes(6, entry.getName().getBytes("utf-8"));
+                }
+                else{
+                    updateStmt.setBytes(1, entry.getBytesContent());
+                    updateStmt.setBoolean(2, entry.isCompressed());
+                    updateStmt.setBoolean(3, entry.isString());
+                    updateStmt.setLong(4, entry.getHash());
+                    updateStmt.setBytes(5, entry.getName().getBytes("utf-8"));
+                }
                 updateStmt.addBatch();
                 if (++n % 2000 == 0) {
                     int[] updateCounts = updateStmt.executeBatch();
+                    updateStmt.clearBatch();
                 }
             }
             int[] updateCounts = updateStmt.executeBatch();
+            updateStmt.clearBatch();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -920,7 +869,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
                         stmt.execute(sb.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        logger.log(Level.INFO, "catch (...) 11 ------------------- doAddToDB() failed");
+                        logger.error("doAddToDB() failed",e);
                         return false;
                     }
                     roundEntries.clear();
@@ -934,7 +883,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
                     stmt.execute(sb.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
-                    logger.log(Level.INFO, "catch (...) 22 ------------------- doAddToDB() failed");
+                    logger.info("catch (...) 22 ------------------- doAddToDB() failed");
                     return false;
                 }
             }
@@ -969,7 +918,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    logger.log(Level.WARNING, "!!!!!!!!! replay file failed : " + filename);
+                    logger.error( "!!!!!!!!! replay file failed : " + filename,e);
                     set_state_word(Constants.READONLY_STATE);
                     System.exit(-1);
                 }
@@ -985,7 +934,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
             if (saveEntries(mapEntries.values())) {
                 deleteOldLog();
             } else {
-                logger.log(Level.WARNING, "!!!!!!!!! replay file failed : " + filename);
+                logger.error("!!!!!!!!! replay file failed : " + filename);
                 set_state_word(Constants.READONLY_STATE);
                 System.exit(-1);
             }
@@ -999,7 +948,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
 
 
     class Flusher implements Runnable {
-        Logger logger = Logger.getLogger(Flusher.class.getName());
+        Logger logger = LoggerFactory.getLogger(Flusher.class);
         public void run() {
             flusherStopped = false;
             Thread.currentThread().setName("CommonFlexObjectFactory_Flusher_run");
@@ -1058,7 +1007,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
             flusherStopped = true;
         }
     }
-
+    boolean hasTxidInDB; //检查数据库中是否有Txid字段
     public void init() throws Exception {
         if (bInitialized) {
             return;
@@ -1079,9 +1028,16 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
             verInit = false;
         }
         if (!verInit) {
-            logger.warning("VersionHistoryLogger init failed");
+            logger.error("VersionHistoryLogger init failed");
             set_state_word(Constants.READONLY_STATE);
             System.exit(-1);
+        }
+        hasTxidInDB = DBUtils.hasColumn(ds,"t_flexobject","txid");
+        if(hasTxidInDB){
+            update_sql = "update T_FLEXOBJECT set CONTENT=?, ISCOMPRESSED=?,ISSTRING=?,HASH=?,txid=? where NAME=?";
+        }
+        else{
+            update_sql = "update T_FLEXOBJECT set CONTENT=?, ISCOMPRESSED=?,ISSTRING=?,HASH=? where NAME=?";
         }
         this.replay();
         new Thread(new Flusher()).start();

@@ -16,9 +16,7 @@ import java.util.Vector;
  */
 
 public class SortBandStringSerializer implements IBandSerializer {
-
     final static String BAND_SEPERATOR = "\n";
-
     public Object serialize(Collection<Band> bands) throws Exception {
         if (bands == null) {
             return null;

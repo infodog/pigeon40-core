@@ -10,8 +10,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +27,7 @@ public class SortBandList implements ISortList {
     String listId;
     long size;
     Band headBand;
-    Logger logger = Logger.getLogger(SortBandList.class.getName());
+    Logger logger = LoggerFactory.getLogger(SortBandList.class);
 
     public final static String OP_ADD = "ADD";
     public final static String OP_DELETE = "DEL";
@@ -217,7 +217,7 @@ public class SortBandList implements ISortList {
             int index = Collections.binarySearch(hband.getObjList(), sortObj, ascComparator);
             if (index >= 0) {
                 size--;
-                logger.log(Level.FINE, "add :key=" + sortObj.getKey() + ",objid=" + sortObj.getObjid() + ",listId=" + listId + " already existss");
+                logger.info("add :key=" + sortObj.getKey() + ",objid=" + sortObj.getObjid() + ",listId=" + listId + " already existss");
                 return false;
             } else {
                 int insertPoint = -(index + 1);
@@ -233,7 +233,7 @@ public class SortBandList implements ISortList {
             int dataIndex;
             if (pos.metaBandIndex >= 0 && pos.bandInfoIndex >= 0 && pos.dataIndex >= 0) {
                 size--;
-                logger.log(Level.FINE, "add :key=" + sortObj.getKey() + ",objid=" + sortObj.getObjid() + ",listId=" + listId + " already existss");
+                logger.info("add :key=" + sortObj.getKey() + ",objid=" + sortObj.getObjid() + ",listId=" + listId + " already existss");
                 return false;
             }
             if (pos.metaBandIndex < 0) {
@@ -370,7 +370,8 @@ public class SortBandList implements ISortList {
         for (SortListObject sortObj : listSortObj) {
             if (!add(sortObj)) {
                 // throw new Exception("batchAdd error, key = " + sortObj.getKey() + ", obj = " + sortObj.getObjid());
-                System.out.println("batchAdd [ok dup], key = " + sortObj.getKey() + ", obj = " + sortObj.getObjid());
+//                System.out.println("batchAdd [ok dup], key = " + sortObj.getKey() + ", obj = " + sortObj.getObjid());
+                logger.info("batchAdd [already existed], key = " + sortObj.getKey() + ", obj = " + sortObj.getObjid());
             }
         }
         return true;
@@ -796,9 +797,10 @@ public class SortBandList implements ISortList {
     static MetaBandSearchComparator metaBandSearchComparator = new MetaBandSearchComparator();
 
     private static class MetaBandSearchComparator implements Comparator<Band> {
+        static final Logger logger = LoggerFactory.getLogger(MetaBandSearchComparator.class);
         public int compare(Band o1, Band o2) {
             if (o1 == null || o2 == null) {
-                System.out.println("null pointer exception");
+                logger.warn("null pointer exception");
             }
             if (o1.getMaxKey() == null || o1.getMinKey() == null) {
                 updateMetaBandRange(o1);

@@ -3,7 +3,8 @@ package net.xinshi.pigeon.util;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Created by IntelliJ IDEA.
  * User: WPF
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class SoftHashMap extends ConcurrentHashMap {
+    static final Logger logger = LoggerFactory.getLogger(SoftHashMap.class);
 
     private class SoftReferenceContainKey extends SoftReference {
         Object _key;
@@ -38,7 +40,10 @@ public class SoftHashMap extends ConcurrentHashMap {
                             SoftReferenceContainKey srck = (SoftReferenceContainKey) o;
                             get(srck._key);
                             if (++n % 10000 == 0) {
-                                System.out.println(TimeTools.getNowTimeString() + " SoftHashMap release key = " + n);
+//                                System.out.println(TimeTools.getNowTimeString() + " SoftHashMap release key = " + n);
+                                if(logger.isDebugEnabled()){
+                                    logger.debug(TimeTools.getNowTimeString() + " SoftHashMap release key = " + n);
+                                }
                             }
                             if (n < 0) {
                                 n = 0;

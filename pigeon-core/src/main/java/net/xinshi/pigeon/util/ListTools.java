@@ -19,6 +19,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import java.io.*;
 import java.util.List;
 import java.util.Vector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,6 +34,7 @@ public class ListTools {
     ListBandDao dao;
     IBandSerializer bandSerializer;
     PlatformTransactionManager txManager;
+    static final Logger logger = LoggerFactory.getLogger(ListTools.class);
 
     IListFactory listFactory;
 
@@ -131,13 +134,12 @@ public class ListTools {
         List<SortListObject> sobjs = b.getObjList();
 
         if (sobjs.size() < 1) {
-            System.out.println("band.id=" + b.getId() + "; is empty");
+            logger.warn("band.id=" + b.getId() + "; is empty");
             if (isTreatBlankBandAsError()) {
                 return false;
             }
             return true;
         }
-        SortListObject sobj = sobjs.get(0);
         SortListObject cur = sobjs.get(0);
         for (int i = 1; i < sobjs.size(); i++) {
             SortListObject next = sobjs.get(i);
@@ -221,7 +223,7 @@ public class ListTools {
         int size = listNames.size();
         for (String listName : listNames) {
             try {
-                System.out.println("checking " + listName + "," + size-- + " remained");
+                logger.warn("checking " + listName + "," + size-- + " remained");
                 if (!checkList(listName)) {
                     errlst.add(listName);
                 }
@@ -298,7 +300,7 @@ public class ListTools {
         for (String listName : errorlist) {
             repairList(listName, os);
             n--;
-            System.out.println("repairing list '" + listName + "', remaining=" + n);
+            logger.info("repairing list '" + listName + "', remaining=" + n);
         }
         os.close();
     }

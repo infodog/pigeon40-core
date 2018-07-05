@@ -1,7 +1,7 @@
 {
     "zk":"p12.local.com:2181",
     "pigeons": [
-        /*{
+        {
             "host": "localhost",
             "type": "flexobject",
             "shardFullPath":"/pigeon40/pigeonSaas/object_cluster/shard1",
@@ -76,7 +76,7 @@
             "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard1_s2?autoReconnect=true&rewriteBatchedStatements=true",
             "dbUserName": "root",
             "dbPassword": "123456"
-        },*/
+        },
         {
             "host": "localhost",
             "type": "fileserver",

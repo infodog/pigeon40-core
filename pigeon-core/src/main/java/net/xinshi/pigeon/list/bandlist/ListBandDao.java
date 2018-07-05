@@ -1,16 +1,20 @@
 package net.xinshi.pigeon.list.bandlist;
 
 import net.xinshi.pigeon.list.bandlist.bean.Band;
+import net.xinshi.pigeon.util.DBUtils;
 import net.xinshi.pigeon.util.DefaultHashGenerator;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.lang.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Created by IntelliJ IDEA.
  * User: zxy
@@ -22,6 +26,8 @@ import java.util.Vector;
 public class ListBandDao implements IListBandDao {
     String tableName;
     DataSource ds;
+    boolean hasTxidInDB; //检查数据库中是否有Txid字段
+    static final Logger logger = LoggerFactory.getLogger(ListBandDao.class);
 
     public String getTableName() {
         return tableName;
@@ -29,6 +35,13 @@ public class ListBandDao implements IListBandDao {
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
+        try {
+            if(ds!=null) {
+                hasTxidInDB = DBUtils.hasColumn(ds, tableName, "txid");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public DataSource getDs() {
@@ -37,6 +50,13 @@ public class ListBandDao implements IListBandDao {
 
     public void setDs(DataSource ds) {
         this.ds = ds;
+        try {
+            if(StringUtils.isNotBlank(tableName)) {
+                hasTxidInDB = DBUtils.hasColumn(ds, tableName, "txid");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private Band getBandFromRS(ResultSet rs) throws Exception {
@@ -48,7 +68,9 @@ public class ListBandDao implements IListBandDao {
         b.setPrevMetaBandId(rs.getLong("prevMetaBandId"));
         b.setNextMetaBandId(rs.getLong("nextMetaBandId"));
         b.setValue(rs.getString("value"));
-        b.setTxid(rs.getLong("txid"));
+        if(hasTxidInDB) {
+            b.setTxid(rs.getLong("txid"));
+        }
         return b;
     }
 
@@ -70,7 +92,8 @@ public class ListBandDao implements IListBandDao {
             pstmt.close();
 
             long end = System.currentTimeMillis();
-            System.out.println(sql + ", took time:" + (end -begin) + "ms, listName=" + listName) ;
+//            System.out.println(sql + ", took time:" + (end -begin) + "ms, listName=" + listName) ;
+
             return ret;
         } finally {
             if (conn != null && !conn.isClosed()) {
@@ -96,7 +119,7 @@ public class ListBandDao implements IListBandDao {
             rs.close();
             pstmt.close();
             long end = System.currentTimeMillis();
-            System.out.println(sql + ", took time:" + (end - begin) + "ms, bandid=" + bandid);
+//            System.out.println(sql + ", took time:" + (end - begin) + "ms, bandid=" + bandid);
             return ret;
         } finally {
             if (conn != null && !conn.isClosed()) {
@@ -106,7 +129,14 @@ public class ListBandDao implements IListBandDao {
     }
 
     public void insertBand(Band band) throws Exception {
-        String sql = String.format("insert into  %s (id,isHead,isMeta,listName,nextMetaBandId,prevMetaBandId,value,txid,hash)values(?,?,?,?,?,?,?,?,?)", tableName);
+        String sql = null;
+        if(hasTxidInDB){
+            sql = String.format("insert into  %s (id,isHead,isMeta,listName,nextMetaBandId,prevMetaBandId,value,txid,hash)values(?,?,?,?,?,?,?,?,?)", tableName);
+        }
+        else{
+            sql = String.format("insert into  %s (id,isHead,isMeta,listName,nextMetaBandId,prevMetaBandId,value,hash)values(?,?,?,?,?,?,?,?)", tableName);
+        }
+
         Connection conn = null;
         try {
             conn = ds.getConnection();
@@ -114,17 +144,31 @@ public class ListBandDao implements IListBandDao {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             int idx = 1;
             int hash = DefaultHashGenerator.hash(band.getListName());
-            pstmt.setLong(idx++, band.getId());
-            pstmt.setInt(idx++, band.getHead());
-            pstmt.setInt(idx++, band.getMeta());
-            pstmt.setString(idx++, band.getListName());
-            pstmt.setLong(idx++, band.getNextMetaBandId());
-            pstmt.setLong(idx++, band.getPrevMetaBandId());
-            pstmt.setString(idx++, band.getDirtyValue());
-            pstmt.setLong(idx++, band.getTxid());
-            pstmt.setLong(idx++, hash);
-            pstmt.execute();
-            pstmt.close();
+            if(hasTxidInDB) {
+                pstmt.setLong(idx++, band.getId());
+                pstmt.setInt(idx++, band.getHead());
+                pstmt.setInt(idx++, band.getMeta());
+                pstmt.setString(idx++, band.getListName());
+                pstmt.setLong(idx++, band.getNextMetaBandId());
+                pstmt.setLong(idx++, band.getPrevMetaBandId());
+                pstmt.setString(idx++, band.getDirtyValue());
+                pstmt.setLong(idx++, band.getTxid());
+                pstmt.setLong(idx++, hash);
+                pstmt.execute();
+                pstmt.close();
+            }
+            else{
+                pstmt.setLong(idx++, band.getId());
+                pstmt.setInt(idx++, band.getHead());
+                pstmt.setInt(idx++, band.getMeta());
+                pstmt.setString(idx++, band.getListName());
+                pstmt.setLong(idx++, band.getNextMetaBandId());
+                pstmt.setLong(idx++, band.getPrevMetaBandId());
+                pstmt.setString(idx++, band.getDirtyValue());
+                pstmt.setLong(idx++, hash);
+                pstmt.execute();
+                pstmt.close();
+            }
         } finally {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
@@ -133,24 +177,44 @@ public class ListBandDao implements IListBandDao {
     }
 
     public void updateBand(Band band) throws Exception {
-        String sql = String.format("update %s set isHead=?,isMeta=?,listName=?,nextMetaBandId=?,prevMetaBandId=?,value=?,txid=? ,hash=? where id=?", tableName);
+        String sql = null;
+        if(hasTxidInDB) {
+            sql = String.format("update %s set isHead=?,isMeta=?,listName=?,nextMetaBandId=?,prevMetaBandId=?,value=?,txid=? ,hash=? where id=?", tableName);
+        }
+        else{
+            sql = String.format("update %s set isHead=?,isMeta=?,listName=?,nextMetaBandId=?,prevMetaBandId=?,value=?,hash=? where id=?", tableName);
+        }
         Connection conn = null;
         try {
             conn = ds.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
             int idx = 1;
             int hash = DefaultHashGenerator.hash(band.getListName());
-            pstmt.setInt(idx++, band.getHead());
-            pstmt.setInt(idx++, band.getMeta());
-            pstmt.setString(idx++, band.getListName());
-            pstmt.setLong(idx++, band.getNextMetaBandId());
-            pstmt.setLong(idx++, band.getPrevMetaBandId());
-            pstmt.setString(idx++, band.getDirtyValue());
-            pstmt.setLong(idx++, band.getTxid());
-            pstmt.setLong(idx++, hash);
-            pstmt.setLong(idx++, band.getId());
-            pstmt.execute();
-            pstmt.close();
+            if(hasTxidInDB) {
+                pstmt.setInt(idx++, band.getHead());
+                pstmt.setInt(idx++, band.getMeta());
+                pstmt.setString(idx++, band.getListName());
+                pstmt.setLong(idx++, band.getNextMetaBandId());
+                pstmt.setLong(idx++, band.getPrevMetaBandId());
+                pstmt.setString(idx++, band.getDirtyValue());
+                pstmt.setLong(idx++, band.getTxid());
+                pstmt.setLong(idx++, hash);
+                pstmt.setLong(idx++, band.getId());
+                pstmt.execute();
+                pstmt.close();
+            }
+            else{
+                pstmt.setInt(idx++, band.getHead());
+                pstmt.setInt(idx++, band.getMeta());
+                pstmt.setString(idx++, band.getListName());
+                pstmt.setLong(idx++, band.getNextMetaBandId());
+                pstmt.setLong(idx++, band.getPrevMetaBandId());
+                pstmt.setString(idx++, band.getDirtyValue());
+                pstmt.setLong(idx++, hash);
+                pstmt.setLong(idx++, band.getId());
+                pstmt.execute();
+                pstmt.close();
+            }
         } finally {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
