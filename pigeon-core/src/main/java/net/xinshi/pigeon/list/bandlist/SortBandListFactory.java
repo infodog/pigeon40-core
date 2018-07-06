@@ -73,7 +73,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
     Map listCache = null;
     int maxObjectsPerBand = 500;
     int maxBandInfosPerBand = 500;
-    Object globalLocker = new Object();
+    final Object globalLocker = new Object();
     CriticalSection listMutex = new CriticalSection(1000);
     boolean migration = false;
     static final Logger logger = LoggerFactory.getLogger(SortBandListFactory.class);
