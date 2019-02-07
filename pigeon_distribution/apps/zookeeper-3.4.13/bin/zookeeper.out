@@ -1,0 +1,33 @@
+2019-02-06 10:57:52,920 [myid:] - INFO  [main:QuorumPeerConfig@136] - Reading configuration from: /Users/zhengxiangyang/work/owl-with-pigon50/bin/../configs/zoo.cfg
+2019-02-06 10:57:52,925 [myid:] - INFO  [main:DatadirCleanupManager@78] - autopurge.snapRetainCount set to 3
+2019-02-06 10:57:52,925 [myid:] - INFO  [main:DatadirCleanupManager@79] - autopurge.purgeInterval set to 0
+2019-02-06 10:57:52,925 [myid:] - INFO  [main:DatadirCleanupManager@101] - Purge task is not scheduled.
+2019-02-06 10:57:52,925 [myid:] - WARN  [main:QuorumPeerMain@116] - Either no config or no quorum defined in config, running  in standalone mode
+2019-02-06 10:57:52,936 [myid:] - INFO  [main:QuorumPeerConfig@136] - Reading configuration from: /Users/zhengxiangyang/work/owl-with-pigon50/bin/../configs/zoo.cfg
+2019-02-06 10:57:52,936 [myid:] - INFO  [main:ZooKeeperServerMain@98] - Starting server
+2019-02-06 10:57:52,975 [myid:] - INFO  [main:Environment@100] - Server environment:zookeeper.version=3.4.13-2d71af4dbe22557fda74f9a9b4309b15a7487f03, built on 06/29/2018 04:05 GMT
+2019-02-06 10:57:52,976 [myid:] - INFO  [main:Environment@100] - Server environment:host.name=192.168.1.100
+2019-02-06 10:57:52,976 [myid:] - INFO  [main:Environment@100] - Server environment:java.version=1.8.0_202
+2019-02-06 10:57:52,976 [myid:] - INFO  [main:Environment@100] - Server environment:java.vendor=Oracle Corporation
+2019-02-06 10:57:52,976 [myid:] - INFO  [main:Environment@100] - Server environment:java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_202.jdk/Contents/Home/jre
+2019-02-06 10:57:52,976 [myid:] - INFO  [main:Environment@100] - Server environment:java.class.path=/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../build/classes:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../build/lib/*.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../lib/slf4j-log4j12-1.7.25.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../lib/slf4j-api-1.7.25.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../lib/netty-3.10.6.Final.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../lib/log4j-1.2.17.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../lib/jline-0.9.94.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../lib/audience-annotations-0.5.0.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../zookeeper-3.4.13.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../src/java/lib/*.jar:/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin/../conf:
+2019-02-06 10:57:52,976 [myid:] - INFO  [main:Environment@100] - Server environment:java.library.path=/Users/zhengxiangyang/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
+2019-02-06 10:57:52,977 [myid:] - INFO  [main:Environment@100] - Server environment:java.io.tmpdir=/var/folders/l9/w9yd3cbx19q712_xmnmr0yjc0000gn/T/
+2019-02-06 10:57:52,977 [myid:] - INFO  [main:Environment@100] - Server environment:java.compiler=<NA>
+2019-02-06 10:57:52,978 [myid:] - INFO  [main:Environment@100] - Server environment:os.name=Mac OS X
+2019-02-06 10:57:52,978 [myid:] - INFO  [main:Environment@100] - Server environment:os.arch=x86_64
+2019-02-06 10:57:52,978 [myid:] - INFO  [main:Environment@100] - Server environment:os.version=10.14.2
+2019-02-06 10:57:52,978 [myid:] - INFO  [main:Environment@100] - Server environment:user.name=zhengxiangyang
+2019-02-06 10:57:52,978 [myid:] - INFO  [main:Environment@100] - Server environment:user.home=/Users/zhengxiangyang
+2019-02-06 10:57:52,979 [myid:] - INFO  [main:Environment@100] - Server environment:user.dir=/Users/zhengxiangyang/work/owl-with-pigon50/apps/zookeeper-3.4.13/bin
+2019-02-06 10:57:52,987 [myid:] - INFO  [main:ZooKeeperServer@836] - tickTime set to 2000
+2019-02-06 10:57:52,987 [myid:] - INFO  [main:ZooKeeperServer@845] - minSessionTimeout set to -1
+2019-02-06 10:57:52,987 [myid:] - INFO  [main:ZooKeeperServer@854] - maxSessionTimeout set to -1
+2019-02-06 10:57:53,001 [myid:] - INFO  [main:ServerCnxnFactory@117] - Using org.apache.zookeeper.server.NIOServerCnxnFactory as server connection factory
+2019-02-06 10:57:53,016 [myid:] - INFO  [main:NIOServerCnxnFactory@89] - binding to port 0.0.0.0/0.0.0.0:2181
+2019-02-06 10:58:30,497 [myid:] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:NIOServerCnxnFactory@215] - Accepted socket connection from /0:0:0:0:0:0:0:1:50902
+2019-02-06 10:58:30,503 [myid:] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:ZooKeeperServer@949] - Client attempting to establish new session at /0:0:0:0:0:0:0:1:50902
+2019-02-06 10:58:30,504 [myid:] - INFO  [SyncThread:0:FileTxnLog@213] - Creating new log file: log.2c3
+2019-02-06 10:58:30,509 [myid:] - INFO  [SyncThread:0:ZooKeeperServer@694] - Established session 0x100004d09ec0000 with negotiated timeout 5000 for client /0:0:0:0:0:0:0:1:50902
+2019-02-06 11:04:14,850 [myid:] - INFO  [ProcessThread(sid:0 cport:2181)::PrepRequestProcessor@487] - Processed session termination for sessionid: 0x100004d09ec0000
+2019-02-06 11:04:14,852 [myid:] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:NIOServerCnxn@1056] - Closed socket connection for client /0:0:0:0:0:0:0:1:50902 which had sessionid 0x100004d09ec0000
