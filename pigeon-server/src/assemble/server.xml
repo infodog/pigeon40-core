@@ -53,6 +53,12 @@
             <source>src/configs/dummy.log</source>
             <outputDirectory>logs</outputDirectory>
         </file>
-
     </files>
+
+    <fileSets>
+        <fileSet>
+            <directory>src/sql</directory>
+            <outputDirectory>sql</outputDirectory>
+        </fileSet>
+    </fileSets>
 </assembly>

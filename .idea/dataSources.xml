@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="@localhost" uuid="c8b2e964-acd7-49d7-9f19-6484283842ef">
+    <data-source source="LOCAL" name="@localhost" uuid="09c6faa7-13f7-4ac0-9b30-e89f2a6b740a">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
-      <driver-properties>
-        <property name="autoReconnect" value="true" />
-        <property name="zeroDateTimeBehavior" value="convertToNull" />
-        <property name="tinyInt1isBit" value="false" />
-        <property name="characterEncoding" value="utf8" />
-        <property name="characterSetResults" value="utf8" />
-        <property name="yearIsDateType" value="false" />
-      </driver-properties>
-    </data-source>
-    <data-source source="LOCAL" name="platform@localhost" uuid="46dc5498-8a1b-45bc-a065-0aae77a2b86f">
-      <driver-ref>mysql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/platform</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
         <property name="zeroDateTimeBehavior" value="convertToNull" />

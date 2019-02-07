@@ -4,7 +4,7 @@
         {
             "host": "localhost",
             "type": "flexobject",
-            "shardFullPath":"/pigeon40/pigeonSaas/object_cluster/shard1",
+            "shardFullPath":"/pigeon40/platform/object_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -21,7 +21,7 @@
         {
             "host": "localhost",
             "type": "list",
-            "shardFullPath":"/pigeon40/pigeonSaas/list_cluster/shard1",
+            "shardFullPath":"/pigeon40/platform/list_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -37,7 +37,7 @@
         {
             "host": "localhost",
             "type": "atom",
-            "shardFullPath":"/pigeon40/pigeonSaas/atom_cluster/shard1",
+            "shardFullPath":"/pigeon40/platform/atom_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -53,7 +53,7 @@
         {
             "host": "localhost",
             "type": "lock",
-            "shardFullPath":"/pigeon40/pigeonSaas/locks_cluster/shard1",
+            "shardFullPath":"/pigeon40/platform/locks_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -64,7 +64,7 @@
         {
             "host": "localhost",
             "type": "idserver",
-            "shardFullPath":"/pigeon40/pigeonSaas/id_cluster/shard1",
+            "shardFullPath":"/pigeon40/platform/id_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -80,7 +80,7 @@
         {
             "host": "localhost",
             "type": "fileserver",
-            "shardFullPath":"/pigeon40/pigeonSaas/file_cluster/shard1",
+            "shardFullPath":"/pigeon40/platform/file_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,

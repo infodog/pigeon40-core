@@ -110,7 +110,7 @@ public class Main {
         JSONObject locks_cluster = jpod.optJSONObject("locks_cluster");
         JSONObject file_cluster = jpod.optJSONObject("file_cluster");
 
-        String namespaceUri = jpod.getString("namespace");
+//        String namespaceUri = jpod.getString("namespace");
 
         createCluster(zk, podPath, object_cluster, "object_cluster");
         createCluster(zk, podPath, list_cluster, "list_cluster");
@@ -125,7 +125,6 @@ public class Main {
         //kafka topic
         NewTopic topic = new NewTopic(logName,1, (short) 1);
         kafkaAdminClient.createTopics(Arrays.<NewTopic>asList(topic));
-
     }
 
     private static void createCluster(ZooKeeper zk,String parentPath, JSONObject cluster,String type) throws JSONException, IOException, KeeperException, InterruptedException {
