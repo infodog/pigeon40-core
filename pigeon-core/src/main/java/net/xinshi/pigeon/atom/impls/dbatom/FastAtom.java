@@ -69,11 +69,11 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
         Map<String, String> mapStatus = new HashMap<String, String>();
         mapStatus.put("state_word", getStateString(state_word));
         mapStatus.put("version", String.valueOf(verLogger.getVersion()));
-        if (verLogger.getLastRotate() > 0) {
-            mapStatus.put("last_rotate", (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(verLogger.getLastRotate()));
-        } else {
-            mapStatus.put("last_rotate", "");
-        }
+//        if (verLogger.getLastRotate() > 0) {
+//            mapStatus.put("last_rotate", (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(verLogger.getLastRotate()));
+//        } else {
+//            mapStatus.put("last_rotate", "");
+//        }
         mapStatus.put("save_db_failed_count", String.valueOf(savedbfailedcount));
         mapStatus.put("cache_string", getCacheString());
         return mapStatus;
@@ -136,9 +136,9 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
         this.txManager = txManager;
     }
 
-    public String getLogDirectory() {
-        return logDirectory;
-    }
+//    public String getLogDirectory() {
+//        return logDirectory;
+//    }
 
     public FastAtom() {
         //flusherWaiter = new Object();
@@ -169,32 +169,32 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
         }
     }
 
-    public void setLogDirectory(String logDirectory) {
-        if (!logDirectory.endsWith("/") && !logDirectory.endsWith("\\")) {
-            logDirectory = logDirectory + "/";
-        }
-        this.logDirectory = logDirectory;
-        File f = new File(logDirectory);
-        f = new File(f.getAbsolutePath());
-        this.logDirectory = f.getAbsolutePath();
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-    }
-
-    private String getOperationLogFileName() {
-        if (!logDirectory.endsWith("/") && (!logDirectory.endsWith("\\"))) {
-            logDirectory += "/";
-        }
-        return logDirectory + tableName + ".log";
-    }
-
-    private String getOldOperationLogFileName() {
-        if (!logDirectory.endsWith("/") && (!logDirectory.endsWith("\\"))) {
-            logDirectory += "/";
-        }
-        return logDirectory + tableName + ".oldlog";
-    }
+//    public void setLogDirectory(String logDirectory) {
+//        if (!logDirectory.endsWith("/") && !logDirectory.endsWith("\\")) {
+//            logDirectory = logDirectory + "/";
+//        }
+//        this.logDirectory = logDirectory;
+//        File f = new File(logDirectory);
+//        f = new File(f.getAbsolutePath());
+//        this.logDirectory = f.getAbsolutePath();
+//        if (!f.exists()) {
+//            f.mkdirs();
+//        }
+//    }
+//
+//    private String getOperationLogFileName() {
+//        if (!logDirectory.endsWith("/") && (!logDirectory.endsWith("\\"))) {
+//            logDirectory += "/";
+//        }
+//        return logDirectory + tableName + ".log";
+//    }
+//
+//    private String getOldOperationLogFileName() {
+//        if (!logDirectory.endsWith("/") && (!logDirectory.endsWith("\\"))) {
+//            logDirectory += "/";
+//        }
+//        return logDirectory + tableName + ".oldlog";
+//    }
 
 
 
@@ -209,55 +209,57 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
         // do nothing
     }
 
-    public void writeLogAndDuplicate(String s, long txid) throws Exception {
-        if (!Constants.canWriteLog(state_word)) {
-            throw new Exception("pigeon is READONLY ...... ");
-        }
-        byte[] data = s.getBytes("UTF-8");
-        synchronized (cacheLogger) {
-            long ver = verLogger.logVersionHistory(data, cacheLogger.getLoggerFOS(), txid);
-            if (ver < 1) {
-                throw new Exception("logVersionHistory failed");
-            }
-            cacheLogger.flush();
-        }
-
-    }
+//    public void writeLogAndDuplicate(String s, long txid) throws Exception {
+//        if (!Constants.canWriteLog(state_word)) {
+//            throw new Exception("pigeon is READONLY ...... ");
+//        }
+//        byte[] data = s.getBytes("UTF-8");
+//        synchronized (cacheLogger) {
+//            long ver = verLogger.logVersionHistory(data, cacheLogger.getLoggerFOS(), txid);
+//            if (ver < 1) {
+//                throw new Exception("logVersionHistory failed");
+//            }
+//            cacheLogger.flush();
+//        }
+//
+//    }
 
     private void writeLog(String opname, String atomName, long opValue, long txid) throws Exception {
-        String line = opname + " " + atomName + " " + opValue + " " + txid + "\n";
-        writeLogAndDuplicate(line, txid);
+//        String line = opname + " " + atomName + " " + opValue + " " + txid + "\n";
+//        writeLogAndDuplicate(line, txid);
+        verLogger.setVersion(txid);
     }
 
     private void writeLog(String opname, String atomName, long testValue, long incValue, long txid) throws Exception {
-        String line = opname + " " + atomName + " " + testValue + " " + incValue + " " + txid + "\n";
-        writeLogAndDuplicate(line, txid);
+//        String line = opname + " " + atomName + " " + testValue + " " + incValue + " " + txid + "\n";
+//        writeLogAndDuplicate(line, txid);
+        verLogger.setVersion(txid);
     }
 
 
 
-    private void deleteOldLog() {
-        File f = new File(getOldOperationLogFileName());
-        if (f.exists()) {
-            try {
-                if (!verLogger.rotateVersionHistory(this, f.getAbsolutePath())) {
-                    logger.error("atom rotateVersionHistory failed enter READONLY");
-                    set_state_word(Constants.READONLY_STATE);
-                    return;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            f.delete();
-        }
-    }
-
-    private void deleteLog() {
-        File f = new File(getOperationLogFileName());
-        if (f.exists()) {
-            f.delete();
-        }
-    }
+//    private void deleteOldLog() {
+//        File f = new File(getOldOperationLogFileName());
+//        if (f.exists()) {
+//            try {
+//                if (!verLogger.rotateVersionHistory(this, f.getAbsolutePath())) {
+//                    logger.error("atom rotateVersionHistory failed enter READONLY");
+//                    set_state_word(Constants.READONLY_STATE);
+//                    return;
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            f.delete();
+//        }
+//    }
+//
+//    private void deleteLog() {
+//        File f = new File(getOperationLogFileName());
+//        if (f.exists()) {
+//            f.delete();
+//        }
+//    }
 
     private boolean flushSnapShotToDB() throws SQLException {
 
@@ -505,34 +507,7 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
         }
     }
 
-    private void replayOldLog() throws Exception {
-        executeFile(new File(this.getOldOperationLogFileName()));
-        cacheLogger.swapToSaving();
-//        System.out.println("DirtyCache size = " + cacheLogger.getDirtyCacheSize() + ", SavingDirtyCache size = " + cacheLogger.getSavingDirtyCacheSize());
-        logger.debug("DirtyCache size = " + cacheLogger.getDirtyCacheSize() + ", SavingDirtyCache size = " + cacheLogger.getSavingDirtyCacheSize());
-        if (!this.flushSnapShotToDB()) {
-//            System.out.println("atom init flushSnapShotToDB failed");
-            logger.error("atom init flushSnapShotToDB failed");
-            set_state_word(Constants.READONLY_STATE);
-            System.exit(-1);
-        }
-        deleteOldLog();
-    }
 
-    private void replayLog() throws Exception {
-        File fo = new File(this.getOldOperationLogFileName());
-        if (fo.exists()) {
-            throw new Exception("oldlog exists, can't replayLog()");
-        }
-        File fn = new File(this.getOperationLogFileName());
-        if (fn.exists()) {
-            if (fn.renameTo(fo)) {
-                replayOldLog();
-            } else {
-                throw new Exception("rename failed, can't replayLog()");
-            }
-        }
-    }
 
     boolean bInitialized = false;
 
@@ -550,7 +525,7 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                 verLogger.setVersionTableName("t_pigeontransaction");
                 verLogger.setVersionKeyName(versionKeyName);
                 verInit = verLogger.init();
-                cacheLogger = new CacheLogger(maxCacheEntries, getOperationLogFileName(), getOldOperationLogFileName());
+                cacheLogger = new CacheLogger();
 //                cacheLogger.setNotification(flusherWaiter);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -563,24 +538,6 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                 System.exit(-1);
             }
             hasTxidInDB = DBUtils.hasColumn(ds,"t_simpleatom","txid");
-            replayOldLog();
-            while (!cacheLogger.noSavingDirtyCache()) {
-//                System.out.println("wait for flush to db ...... ");
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            replayLog();
-            while (!cacheLogger.noSavingDirtyCache()) {
-//                System.out.println("wait for flush to db ...... ");
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
             beginFlusher();
             verLogger.reloadVersion();
         }
@@ -607,10 +564,9 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
             }
             int rc = -1;
             try {
-                cacheLogger.swapToSavingAndRenameLog();
                 rc = 0;
+                cacheLogger.swapToSaving();
                 if (flushSnapShotToDB()) {
-                    deleteOldLog();
                     savedbfailedcount = 0;
                 } else {
                     savedbfailedcount++;

@@ -1,7 +1,7 @@
 package net.xinshi.pigeon.server.distributedserver;
 
-import org.apache.distributedlog.ZooKeeperClient;
-import org.apache.distributedlog.api.DistributedLogManager;
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.ILogManager;
+import org.apache.zookeeper.ZooKeeper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +17,7 @@ public interface IServer {
 
     public void stop() throws Exception;
 
-    public void joinCluster(ZooKeeperClient ztc, DistributedLogManager dlm) throws Exception;
+    public void joinCluster(ZooKeeper zk, ILogManager logManager) throws Exception;
 
     public String getServerPath();
 }

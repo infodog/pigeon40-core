@@ -5,10 +5,10 @@ import net.xinshi.pigeon.flexobject.FlexObjectEntry;
 import net.xinshi.pigeon.flexobject.IFlexObjectFactory;
 import net.xinshi.pigeon.flexobject.impls.fastsimple.CommonFlexObjectFactory;
 import net.xinshi.pigeon.server.distributedserver.BaseServer;
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.LogRecord;
 import net.xinshi.pigeon.util.CommonTools;
 import net.xinshi.pigeon.util.DefaultHashGenerator;
 import net.xinshi.pigeon.util.IdChecker;
-import org.apache.distributedlog.LogRecord;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -50,7 +50,11 @@ public class FlexObjectServer extends BaseServer {
         long txid = getNextTxid();
         entry.setTxid(txid);
         CommonTools.writeEntry(os,entry);
-        writeLog(txid,os.toByteArray());
+        LogRecord logRecord = new LogRecord();
+        logRecord.setValue(os.toByteArray());
+        logRecord.setKey(entry.getName().getBytes("utf-8"));
+
+//        writeLog(txid,os.toByteArray());
         return txid;
     }
 
@@ -304,7 +308,7 @@ public class FlexObjectServer extends BaseServer {
 
     @Override
     protected void updateLog(LogRecord logRec) {
-        InputStream is = logRec.getPayLoadInputStream();
+        InputStream is = new ByteArrayInputStream(logRec.getValue());
         try {
             FlexObjectEntry entry = CommonTools.readEntry(is);
             flexObjectFactory.saveFlexObject(entry);

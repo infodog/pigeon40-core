@@ -570,26 +570,13 @@ public class VersionHistoryLogger {
     }
 
     public synchronized boolean init() {
-      /*  long lv = getLastVersion();
-        System.out.println("VersionHistoryLogger(\"" + getLoggerDirectory() +
-                "\") init : filecount = " + filecount + ", version : " + Version);
-        if (filecount > 0 && lv == 0) {
-            return false;
-        }
-        listAllVersion();*/
         try {
             getVersionNumberFromDB();
             if (dbVersion < 0) {
                 return false;
             }
             Version = dbVersion;
-            /*System.out.println("dbVersion = " + dbVersion);
-            if (dbVersion > Version) {
-                System.out.println("warning!!! (dbVersion > Version) ......");
-                synchronized (verMutex) {
-                    Version = dbVersion;
-                }
-            }*/
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -623,17 +610,7 @@ public class VersionHistoryLogger {
         }
     }
 
-    /*public long logVersionHistory(byte[] data, FileOutputStream logfos) {
-        synchronized (verMutex) {
-            synchronized (logfos) {
-                long ver = newVersion();
-                if (ver > 0) {
-                    ver = logVersionAndData(ver, data, logfos);
-                }
-                return ver;
-            }
-        }
-    }*/
+
 
     public long logVersionHistory(byte[] data, FileOutputStream logfos,long txid) throws Exception {
 
@@ -727,7 +704,6 @@ public class VersionHistoryLogger {
                         System.out.println("list flush minmax == null");
                     }*/
         lastVersion = getVersion();
-
         if (lastVersion > getDbVersion() ) {
             PreparedStatement versionUpdateStmt = conn.prepareStatement(String.format("update %s set version=? where name=? ", this.versionTableName));
             PreparedStatement versionInsertStmt = conn.prepareStatement(String.format("insert into %s (name,version)values(?,?)", this.versionTableName));

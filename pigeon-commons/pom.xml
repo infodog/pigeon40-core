@@ -5,12 +5,12 @@
     <parent>
         <groupId>pigeon</groupId>
         <artifactId>pigeon</artifactId>
-        <version>4.0</version>
+        <version>5.0</version>
     </parent>
 
     <groupId>pigeon</groupId>
     <artifactId>pigeon-commons</artifactId>
-    <version>${pigeon-version}</version>
+    <version>5.0</version>
     <packaging>jar</packaging>
 
     <name>pigeon-commons</name>
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>pigeon</groupId>
             <artifactId>pigeon-json</artifactId>
-            <version>${pigeon-version}</version>
+            <version>5.0</version>
         </dependency>
 
         <dependency>

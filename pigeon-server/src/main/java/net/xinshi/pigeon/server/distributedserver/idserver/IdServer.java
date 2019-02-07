@@ -5,13 +5,15 @@ import net.xinshi.pigeon.idgenerator.IIDGeneratorServer;
 import net.xinshi.pigeon.idgenerator.impl.MysqlIDGenerator;
 import net.xinshi.pigeon.server.distributedserver.BaseServer;
 import net.xinshi.pigeon.server.distributedserver.util.Tools;
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.LogRecord;
 import net.xinshi.pigeon.util.CommonTools;
-import org.apache.distributedlog.LogRecord;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,13 +25,15 @@ import java.util.Map;
 
 public class IdServer extends BaseServer {
 
-    long writeGetIdAndForwardLog(String idName, int count) throws IOException {
+    long writeGetIdAndForwardLog(String idName, int count) throws IOException, ExecutionException, InterruptedException {
         long txid = getNextTxid();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         CommonTools.writeString(os,idName);
         CommonTools.writeLong(os,count);
         byte[] data = os.toByteArray();
-        writeLog(txid,data);
+        LogRecord logRecord = new LogRecord();
+        logRecord.setValue(data);
+        txid = writeLog(logRecord);
         return txid;
     }
 
@@ -106,8 +110,8 @@ public class IdServer extends BaseServer {
     @Override
     protected void updateLog(LogRecord logRec) {
         try {
-            long txid = logRec.getTransactionId();
-            InputStream is = logRec.getPayLoadInputStream();
+            long txid = logRec.getOffset();
+            InputStream is = new ByteArrayInputStream(logRec.getValue());
             String name = CommonTools.readString(is);
             long count = CommonTools.readLong(is);
             idgenerator.getIdAndForward(name, (int) count, txid);

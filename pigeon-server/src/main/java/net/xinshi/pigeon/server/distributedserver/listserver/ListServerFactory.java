@@ -71,8 +71,8 @@ public class ListServerFactory extends BaseServerFactory {
         listServer.setNodesString(getSc().getNodeName());
 
         listServer.setSc(getSc());
-        listServer.setDlm(getDlm());
-        listServer.setZtc(getZtc());
+        listServer.setLogManager(getLogManager());
+        listServer.setZk(getZk());
 
         return listServer;
     }

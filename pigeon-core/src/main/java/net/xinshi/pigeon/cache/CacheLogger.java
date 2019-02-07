@@ -21,9 +21,6 @@ public class CacheLogger {
     Map Cache;
     Map DirtyCache;
     Map SavingDirtyCache;
-    String LoggerFileName;
-    String SavingLoggerFileName;
-    FileOutputStream logfos;
     Object notification = null;
 
     public String getCacheString() {
@@ -42,13 +39,11 @@ public class CacheLogger {
         return SavingDirtyCache;
     }
 
-    public CacheLogger(int maxCacheNumber, String loggerFileName, String savingLoggerFileName) {
-        LoggerFileName = loggerFileName;
-        SavingLoggerFileName = savingLoggerFileName;
+    public CacheLogger() {
+
         Cache = Collections.synchronizedMap(new SoftHashMap());
         DirtyCache = Collections.synchronizedMap(new ConcurrentHashMap());
         SavingDirtyCache = Collections.synchronizedMap(new ConcurrentHashMap());
-        logfos = null;
     }
 
     public synchronized boolean noDirtyCache() {
@@ -65,58 +60,7 @@ public class CacheLogger {
         return false;
     }
 
-    public synchronized FileOutputStream getLoggerFOS() throws Exception {
-        if (logfos == null) {
-            logfos = new FileOutputStream(LoggerFileName, true);
-        }
-        return logfos;
-    }
 
-    public synchronized boolean swapToSaving() throws Exception {
-        try {
-            if (DirtyCache.size() == 0 || SavingDirtyCache.size() != 0) {
-                return false;
-            }
-            SavingDirtyCache.putAll(DirtyCache);
-            DirtyCache.clear();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public synchronized boolean swapToSavingAndRenameLog() throws Exception {
-        try {
-            if (DirtyCache.size() == 0 || SavingDirtyCache.size() != 0) {
-                return false;
-            }
-            if (logfos != null) {
-                logfos.close();
-                logfos = null;
-            }
-            File ff = new File(LoggerFileName);
-            File ft = new File(SavingLoggerFileName);
-            if (!ff.exists() || ft.exists()) {
-                throw new Exception("log file not exists or old log file exists ... ");
-            }
-            if (!ff.renameTo(ft)) {
-                throw new Exception("rename log file to old log file failed ... ");
-            }
-            SavingDirtyCache.putAll(DirtyCache);
-            DirtyCache.clear();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public synchronized void flush() throws Exception {
-        if (logfos != null) {
-            logfos.flush();
-        }
-    }
 
     public synchronized void swapSavingToCache() {
         for(Object o : SavingDirtyCache.entrySet()){
@@ -149,6 +93,20 @@ public class CacheLogger {
                 notification.notify();
             }
         }
+    }
+
+    public synchronized boolean swapToSaving() throws Exception {
+        try {
+            if (DirtyCache.size() == 0 || SavingDirtyCache.size() != 0) {
+                return false;
+            }
+            SavingDirtyCache.putAll(DirtyCache);
+            DirtyCache.clear();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public synchronized int getDirtyCacheSize() {

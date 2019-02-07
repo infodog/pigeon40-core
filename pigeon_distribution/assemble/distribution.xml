@@ -1,0 +1,31 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>distribution</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>apps</directory>
+        </fileSet>
+        <fileSet>
+            <directory>bin</directory>
+        </fileSet>
+        <fileSet>
+            <directory>configs</directory>
+        </fileSet>
+        <fileSet>
+            <directory>../pigeon-admin/target/pigeonadmin.5.0-distribution</directory>
+            <outputDirectory>pigeon-admin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../pigeon-server/target/pigeonserver.5.0-SNAPSHOT-distribution</directory>
+            <outputDirectory>pigeon-server</outputDirectory>
+        </fileSet>
+
+    </fileSets>
+
+</assembly>

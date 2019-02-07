@@ -2,7 +2,6 @@
   "pods":[{
     "name":"%podname%",
     "desc": "saas 平台的主pigeon",
-    "namespace":"distributedlog://127.0.0.1:2181/pigeon40namespace",
     "object_cluster":{
       "name":"flexobject1",
       "shards":[

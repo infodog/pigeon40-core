@@ -16,8 +16,8 @@ public class FileServerFactory extends BaseServerFactory {
         fileServer.setInstanceName(getSc().getInstanceName());
 
         fileServer.setSc(getSc());
-        fileServer.setDlm(getDlm());
-        fileServer.setZtc(getZtc());
+        fileServer.setLogManager(getLogManager());
+        fileServer.setZk(getZk());
         String baseDir = getSc().getBaseDir();
         fileServer.setBaseDir(baseDir);
         return fileServer;

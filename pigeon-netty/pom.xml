@@ -8,12 +8,12 @@
     <parent>
             <groupId>pigeon</groupId>
             <artifactId>pigeon</artifactId>
-            <version>4.0</version>
+            <version>5.0</version>
     </parent>
 
     <groupId>pigeon</groupId>
     <artifactId>pigeon-netty</artifactId>
-    <version>${pigeon-version}</version>
+    <version>5.0</version>
 
      <dependencies>
         <dependency>

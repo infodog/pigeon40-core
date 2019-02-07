@@ -526,4 +526,17 @@ public class CommonTools {
 
 
 
+    public static String expandEnvVars(String text) {
+        Map<String, String> envMap = System.getenv();
+        for (Map.Entry<String, String> entry : envMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            text = text.replaceAll("\\$\\{" + key + "\\}", value);
+        }
+        return text;
+    }
+
+
+
+
 }

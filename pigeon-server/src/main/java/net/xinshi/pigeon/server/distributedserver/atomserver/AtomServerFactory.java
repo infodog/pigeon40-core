@@ -33,16 +33,6 @@ public class AtomServerFactory extends BaseServerFactory {
         if (getSc().getMaxCacheNumber() > 0) {
             fastAtom.setMaxCacheEntries(getSc().getMaxCacheNumber());
         }
-        String dir = getSc().getLogDir();
-        dir = dir.replace("\\", "/");
-        if (!dir.endsWith("/")) {
-            dir += "/";
-        }
-        File file = new File(dir);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        fastAtom.setLogDirectory(dir);
         fastAtom.init();
         return fastAtom;
     }
@@ -55,8 +45,8 @@ public class AtomServerFactory extends BaseServerFactory {
         atomServer.setType(getSc().getType());
         atomServer.setAtom(atom);
         atomServer.setNodesString(getSc().getNodeName());
-        atomServer.setDlm(getDlm());
-        atomServer.setZtc(getZtc());
+        atomServer.setLogManager(getLogManager());
+        atomServer.setZk(getZk());
         atomServer.setSc(getSc());
         return atomServer;
     }

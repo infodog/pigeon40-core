@@ -40,16 +40,6 @@ public class FlexObjectServerFactory extends BaseServerFactory {
         if (getSc().getMaxCacheNumber() > 0) {
             flexFactory.setMaxCacheNumber(getSc().getMaxCacheNumber());
         }
-        String dir = getSc().getLogDir();
-        dir = dir.replace("\\", "/");
-        if (!dir.endsWith("/")) {
-            dir = dir + "/";
-        }
-        File file = new File(dir);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        flexFactory.setLogDirectory(dir);
         flexFactory.setDs(getDs());
         flexFactory.setTxManager(getTxManager());
         flexFactory.setMaxCacheNumber(getSc().getMaxCacheNumber());
@@ -60,7 +50,6 @@ public class FlexObjectServerFactory extends BaseServerFactory {
 
     public FlexObjectServer createFlexObjectServer() throws Exception {
         createFlexObjectFactory();
-
         flexObjectServer = new FlexObjectServer();
         flexObjectServer.setNodeName(getSc().getNodeName());
         flexObjectServer.setInstanceName(getSc().getInstanceName());
@@ -69,8 +58,8 @@ public class FlexObjectServerFactory extends BaseServerFactory {
         flexObjectServer.setNodesString(getSc().getNodeName());
         flexObjectServer.setShardFullPath(getSc().getShardFullPath());
         flexObjectServer.setSc(getSc());
-        flexObjectServer.setZtc(getZtc());
-        flexObjectServer.setDlm(getDlm());
+        flexObjectServer.setZk(getZk());
+        flexObjectServer.setLogManager(getLogManager());
         return flexObjectServer;
     }
 

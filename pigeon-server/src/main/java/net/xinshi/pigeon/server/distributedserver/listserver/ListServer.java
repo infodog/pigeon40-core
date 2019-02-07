@@ -6,12 +6,13 @@ import net.xinshi.pigeon.list.SortListObject;
 import net.xinshi.pigeon.list.bandlist.SortBandListFactory;
 import net.xinshi.pigeon.server.distributedserver.BaseServer;
 import net.xinshi.pigeon.server.distributedserver.util.Tools;
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.LogRecord;
 import net.xinshi.pigeon.util.CommonTools;
 import net.xinshi.pigeon.util.IdChecker;
 import org.apache.commons.lang.StringUtils;
-import org.apache.distributedlog.LogRecord;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +61,9 @@ public class ListServer extends BaseServer {
             CommonTools.writeString(os, objId);
             long txid = getNextTxid();
             byte[] data = os.toByteArray();
-            writeLog(txid, data);
+            LogRecord logRecord = new LogRecord();
+            logRecord.setValue(data);
+            txid = writeLog(logRecord);
             return txid;
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +83,9 @@ public class ListServer extends BaseServer {
 
             long txid = getNextTxid();
             byte[] data = os.toByteArray();
-            writeLog(txid, data);
+            LogRecord logRecord = new LogRecord();
+            logRecord.setValue(data);
+            txid = writeLog(logRecord);
             return txid;
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +106,9 @@ public class ListServer extends BaseServer {
             CommonTools.writeString(os, objid);
             long txid = getNextTxid();
             byte[] data = os.toByteArray();
-            writeLog(txid, data);
+            LogRecord logRecord = new LogRecord();
+            logRecord.setValue(data);
+            txid = writeLog(logRecord);
             return txid;
         } catch (Exception e) {
             e.printStackTrace();
@@ -445,8 +452,8 @@ public class ListServer extends BaseServer {
 
     @Override
     protected void updateLog(LogRecord logRec) {
-        long txid = logRec.getTransactionId();
-        InputStream is = logRec.getPayLoadInputStream();
+        long txid = logRec.getOffset();
+        InputStream is = new ByteArrayInputStream(logRec.getValue());
         try {
             String action = CommonTools.readString(is);
             if (action.equals("add")) {

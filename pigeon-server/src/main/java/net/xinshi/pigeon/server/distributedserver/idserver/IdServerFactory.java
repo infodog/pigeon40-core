@@ -38,8 +38,8 @@ public class IdServerFactory extends BaseServerFactory {
         idServer.setNodesString(getSc().getNodeName());
 
         idServer.setSc(getSc());
-        idServer.setDlm(getDlm());
-        idServer.setZtc(getZtc());
+        idServer.setLogManager(getLogManager());
+        idServer.setZk(getZk());
 
 //        idServer.setRole(DuplicateService.getDuplicateServerByServerConfig(getSc()).getRole());
 //        idServer.setNodesString(DuplicateService.getDuplicateServerByServerConfig(getSc()).getNodesString());

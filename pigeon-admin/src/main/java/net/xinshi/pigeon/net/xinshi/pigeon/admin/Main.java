@@ -1,9 +1,9 @@
 package net.xinshi.pigeon.net.xinshi.pigeon.admin;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.distributedlog.DistributedLogConfiguration;
-import org.apache.distributedlog.api.namespace.Namespace;
-import org.apache.distributedlog.api.namespace.NamespaceBuilder;
+
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.acl.Acl;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.zookeeper.data.ACL;
@@ -27,10 +28,12 @@ import org.json.JSONObject;
 import static org.apache.zookeeper.CreateMode.PERSISTENT;
 
 public class Main {
+    static String g_zooConnectString;
     public static void main(String[] args) throws IOException, JSONException, KeeperException, InterruptedException, URISyntaxException {
         int max_int = Integer.MAX_VALUE;
         String zooConnectString = args[0];
-        ZooKeeper zk = new ZooKeeper(zooConnectString,1000,null);
+        g_zooConnectString = zooConnectString;
+        ZooKeeper zk = new ZooKeeper(zooConnectString,8000,null);
 
         //读取配置文件
         String configFile = args[1];
@@ -40,7 +43,7 @@ public class Main {
         fis.read(bytes);
         String configString = new String(bytes,"utf-8");
 
-        String podName = "pigeon40Default";
+        String podName = "pigeon50Default";
         if(args.length>2){
             podName = args[2];
         }
@@ -50,7 +53,7 @@ public class Main {
         System.out.println("connectString=" + zooConnectString + ",podName=" + podName + ", configString=" + configString);
 
         try {
-            zk.create("/pigeon40", "pigeon40 root".getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
+            zk.create("/pigeon50", "pigeon50 root".getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
         }
         catch(Exception e){
             //do nothing;
@@ -66,7 +69,7 @@ public class Main {
             JSONObject jpod = jpods.getJSONObject(i);
 //            String podName = jpod.getString("name");
             //检查podName是否已经存在
-            Stat stat = zk.exists("/pigeon40/" + podName,null);
+            Stat stat = zk.exists("/pigeon50/" + podName,null);
             if(stat!=null){
                 exists = true;
                 System.out.println(podName + " alread exists.");
@@ -84,31 +87,18 @@ public class Main {
         System.exit(0);
     }
 
-    static Namespace buildNamespace(String uriNamespace) throws URISyntaxException, IOException {
-        // DistributedLog Configuration
-        DistributedLogConfiguration conf = new DistributedLogConfiguration().setLockTimeout(10);
-        // Namespace URI
-        URI uri = new URI(uriNamespace); // create the namespace uri
-        DistributedLogConfiguration newConf = new DistributedLogConfiguration();
-        newConf.addConfiguration(conf);
-        newConf.setCreateStreamIfNotExists(false);
-        Namespace namespace = NamespaceBuilder.newBuilder()
-                .conf(newConf).uri(uri).build();
-        return namespace;
-    }
+
 
     private static void createPod(ZooKeeper zk, JSONObject jpod) throws JSONException, KeeperException, InterruptedException, IOException, URISyntaxException {
         String podName = jpod.optString("name");
         String podDesc = jpod.optString("desc");
         JSONObject podData = new JSONObject();
         podData.put("desc", podDesc);
-        String podPath = "/pigeon40/" + podName;
+        String podPath = "/pigeon50/" + podName;
         List<ACL> acl = new ArrayList();
         try {
             zk.create(podPath, podData.toString().getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
 
-            String dlogPath = podPath + "/dlog";
-            zk.create(dlogPath, "distrubuted log root，unused".getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -121,22 +111,34 @@ public class Main {
         JSONObject file_cluster = jpod.optJSONObject("file_cluster");
 
         String namespaceUri = jpod.getString("namespace");
-        Namespace namespace = buildNamespace(namespaceUri);
 
-        createCluster(zk, podPath, object_cluster, "object_cluster", namespace);
-        createCluster(zk, podPath, list_cluster, "list_cluster", namespace);
-        createCluster(zk, podPath, id_cluster, "id_cluster", namespace);
-        createCluster(zk, podPath, atom_cluster, "atom_cluster", namespace);
-        createCluster(zk, podPath, locks_cluster, "locks_cluster", namespace);
-        createCluster(zk, podPath, file_cluster, "file_cluster", namespace);
+        createCluster(zk, podPath, object_cluster, "object_cluster");
+        createCluster(zk, podPath, list_cluster, "list_cluster");
+        createCluster(zk, podPath, id_cluster, "id_cluster");
+        createCluster(zk, podPath, atom_cluster, "atom_cluster");
+        createCluster(zk, podPath, locks_cluster, "locks_cluster");
+        createCluster(zk, podPath, file_cluster, "file_cluster");
         System.out.println("create pod succeeded.");
     }
 
-    private static void createCluster(ZooKeeper zk,String parentPath, JSONObject cluster,String type,Namespace namespace) throws JSONException, IOException, KeeperException, InterruptedException {
+    private static void createLogTopic(String logName, AdminClient kafkaAdminClient){
+        //kafka topic
+        NewTopic topic = new NewTopic(logName,1, (short) 1);
+        kafkaAdminClient.createTopics(Arrays.<NewTopic>asList(topic));
+
+    }
+
+    private static void createCluster(ZooKeeper zk,String parentPath, JSONObject cluster,String type) throws JSONException, IOException, KeeperException, InterruptedException {
         JSONObject data = new JSONObject();
         data.put("name",cluster.optString("name"));
         data.put("type", type);
         String clusterPath = parentPath + "/" + type;
+        java.util.Properties properties = new java.util.Properties();
+
+        properties.setProperty("bootstrap.servers",g_zooConnectString);
+        properties.setProperty("client.id","pigeon50.admin");
+        AdminClient kafkaAdminClient = AdminClient.create(properties);
+
         try {
 
             zk.create(clusterPath, data.toString().getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
@@ -150,7 +152,7 @@ public class Main {
                     zk.create(shardPath, shardData.toString().getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
                     String logName = shardData.optString("logName");
                     if (StringUtils.isNotBlank(logName)) {
-                        namespace.createLog(logName);
+                        createLogTopic(logName,kafkaAdminClient);
                     }
 
                 }

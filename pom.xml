@@ -2,9 +2,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java-version>1.6</java-version>
+        <pigeon-version>5.0</pigeon-version>
+        <org.springframework-version>3.0.5.RELEASE</org.springframework-version>
+        <slf4j.version>1.7.25</slf4j.version>
+    </properties>
+
     <groupId>pigeon</groupId>
     <artifactId>pigeon</artifactId>
-    <version>4.0</version>
+    <version>5.0</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -15,16 +23,9 @@
         <module>pigeon-netty</module>
         <module>pigeon-server</module>
         <module>pigeon-client</module>
+        <module>pigeon_distribution</module>
     </modules>
 
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java-version>1.6</java-version>
-        <pigeon-version>4.0</pigeon-version>
-        <org.springframework-version>3.0.5.RELEASE</org.springframework-version>
-        <slf4j.version>1.7.25</slf4j.version>
-    </properties>
 
     <organization>
         <name>infoscape</name>

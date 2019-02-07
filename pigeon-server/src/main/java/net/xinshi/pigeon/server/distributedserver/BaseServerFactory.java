@@ -1,9 +1,8 @@
 package net.xinshi.pigeon.server.distributedserver;
 
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.ILogManager;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
-import org.apache.distributedlog.ZooKeeperClient;
-import org.apache.distributedlog.api.DistributedLogManager;
 import org.apache.zookeeper.ZooKeeper;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -30,23 +29,24 @@ public class BaseServerFactory {
         this.sc = sc;
     }
 
-    ZooKeeperClient ztc;
-    DistributedLogManager dlm;
 
-    public ZooKeeperClient getZtc() {
-        return ztc;
+    ILogManager logManager;
+    ZooKeeper zk;
+
+    public ZooKeeper getZk() {
+        return zk;
     }
 
-    public void setZtc(ZooKeeperClient ztc) {
-        this.ztc = ztc;
+    public void setZk(ZooKeeper zk) {
+        this.zk = zk;
     }
 
-    public DistributedLogManager getDlm() {
-        return dlm;
+    public ILogManager getLogManager() {
+        return logManager;
     }
 
-    public void setDlm(DistributedLogManager dlm) {
-        this.dlm = dlm;
+    public void setLogManager(ILogManager logManager) {
+        this.logManager = logManager;
     }
 
     public DataSource getDs() {

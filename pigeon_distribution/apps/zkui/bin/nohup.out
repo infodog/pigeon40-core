@@ -1,0 +1,11 @@
+二月 06, 2019 10:58:13 上午 com.googlecode.flyway.core.metadatatable.MetaDataTableImpl createIfNotExists
+信息: Creating Metadata table: "PUBLIC"."schema_version"
+二月 06, 2019 10:58:13 上午 com.googlecode.flyway.core.command.DbMigrate migrate
+信息: Current version of schema "PUBLIC": << Empty Schema >>
+二月 06, 2019 10:58:13 上午 com.googlecode.flyway.core.command.DbMigrate applyMigration
+信息: Migrating schema "PUBLIC" to version 1
+二月 06, 2019 10:58:13 上午 com.googlecode.flyway.core.command.DbMigrate logSummary
+信息: Successfully applied 1 migration to schema "PUBLIC" (execution time 00:00.055s).
+log4j:WARN No appenders could be found for logger (org.eclipse.jetty.util.log).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.

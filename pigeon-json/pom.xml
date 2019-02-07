@@ -5,11 +5,11 @@
   <parent>
     <artifactId>pigeon</artifactId>
     <groupId>pigeon</groupId>
-    <version>4.0</version>
+    <version>5.0</version>
   </parent>
   <groupId>pigeon</groupId>
   <artifactId>pigeon-json</artifactId>
-  <version>${pigeon-version}</version>
+  <version>5.0</version>
   <name>pigeon-json</name>
 
   <url>http://www.infoscape.com.cn</url>

@@ -619,7 +619,6 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
         boolean verInit = false;
         try {
             verLogger = new VersionHistoryLogger();
-            verLogger.setLoggerDirectory(logDirectory + "/share");
             verLogger.setDs(ds);
             verLogger.setVersionTableName("t_pigeontransaction");
             verLogger.setVersionKeyName(versionKeyName);
@@ -645,13 +644,12 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
                 set_state_word(Constants.READONLY_STATE);
                 System.exit(-1);
             }
-            this.replayOldOpLog();
-            this.replayNewOpLog();
-            saveVersionToDb();
+//            saveVersionToDb();
+            verLogger.reloadVersion();
             flusher = new Flusher();
             Thread t = new Thread(flusher);
             t.start();
-            verLogger.reloadVersion();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -756,7 +754,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
     }
 
     boolean isFull() {
-        return (dirtyBands.size() + dirtyHeadBands.size()) > 10000;
+        return (dirtyBands.size() + dirtyHeadBands.size()) > 20000;
     }
 
     public long writeLogAndDuplicate(String s, long txid) throws Exception {
@@ -768,18 +766,9 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
         }
 
         synchronized (globalLocker) {
-            if (logfos == null) {
-                logfos = new FileOutputStream(getOperationLogFileName(), true);
-            }
-            byte[] data = s.getBytes("UTF-8");
-            long ver = verLogger.logVersionHistory(data, logfos, txid);
-            if (ver < 1) {
-                throw new Exception("VersionHistoryLogger version < 1 ...... ");
-            }
-            logfos.flush();
-            return ver;
+           verLogger.setVersion(txid);
+           return txid;
         }
-
     }
 
 
@@ -837,115 +826,6 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
         verLogger.setVersion(version);
     }
 
-    private boolean renameOpLog() {
-        synchronized (globalLocker) {
-            try {
-                if (logfos != null) {
-                    try {
-                        logfos.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    logfos = null;
-                }
-                File fo = new File(getOldOperationLogFileName());
-                if (fo.exists()) {
-                    throw new Exception("oldlog file exists , oldlog = " + fo.getAbsolutePath());
-                }
-                File curLogFile = new File(this.getOperationLogFileName());
-                if (curLogFile.exists()) {
-                    if (!curLogFile.renameTo(new File(this.getOldOperationLogFileName()))) {
-                        throw new Exception("renameTo failed , name = " + fo.getAbsolutePath());
-                    }
-                }
-                return true;
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-            return false;
-        }
-    }
-
-    private void deleteOldOpLog() {
-        boolean isOK = false;
-        try {
-            if (verLogger.rotateVersionHistory(this, this.getOldOperationLogFileName())) {
-                File oldFile = new File(this.getOldOperationLogFileName());
-                if(oldFile.exists()) {
-                    oldFile.delete();
-                }
-                isOK = true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (!isOK) {
-            log.warn("rotateVersionHistory failed READONLY ... ");
-            try {
-                set_state_word(Constants.READONLY_STATE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void internal_replayOpLog(File f) throws Exception {
-        int lineNum = 1;
-        FileInputStream fis = new FileInputStream(f);
-        while (true) {
-            byte[] bytes = verLogger.getBytesFromVersionHistoryFile(fis);
-            if (bytes == null) {
-                break;
-            }
-            String line = new String(bytes, "UTF-8");
-            line = line.replace("\n", "");
-            if (lineNum % 10000 == 0) {
-                log.info("lineNum=" + lineNum);
-            }
-            lineNum++;
-            try {
-                String fields[] = line.split(",");
-                if (fields[0].equals(SortBandList.OP_ADD)) {
-                    do_add(fields);
-                } else if (fields[0].equals(SortBandList.OP_DELETE)) {
-                    do_delete(fields);
-                } else if (fields[0].equals(SortBandList.OP_REORDER)) {
-                    do_reorder(fields);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (fis != null) {
-            fis.close();
-        }
-        this.takeSnapShot();
-        if (!this.flushSnapShotToDataBase()) {
-            throw new Exception("flushSnapShotToDataBase list failed");
-        }
-    }
-
-    private void replayOldOpLog() throws Exception {
-        File f = new File(this.getOldOperationLogFileName());
-        if (f.exists()) {
-            try {
-                internal_replayOpLog(f);
-                deleteOldOpLog();
-            } catch (Exception e) {
-                e.printStackTrace();
-                log.warn("list replayOldOpLog failed ..... ");
-                set_state_word(Constants.READONLY_STATE);
-                System.exit(-1);
-            }
-        }
-    }
-
-    private void replayNewOpLog() throws Exception {
-        if (!this.renameOpLog()) {
-            throw new Exception("list replayNewOpLog failed ............... ");
-        }
-        replayOldOpLog();
-    }
 
     private void do_reorder(String[] fields) throws Exception {
         String listId = fields[1];
@@ -1054,9 +934,7 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
                         return;
                     }
                     if (dirtyBandSnapShot.size() == 0) {
-                        if (renameOpLog()) {
-                            takeSnapShot();
-                        }
+                        takeSnapShot();
                     } else {
                         log.info("dirtyBandSnapShot.size() exiting flush");
                     }
@@ -1064,7 +942,6 @@ public class SortBandListFactory implements IListFactory, IListBandService, IPig
 
                 try {
                     if (flushSnapShotToDataBase()) {
-                        deleteOldOpLog();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

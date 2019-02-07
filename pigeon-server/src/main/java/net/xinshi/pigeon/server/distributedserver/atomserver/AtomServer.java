@@ -5,17 +5,19 @@ import net.xinshi.pigeon.atom.IServerAtom;
 import net.xinshi.pigeon.atom.impls.dbatom.FastAtom;
 import net.xinshi.pigeon.server.distributedserver.BaseServer;
 import net.xinshi.pigeon.server.distributedserver.util.Tools;
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.LogRecord;
 import net.xinshi.pigeon.util.CommonTools;
 import net.xinshi.pigeon.util.IdChecker;
 import org.apache.commons.lang.StringUtils;
-import org.apache.distributedlog.LogRecord;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,31 +34,38 @@ public class AtomServer extends BaseServer {
     IServerAtom atom;
     Logger logger = Logger.getLogger(AtomServer.class.getName());
 
-    long writeCreateAndSetLog(String name,int value) throws IOException {
+    long writeCreateAndSetLog(String name,int value) throws IOException, ExecutionException, InterruptedException {
 
-        long txid = getNextTxid();
+//        long txid = getNextTxid();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         CommonTools.writeString(os,"createAndSet");
         CommonTools.writeString(os,name);
         CommonTools.writeLong(os,value);
         byte[] data = os.toByteArray();
-        writeLog(txid,data);
+
+        LogRecord r = new LogRecord();
+        r.setValue(data);
+        r.setKey(null);
+        txid = writeLog(r);
         return txid;
     }
 
-    long writeGreaterAndIncLog(String name,int value,int inc) throws IOException {
-        long txid = getNextTxid();
+    long writeGreaterAndIncLog(String name,int value,int inc) throws IOException, ExecutionException, InterruptedException {
+//        long txid = getNextTxid();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         CommonTools.writeString(os,"greaterAndInc");
         CommonTools.writeString(os,name);
         CommonTools.writeLong(os,value);
         CommonTools.writeLong(os,inc);
         byte[] data = os.toByteArray();
-        writeLog(txid,data);
+        LogRecord r = new LogRecord();
+        r.setValue(data);
+        r.setKey(null);
+        txid = writeLog(r);
         return txid;
     }
 
-    long writeLessAndIncLog(String name,int value,int inc) throws IOException {
+    long writeLessAndIncLog(String name,int value,int inc) throws IOException, ExecutionException, InterruptedException {
         long txid = getNextTxid();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         CommonTools.writeString(os,"lessAndInc");
@@ -64,7 +73,10 @@ public class AtomServer extends BaseServer {
         CommonTools.writeLong(os,value);
         CommonTools.writeLong(os,inc);
         byte[] data = os.toByteArray();
-        writeLog(txid,data);
+        LogRecord r = new LogRecord();
+        r.setValue(data);
+        r.setKey(null);
+        txid = writeLog(r);
         return txid;
     }
 
@@ -267,8 +279,8 @@ public class AtomServer extends BaseServer {
 
     @Override
     protected void updateLog(LogRecord logRec) {
-        long txid = logRec.getTransactionId();
-        InputStream is = logRec.getPayLoadInputStream();
+        long txid = logRec.getOffset();
+        InputStream is = new ByteArrayInputStream(logRec.getValue());
         try {
             String action = CommonTools.readString(is);
             if(action.equals("createAndSet")){

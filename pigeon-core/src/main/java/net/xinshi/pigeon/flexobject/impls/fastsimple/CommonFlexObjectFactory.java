@@ -152,19 +152,10 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         this.logSaveDir = logSaveDir;
     }
 
-    void moveLog(String fileName) throws Exception {
-        long version = idgenerator.getId("logfile");
-        String newLog = logSaveDir + this.tableName + version + ".log";
-        File logFile = new File(fileName);
-        File newLogFile = new File(newLog);
-        FileUtils.moveFile(logFile, newLogFile);
-    }
 
     synchronized void putToDirtyCache(String name, FlexObjectEntry entry) throws Exception {
         dirtyCache.put(name, entry);
-//        synchronized (flusherWaiter) {
-//            flusherWaiter.notify();
-//        }
+
     }
 
     public long getDirtyCacheSize() {
@@ -216,19 +207,6 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         return logDirectory;
     }
 
-    public void setLogDirectory(String logDirectory) {
-        if (!logDirectory.endsWith("/") && !logDirectory.endsWith("\\")) {
-            logDirectory = logDirectory + "/";
-        }
-        this.logDirectory = logDirectory;
-        File f = new File(logDirectory);
-        f = new File(f.getAbsolutePath());
-        this.logDirectory = f.getAbsolutePath();
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-    }
-
     public String getTableName() {
         return tableName;
     }
@@ -244,25 +222,6 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         return cache;
     }
 
-    String getLogFileName() {
-        if (!logDirectory.endsWith("/") && (!logDirectory.endsWith("\\"))) {
-            logDirectory += "/";
-        }
-        return logDirectory + tableName + ".log";
-    }
-
-    String getOldLogFileName() {
-        if (!logDirectory.endsWith("/") && (!logDirectory.endsWith("\\"))) {
-            logDirectory += "/";
-        }
-        return logDirectory + tableName + ".oldlog";
-    }
-
-    void ensureLogfileOpen() throws Exception {
-        if (logfos == null) {
-            logfos = new FileOutputStream(getLogFileName(), true);
-        }
-    }
 
     private void saveToCache(FlexObjectEntry entry) {
         getCache();
@@ -296,16 +255,16 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
             if(dirtyCache.size()>200000){
                 throw new Exception("FlexObject writeLogAndCache too fast.dirtyCache.size()=" + dirtyCache.size());
             }
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream(256);
+//            CommonTools.writeEntry(baos, entry);
+//            data = baos.toByteArray();
+//            ver = verLogger.logVersionHistory(data, logfos,entry.getTxid());
+//            if (ver < 1) {
+//                throw new Exception("VersionHistoryLogger version < 1 ...... ");
+//            }
+//            logfos.flush();
 
-            ensureLogfileOpen();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(5120);
-            CommonTools.writeEntry(baos, entry);
-            data = baos.toByteArray();
-            ver = verLogger.logVersionHistory(data, logfos,entry.getTxid());
-            if (ver < 1) {
-                throw new Exception("VersionHistoryLogger version < 1 ...... ");
-            }
-            logfos.flush();
+            verLogger.setVersion(entry.getTxid());
 //            entry.setTxid(ver);
             if (entry != FlexObjectEntry.empty) {
                 saveToCache(entry);
@@ -487,18 +446,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         }
     }
 
-    void renameLog() throws Exception {
-        File fo = new File(getOldLogFileName());
-        if (fo.exists()) {
-            throw new Exception("oldlog file exists , oldlog = " + fo.getAbsolutePath());
-        }
-        File f = new File(getLogFileName());
-        if (f.exists()) {
-            if (!f.renameTo(new File(getOldLogFileName()))) {
-                throw new Exception("renameTo failed , name = " + getOldLogFileName());
-            }
-        }
-    }
+
 
     synchronized void copydirtycache() {
         if (olddirtycache.size() > 0) {
@@ -526,7 +474,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
                 logfos.close();
                 logfos = null;
             }
-            renameLog();
+//            renameLog();
             copydirtycache();
         }
     }
@@ -578,32 +526,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         }
     }
 
-    void deleteOldLog() throws Exception {
-        boolean isOK = false;
-        try {
-            if (verLogger.rotateVersionHistory(this, this.getOldLogFileName())) {
-                deleteLog(this.getOldLogFileName());
-                isOK = true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (!isOK) {
-            logger.warn("rotateVersionHistory failed enter READONLY ... ");
-            set_state_word(Constants.READONLY_STATE);
-        }
-    }
 
-    void deleteLog(String fileName) throws Exception {
-        if (StringUtils.isBlank(this.logSaveDir)) {
-            File f = new File(fileName);
-            if (f.exists()) {
-                f.delete();
-            }
-        } else {
-            this.moveLog(fileName);
-        }
-    }
 
     void flush() throws Exception {
         takeSnapShot();
@@ -660,7 +583,6 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
                 synchronized (this) {
                     olddirtycache.clear();
                 }
-                deleteOldLog();
             } else {
                 txManager.rollback(ts);
 //                System.out.println(" CommonFlexObjectFactory rollback.");
@@ -895,55 +817,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
 
 
 
-    void replay() throws Exception {
-        replayFile(this.getOldLogFileName());
-        renameLog();
-        replayFile(this.getOldLogFileName());
-    }
 
-    void replayFile(String filename) throws Exception {
-        File f = new File(filename);
-        if (!f.exists()) {
-            return;
-        }
-        FileInputStream fis = new FileInputStream(f);
-        try {
-            Map<String, FlexObjectEntry> mapEntries = new HashMap<String, FlexObjectEntry>();
-            while (true) {
-                InputStream mis = null;
-                try {
-                    mis = verLogger.getInputStreamFromVersionHistoryFile(fis);
-                    if (mis == null) {
-                        break;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.error( "!!!!!!!!! replay file failed : " + filename,e);
-                    set_state_word(Constants.READONLY_STATE);
-                    System.exit(-1);
-                }
-                FlexObjectEntry entry = CommonTools.readEntry(mis);
-                if (entry == null) {
-                    break;
-                }
-                verLogger.setVersion(entry.getTxid());
-                mapEntries.put(entry.getName(), entry);
-            }
-            fis.close();
-            fis = null;
-            if (saveEntries(mapEntries.values())) {
-                deleteOldLog();
-            } else {
-                logger.error("!!!!!!!!! replay file failed : " + filename);
-                set_state_word(Constants.READONLY_STATE);
-                System.exit(-1);
-            }
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
-        }
-    }
 
 
 
@@ -1017,11 +891,9 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         boolean verInit = false;
         try {
             verLogger = new VersionHistoryLogger();
-            verLogger.setLoggerDirectory(logDirectory + "/share");
             verLogger.setDs(ds);
             verLogger.setVersionTableName("t_pigeontransaction");
             verLogger.setVersionKeyName(versionKeyName);
-//            merge_insert_sql = merge_insert_sql.replace("T_FLEXOBJECT", tableName);
             verInit = verLogger.init();
         } catch (Exception e) {
             e.printStackTrace();
@@ -1039,7 +911,6 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         else{
             update_sql = "update T_FLEXOBJECT set CONTENT=?, ISCOMPRESSED=?,ISSTRING=?,HASH=? where NAME=?";
         }
-        this.replay();
         new Thread(new Flusher()).start();
         //重新读取数据库中的version,现在应该是dbVersion为准
         verLogger.reloadVersion();

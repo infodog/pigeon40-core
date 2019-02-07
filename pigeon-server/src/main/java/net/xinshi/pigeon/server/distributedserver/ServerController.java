@@ -13,14 +13,9 @@ import net.xinshi.pigeon.server.distributedserver.idserver.IdServerFactory;
 import net.xinshi.pigeon.server.distributedserver.listserver.ListServer;
 import net.xinshi.pigeon.server.distributedserver.listserver.ListServerFactory;
 import net.xinshi.pigeon.server.distributedserver.lockserver.NettyLockServerHandler;
-import org.apache.bookkeeper.zookeeper.BoundExponentialBackoffRetryPolicy;
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.ILogManager;
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.KafkaLogManager;
 import org.apache.commons.lang.StringUtils;
-import org.apache.distributedlog.DistributedLogConfiguration;
-import org.apache.distributedlog.ZooKeeperClient;
-import org.apache.distributedlog.ZooKeeperClientBuilder;
-import org.apache.distributedlog.api.DistributedLogManager;
-import org.apache.distributedlog.api.namespace.Namespace;
-import org.apache.distributedlog.api.namespace.NamespaceBuilder;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.json.JSONArray;
@@ -55,6 +50,8 @@ public class ServerController {
     List<ServerConfig> listConfigs;
     Map<String, Object> servers;
     String zkConnectString = null;
+    String kafkaServers = null;
+
     Logger log = Logger.getLogger(ServerController.class.getName());
     String configfile = null;
     Logger logger = Logger.getLogger(ServerController.class.getName());
@@ -64,20 +61,8 @@ public class ServerController {
         servers = new Hashtable<String, Object>();
     }
 
-    Namespace buildNamespace() throws URISyntaxException, IOException {
-        // DistributedLog Configuration
-        DistributedLogConfiguration conf = new DistributedLogConfiguration().setLockTimeout(10);
-        // Namespace URI
-        URI uri = new URI("distributedlog://"+zkConnectString + "/pigeon40namespace"); // create the namespace uri
-        DistributedLogConfiguration newConf = new DistributedLogConfiguration();
-        newConf.addConfiguration(conf);
-        newConf.setCreateStreamIfNotExists(false);
-        Namespace namespace = NamespaceBuilder.newBuilder()
-                .conf(newConf).uri(uri).build();
-        return namespace;
-    }
 
-    synchronized public IServer start(ZooKeeperClient ztc,Namespace namespace, ServerConfig sc) throws Exception {
+    synchronized public IServer start(ZooKeeper zk, ServerConfig sc) throws Exception {
         String instanceName = sc.getInstanceName();
         String nodeName = sc.getNodeName();
         if (StringUtils.isBlank(nodeName)) {
@@ -94,28 +79,28 @@ public class ServerController {
         String type = sc.getType();
         IServer server = null;
         if ("flexobject".equals(type)) {
-            DistributedLogManager dlm = buildDLM(ztc,namespace,sc);
             FlexObjectServerFactory factory = new FlexObjectServerFactory(sc);
-            factory.setDlm(dlm);
-            factory.setZtc(ztc);
+            ILogManager logManager = buildLogManager(zk,sc);
+            factory.setLogManager(logManager);
+            factory.setZk(zk);
             server = factory.createFlexObjectServer();
             server.start();
             servers.put(instanceName, server);
             System.out.println("started flexobject server of instance name = " + instanceName + " ...");
         } else if ("list".equals(type)) {
             ListServerFactory factory = new ListServerFactory(sc);
-            DistributedLogManager dlm = buildDLM(ztc,namespace,sc);
-            factory.setDlm(dlm);
-            factory.setZtc(ztc);
+            ILogManager logManager = buildLogManager(zk,sc);
+            factory.setLogManager(logManager);
+            factory.setZk(zk);
             server = factory.createListServer();
             servers.put(instanceName, server);
             server.start();
             System.out.println("started list server of instance name = " + instanceName + " ...");
         } else if ("atom".equals(type)) {
             AtomServerFactory factory = new AtomServerFactory(sc);
-            DistributedLogManager dlm = buildDLM(ztc,namespace,sc);
-            factory.setDlm(dlm);
-            factory.setZtc(ztc);
+            ILogManager logManager = buildLogManager(zk,sc);
+            factory.setLogManager(logManager);
+            factory.setZk(zk);
             server = factory.createAtomServer();
             server.start();
             servers.put(instanceName, server);
@@ -125,41 +110,22 @@ public class ServerController {
             servers.put(instanceName, lockServer);
             server = null;
             lockServer.init();
-            BaseServer.registerServerToZookeeper(ztc.get(),sc);
-            ztc.registerExpirationHandler(new ZooKeeperClient.ZooKeeperSessionExpireNotifier() {
-                @Override
-                public void notifySessionExpired() {
-                    try {
-                        BaseServer.registerServerToZookeeper(ztc.get(),sc);
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    } catch (KeeperException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            BaseServer.registerServerToZookeeper(zk,sc);
             System.out.println("started lock of instance name = " + instanceName + " ...");
         } else if ("idserver".equals(type)) {
             IdServerFactory idServerFactory = new IdServerFactory(sc);
-            DistributedLogManager dlm = buildDLM(ztc,namespace,sc);
-            idServerFactory.setDlm(dlm);
-            idServerFactory.setZtc(ztc);
+            ILogManager logManager = buildLogManager(zk,sc);
+            idServerFactory.setLogManager(logManager);
+            idServerFactory.setZk(zk);
             server = idServerFactory.createIdServer();
             server.start();
             servers.put(instanceName, server);
-            System.out.println("started id of instance name = " + instanceName + " ...");
         }
         else if ("fileserver".equals(type)) {
             FileServerFactory fileServerFactory = new FileServerFactory(sc);
-            DistributedLogManager dlm = buildDLM(ztc,namespace,sc);
-            fileServerFactory.setDlm(dlm);
-            fileServerFactory.setZtc(ztc);
+            ILogManager logManager = buildLogManager(zk,sc);
+            fileServerFactory.setLogManager(logManager);
+            fileServerFactory.setZk(zk);
             server = fileServerFactory.createFileServer();
             server.start();
             servers.put(instanceName, server);
@@ -168,39 +134,33 @@ public class ServerController {
         return server;
     }
 
-    public static JSONObject getData(ZooKeeperClient zk , String path) throws KeeperException, InterruptedException, UnsupportedEncodingException, JSONException, ZooKeeperClient.ZooKeeperConnectionException {
+    public static JSONObject getData(ZooKeeper zk , String path) throws KeeperException, InterruptedException, UnsupportedEncodingException, JSONException {
         Stat stat = new Stat();
-        byte[] data = zk.get().getData(path,false,stat);
+        byte[] data = zk.getData(path,false,stat);
         String s = new String(data,"utf-8");
         JSONObject jsonObject = new JSONObject(s);
         return jsonObject;
     }
 
 
-    DistributedLogManager buildDLM(ZooKeeperClient zk,Namespace namespace,ServerConfig sc) throws InterruptedException, JSONException, KeeperException, IOException {
-        //get shared data
+    ILogManager buildLogManager(ZooKeeper zk, ServerConfig sc) throws InterruptedException, JSONException, KeeperException, UnsupportedEncodingException {
         JSONObject shardData = getData(zk,sc.shardFullPath);
         String logName = shardData.getString("logName");
-        DistributedLogManager dlm = namespace.openLog(logName);
-        return dlm;
+        KafkaLogManager logManager = new KafkaLogManager();
+        logManager.setBootstrapServers(kafkaServers);
+        logManager.setTopic(logName);
+        logManager.setGroupId(sc.getNodeName());
+        logManager.init();
+        return logManager;
 
     }
 
     public void startServers() throws Exception {
 
-        ZooKeeperClient ztc = ZooKeeperClientBuilder.newBuilder()
-                .sessionTimeoutMs(40000)
-                .retryThreadCount(2)
-                .requestRateLimit(200)
-                .zkServers(zkConnectString)
-                .zkAclId("pigeon40")
-                .retryPolicy(new BoundExponentialBackoffRetryPolicy(500, 1500, 2))
-                .build();
-        Namespace namespace = buildNamespace();
-
+        ZooKeeper zk = new ZooKeeper(zkConnectString,8000,null);
         for (ServerConfig sc : listConfigs) {
             try {
-                start(ztc,namespace,sc);
+                start(zk,sc);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -211,6 +171,8 @@ public class ServerController {
         s = StringUtils.trim(s);
         JSONObject jo = new JSONObject(s);
         zkConnectString = jo.optString("zk");
+        kafkaServers = jo.optString("kafkaSrevers");
+
         JSONArray jconfigs = jo.getJSONArray("pigeons");
         List<ServerConfig> listSC = new ArrayList<ServerConfig>();
         for (int j = 0; j < jconfigs.length(); j++) {
@@ -229,8 +191,6 @@ public class ServerController {
             is.read(b);
             is.close();
             String s = new String(b, "UTF-8");
-            logger.log(Level.INFO,s);
-
             listConfigs = createServerConfigs(s);
             return;
         }

@@ -3,11 +3,9 @@ package net.xinshi.pigeon.server.distributedserver.fileserver;
 import net.xinshi.pigeon.filesystem.FileID;
 import net.xinshi.pigeon.filesystem.FileServerRec;
 import net.xinshi.pigeon.server.distributedserver.BaseServer;
+import net.xinshi.pigeon.server.distributedserver.writeaheadlog.LogRecord;
 import net.xinshi.pigeon.util.CommonTools;
 import org.apache.commons.lang.StringUtils;
-import org.apache.distributedlog.LogRecord;
-
-import org.apache.distributedlog.ZooKeeperClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -66,7 +64,7 @@ public class FileServer extends BaseServer {
         return jsonObject;
     }
 
-    private void downloadFileServerRecs() throws ZooKeeperClient.ZooKeeperConnectionException, InterruptedException, KeeperException, UnsupportedEncodingException, JSONException {
+    private void downloadFileServerRecs() throws  InterruptedException, KeeperException, UnsupportedEncodingException, JSONException {
         List<String> svrs = getZk().getChildren(getSc().getShardFullPath(), this);
         List<FileServerRec> fileServerRecs = new ArrayList<>();
         for (String svr : svrs) {
@@ -173,25 +171,29 @@ public class FileServer extends BaseServer {
     }
 
 
-    synchronized  long writeAddFileLog(String fileId) throws IOException {
+    synchronized  long writeAddFileLog(String fileId) throws IOException, ExecutionException, InterruptedException {
         long txid = getNextTxid();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         CommonTools.writeString(os, "add");
         CommonTools.writeString(os, fileId);
         byte[] data = os.toByteArray();
-        writeLog(txid, data);
+        LogRecord logRecord = new LogRecord();
+        logRecord.setValue(data);
+        txid = writeLog(logRecord);
         saveLocalVerion(txid);
         this.txid = txid;
         return txid;
     }
 
-    synchronized long writeDeleteFileLog(String fileId) throws IOException {
+    synchronized long writeDeleteFileLog(String fileId) throws IOException, ExecutionException, InterruptedException {
         long txid = getNextTxid();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         CommonTools.writeString(os, "delete");
         CommonTools.writeString(os, fileId);
         byte[] data = os.toByteArray();
-        writeLog(txid, data);
+        LogRecord logRecord = new LogRecord();
+        logRecord.setValue(data);
+        txid = writeLog(logRecord);
         saveLocalVerion(txid);
         this.txid = txid;
         return txid;
@@ -200,8 +202,8 @@ public class FileServer extends BaseServer {
 
     @Override
     synchronized protected void updateLog(LogRecord logRec) {
-        if (logRec.getTransactionId() > this.txid) {
-            InputStream in = logRec.getPayLoadInputStream();
+        if (logRec.getOffset() > this.txid) {
+            InputStream in = new ByteArrayInputStream(logRec.getValue());
             try {
                 String action = CommonTools.readString(in);
                 if(action.equals("add")){
@@ -210,7 +212,7 @@ public class FileServer extends BaseServer {
                         @Override
                         public void run() {
                             try {
-                                downloadFile(fileId,logRec.getTransactionId());
+                                downloadFile(fileId,logRec.getOffset());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -220,7 +222,7 @@ public class FileServer extends BaseServer {
                 else if(action.equals("delete")){
                     String fileId = CommonTools.readString(in);
                     deleteFile(fileId);
-                    setTxFinished(logRec.getTransactionId());
+                    setTxFinished(logRec.getOffset());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -312,10 +314,6 @@ public class FileServer extends BaseServer {
             logger.warn(f.getAbsolutePath() + " 不存在，txid从0开始计算。");
         }
         this.txid = txid;
-
-
-//        super.start();
-
         httpClientManager.setConnection_timeout(3000);
         httpClientManager.setMax_connections_per_route(100);
         httpClientManager.setMax_total_connections(500);
@@ -329,11 +327,9 @@ public class FileServer extends BaseServer {
             public void run() {
                 while(true) {
                     try {
-
                         downloadFileServerRecs();
                         Thread.sleep(2000);
-                    } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
-                        e.printStackTrace();
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (KeeperException e) {

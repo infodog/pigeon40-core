@@ -133,7 +133,7 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
             boolean verInit = false;
             try {
                 verLogger = new VersionHistoryLogger();
-                verLogger.setLoggerDirectory(logDirectory + "/share");
+//                verLogger.setLoggerDirectory(logDirectory + "/share");
                 verLogger.setDs(ds);
                 verLogger.setVersionTableName("t_pigeontransaction");
                 verLogger.setVersionKeyName(versionKeyName);
