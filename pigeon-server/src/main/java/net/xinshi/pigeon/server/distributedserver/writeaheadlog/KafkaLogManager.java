@@ -8,6 +8,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -70,8 +71,9 @@ public class KafkaLogManager  implements ILogManager, Callback {
         properties.put("bootstrap.servers",bootstrapServers);
         properties.put("group.id",groupId);
         properties.put("enable.auto.commit","false");
-
-        consumer = new KafkaConsumer<>(properties);
+        properties.put("key.deserializer","");
+        ByteArrayDeserializer deserializer = new ByteArrayDeserializer();
+        consumer = new KafkaConsumer<>(properties,deserializer,deserializer);
         consumer.subscribe(Arrays.asList(topic));
 
         //producer
