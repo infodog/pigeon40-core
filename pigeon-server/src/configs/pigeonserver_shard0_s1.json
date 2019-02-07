@@ -1,5 +1,6 @@
 {
   "zk": "localhost:2181",
+  "kafkaSrevers": "localhost:9092",
   "pigeons": [
     {
       "host": "localhost",
