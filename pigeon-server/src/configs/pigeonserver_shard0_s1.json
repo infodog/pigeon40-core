@@ -1,5 +1,5 @@
 {
-  "zk": "p12.local.com:2181",
+  "zk": "localhost:2181",
   "pigeons": [
     {
       "host": "localhost",

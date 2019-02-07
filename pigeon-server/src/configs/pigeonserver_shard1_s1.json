@@ -1,10 +1,10 @@
 {
-    "zk":"p12.local.com:2181",
+    "zk":"localhost:2181",
     "pigeons": [
         {
             "host": "localhost",
             "type": "flexobject",
-            "shardFullPath":"/pigeon40/platform/object_cluster/shard1",
+            "shardFullPath":"/pigeon50/platform/object_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -14,14 +14,14 @@
             "table": "t_flexobject",
             "logDir": "../data/shard1_s1/flexobject1/",
             "maxCacheNumber": 10000,
-            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard1_s1?autoReconnect=true",
+            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon50_shard1_s1?autoReconnect=true",
             "dbUserName": "root",
             "dbPassword": "123456"
         },
         {
             "host": "localhost",
             "type": "list",
-            "shardFullPath":"/pigeon40/platform/list_cluster/shard1",
+            "shardFullPath":"/pigeon50/platform/list_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -30,14 +30,14 @@
             "version": "1",
             "table": "t_listband",
             "logDir": "../data/shard1_s1/list1/",
-            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard1_s1?autoReconnect=true",
+            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon50_shard1_s1?autoReconnect=true",
             "dbUserName": "root",
             "dbPassword": "123456"
         },
         {
             "host": "localhost",
             "type": "atom",
-            "shardFullPath":"/pigeon40/platform/atom_cluster/shard1",
+            "shardFullPath":"/pigeon50/platform/atom_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -46,14 +46,14 @@
             "version": "1",
             "table": "t_simpleatom",
             "logDir": "../data/shard1_s1/atom1/",
-            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard1_s1?autoReconnect=true",
+            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon50_shard1_s1?autoReconnect=true",
             "dbUserName": "root",
             "dbPassword": "123456"
         },
         {
             "host": "localhost",
             "type": "lock",
-            "shardFullPath":"/pigeon40/platform/locks_cluster/shard1",
+            "shardFullPath":"/pigeon50/platform/locks_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -64,7 +64,7 @@
         {
             "host": "localhost",
             "type": "idserver",
-            "shardFullPath":"/pigeon40/platform/id_cluster/shard1",
+            "shardFullPath":"/pigeon50/platform/id_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
@@ -73,14 +73,14 @@
             "idNumPerRound": "10000",
             "version": "1",
             "logDir": "../data/shard1_s1/idserver1",
-            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon40_shard1_s1?autoReconnect=true&rewriteBatchedStatements=true",
+            "dbUrl": "jdbc:mysql://127.0.0.1/pigeon50_shard1_s1?autoReconnect=true&rewriteBatchedStatements=true",
             "dbUserName": "root",
             "dbPassword": "123456"
         },
         {
             "host": "localhost",
             "type": "fileserver",
-            "shardFullPath":"/pigeon40/platform/file_cluster/shard1",
+            "shardFullPath":"/pigeon50/platform/file_cluster/shard1",
             "serviceHost":"localhost",
             "servicePort":8878,
             "master": true,
