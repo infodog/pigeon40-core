@@ -1,4 +1,4 @@
-package net.xinshi.pigeon.adapter.saas;
+package net.xinshi.saas;
 
 import net.xinshi.pigeon.flexobject.FlexObjectEntry;
 import net.xinshi.pigeon.flexobject.IFlexObjectFactory;
