@@ -1,11 +1,10 @@
-package net.xinshi.net.xinshi.pigeon.util;
+package net.xinshi.pigeon.util;
 
 import net.xinshi.pigeon.adapter.IPigeonEngine;
 import net.xinshi.pigeon.adapter.StaticPigeonEngine;
 import net.xinshi.pigeon.flexobject.IFlexObjectFactory;
 import net.xinshi.pigeon.list.ISortList;
 import net.xinshi.pigeon.list.SortListObject;
-import net.xinshi.pigeon.util.SoftHashMap;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
