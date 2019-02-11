@@ -669,14 +669,25 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
 
     @Override
     public boolean greaterAndInc(String name, int testValue, int incValue, long txid) throws Exception {
-        long rl = greaterAndIncReturnLong(name, testValue, incValue, txid);
-        return true;
+        try {
+            long rl = greaterAndIncReturnLong(name, testValue, incValue, txid);
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
+
     }
 
     @Override
     public boolean lessAndInc(String name, int testValue, int incValue, long txid) throws Exception {
-        long rl = lessAndIncReturnLong(name, testValue, incValue, txid);
-        return true;
+        try {
+            long rl = lessAndIncReturnLong(name, testValue, incValue, txid);
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
     }
 
     public long greaterAndIncReturnLong(String name, int testValue, int incValue, long txid) throws Exception {
