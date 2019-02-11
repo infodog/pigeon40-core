@@ -1,6 +1,6 @@
-package net.xinshi.pigeon50.adapter.impl;
+package net.xinshi.pigeon.adapter.impl;
 
-import net.xinshi.pigeon50.adapter.IPigeonEngine;
+import net.xinshi.pigeon.adapter.IPigeonEngine;
 import net.xinshi.pigeon.atom.IIntegerAtom;
 import net.xinshi.pigeon50.client.distributedclient.atomclient.DistributedAtom;
 import net.xinshi.pigeon50.client.distributedclient.fileclient.AliyunOssClient;

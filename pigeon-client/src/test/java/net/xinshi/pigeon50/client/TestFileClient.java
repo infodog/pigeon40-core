@@ -1,6 +1,6 @@
 package net.xinshi.pigeon50.client;
 
-import net.xinshi.pigeon50.adapter.impl.ZooKeeperPigeonEngine;
+import net.xinshi.pigeon.adapter.impl.ZooKeeperPigeonEngine;
 import net.xinshi.pigeon.filesystem.IFileSystem;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

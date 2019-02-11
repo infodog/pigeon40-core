@@ -1,4 +1,4 @@
-package net.xinshi.pigeon50.saas;
+package net.xinshi.pigeon.adapter.saas;
 
 import net.xinshi.pigeon.list.IListFactory;
 import net.xinshi.pigeon.list.ISortList;
