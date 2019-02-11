@@ -263,7 +263,7 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
 
     private boolean flushSnapShotToDB() throws SQLException {
 
-        long lastVersion = -1L;
+//        long lastVersion = -1L;
         PlatformTransactionManager transactionManager = this.txManager;
         DefaultTransactionDefinition dtf = new DefaultTransactionDefinition();
         dtf.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
@@ -338,10 +338,6 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
             if (conn != null && conn.isClosed() == false) {
                 conn.close();
             }
-        }
-        if (lastVersion < 1) {
-//            System.out.println("panic!!! atom (lastVersion < 1) = " + lastVersion);
-            logger.error("panic!!! atom (lastVersion < 1) = " + lastVersion);
         }
         dbOK = isok;
         return isok;
@@ -579,6 +575,7 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                     set_state_word(Constants.READONLY_STATE);
                 }
                 dbOK = false;
+                System.exit(-1);
                 savedbfailedcount++;
             }
         } catch (Throwable t) {
@@ -661,7 +658,11 @@ public class FastAtom implements IServerAtom, IPigeonPersistence {
                 }
             }
             writeLog("createAndSet", name, initValue, txid);
-            cacheLogger.putToDirtyCache(name, v);
+            AtomBean bean = new AtomBean();
+            bean.name = name;
+            bean.txid = txid;
+            bean.value = initValue;
+            cacheLogger.putToDirtyCache(name, bean);
         }
         return true;
     }

@@ -211,14 +211,6 @@ public class MysqlIDGenerator implements IIDGeneratorServer {
             ID = rs.getInt("NextValue");
             rs.close();
             stmt.close();
-            {
-                String line = Name + ":" + ID + ":" + forwardNum;
-                byte[] data = line.getBytes("UTF-8");
-                long ver = verLogger.logVersionHistory(data,txid);
-                if (ver < 1) {
-                    throw new Exception("logVersionHistory failed");
-                }
-            }
             if(hasTxidInDB) {
                 stmt = _conn.prepareStatement("Update t_ids set NextValue = NextValue + ?, txid=? where TableName=?");
                 stmt.setLong(1, forwardNum);

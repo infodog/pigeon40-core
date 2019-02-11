@@ -53,12 +53,33 @@ public class TestClient {
         long end = System.currentTimeMillis();
         System.out.println("testListAdd ok.time:" + (end - begin) + "ms");
     }
+    static public void testGetId() throws Exception{
+        for(int i=0; i<100; i++) {
+         long id = pigeonStoreEngine.getIdGenerator().getId("test_"+i);
+            System.out.println(id);
+        }
+    }
 
+    static public void testAtom() throws Exception{
+        for(int i=0; i<100; i++) {
+            pigeonStoreEngine.getAtom().createAndSet("test_"+i,i);
+        }
+        for(int i=0; i<100; i++){
+             long v = pigeonStoreEngine.getAtom().get("test_" + i);
+            pigeonStoreEngine.getAtom().greaterAndInc("test_"+i,50,1);
+            System.out.println(v);
+        }
+
+        for(int i=0; i<100; i++){
+            long v = pigeonStoreEngine.getAtom().get("test_" + i);
+            System.out.println(v);
+        }
+    }
     public static void main(String[] args) throws Exception {
         init();
         testFlexObjectAdd();
-//        testListAdd();
-
-
+        testGetId();
+        testListAdd();
+        testAtom();
     }
 }
