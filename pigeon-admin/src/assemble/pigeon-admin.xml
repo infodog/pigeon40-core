@@ -23,5 +23,9 @@
             <source>src/main/shellscripts/createPigeonCluster.sh</source>
             <outputDirectory></outputDirectory>
         </file>
+        <file>
+            <source>src/main/shellscripts/createIsonePigeons.sh</source>
+            <outputDirectory></outputDirectory>
+        </file>
     </files>
 </assembly>

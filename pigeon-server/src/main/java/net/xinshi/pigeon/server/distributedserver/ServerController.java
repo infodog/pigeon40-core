@@ -79,24 +79,35 @@ public class ServerController {
         String type = sc.getType();
         IServer server = null;
         if ("flexobject".equals(type)) {
+            logger.info("going to start flexobject server of instance name = " + instanceName + " ...");
             FlexObjectServerFactory factory = new FlexObjectServerFactory(sc);
             ILogManager logManager = buildLogManager(zk,sc);
+            logManager.setAsync(false);
+            logger.info("after buildLogManager. instance name = " + instanceName + " ...");
             factory.setLogManager(logManager);
             factory.setZk(zk);
             server = factory.createFlexObjectServer();
+            logger.info("after createFlexObjectServer. instance name = " + instanceName + " ...");
             server.start();
+            logger.info("after startFlexObjectServer. instance name = " + instanceName + " ...");
             servers.put(instanceName, server);
-            System.out.println("started flexobject server of instance name = " + instanceName + " ...");
+            logger.info("started flexobject server of instance name = " + instanceName + " ...");
         } else if ("list".equals(type)) {
+            logger.info("going to start list server of instance name = " + instanceName + " ...");
             ListServerFactory factory = new ListServerFactory(sc);
+            logger.info("new ListServerFactory, instance name = " + instanceName + " ...");
             ILogManager logManager = buildLogManager(zk,sc);
+            logger.info("buildLogManager, instance name = " + instanceName + " ...");
             factory.setLogManager(logManager);
             factory.setZk(zk);
+            logger.info("before createListServer, instance name = " + instanceName + " ...");
             server = factory.createListServer();
+            logger.info("after createListServer, instance name = " + instanceName + " ...");
             servers.put(instanceName, server);
             server.start();
-            System.out.println("started list server of instance name = " + instanceName + " ...");
+            logger.info("started list server of instance name = " + instanceName + " ...");
         } else if ("atom".equals(type)) {
+            logger.info("going to start atom server of instance name = " + instanceName + " ...");
             AtomServerFactory factory = new AtomServerFactory(sc);
             ILogManager logManager = buildLogManager(zk,sc);
             factory.setLogManager(logManager);
@@ -104,15 +115,18 @@ public class ServerController {
             server = factory.createAtomServer();
             server.start();
             servers.put(instanceName, server);
-            System.out.println("started atom of instance name = " + instanceName + " ...");
+            logger.info("started atom server of instance name = " + instanceName + " ...");
         } else if ("lock".equals(type)) {
+            logger.info("going to start lock  server of instance name = " + instanceName + " ...");
             NettyLockServerHandler lockServer = new NettyLockServerHandler(sc);
             servers.put(instanceName, lockServer);
             server = null;
             lockServer.init();
             BaseServer.registerServerToZookeeper(zk,sc);
-            System.out.println("started lock of instance name = " + instanceName + " ...");
+            logger.info("started lock server of instance name = " + instanceName + " ...");
+
         } else if ("idserver".equals(type)) {
+            logger.info("started id server of instance name = " + instanceName + " ...");
             IdServerFactory idServerFactory = new IdServerFactory(sc);
             ILogManager logManager = buildLogManager(zk,sc);
             idServerFactory.setLogManager(logManager);
@@ -120,8 +134,10 @@ public class ServerController {
             server = idServerFactory.createIdServer();
             server.start();
             servers.put(instanceName, server);
+            logger.info("started id server of instance name = " + instanceName + " ...");
         }
         else if ("fileserver".equals(type)) {
+            logger.info("going to start file server of instance name = " + instanceName + " ...");
             FileServerFactory fileServerFactory = new FileServerFactory(sc);
             ILogManager logManager = buildLogManager(zk,sc);
             fileServerFactory.setLogManager(logManager);
@@ -129,7 +145,7 @@ public class ServerController {
             server = fileServerFactory.createFileServer();
             server.start();
             servers.put(instanceName, server);
-            System.out.println("started fileServer of instance name = " + instanceName + " ...");
+            logger.info("started file server of instance name = " + instanceName + " ...");
         }
         return server;
     }
@@ -156,7 +172,6 @@ public class ServerController {
     }
 
     public void startServers() throws Exception {
-
         ZooKeeper zk = new ZooKeeper(zkConnectString,8000,null);
         for (ServerConfig sc : listConfigs) {
             try {
@@ -167,7 +182,7 @@ public class ServerController {
         }
     }
 
-    List<ServerConfig> createServerConfigs(String s) throws Exception {
+    List<ServerConfig> createServerConfigs(String s,int nettyPort) throws Exception {
         s = StringUtils.trim(s);
         JSONObject jo = new JSONObject(s);
         zkConnectString = jo.optString("zk");
@@ -178,12 +193,13 @@ public class ServerController {
         for (int j = 0; j < jconfigs.length(); j++) {
             JSONObject jconfig = jconfigs.getJSONObject(j);
             ServerConfig sc = ServerConfig.JSONObject2ServerConfig(jconfig);
+            sc.servicePort = nettyPort;
             listSC.add(sc);
         }
         return listSC;
     }
 
-    public void init() throws Exception {
+    public void init(int nettyPort) throws Exception {
         if (configfile != null) {
             File f = new File(configfile);
             FileInputStream is = new FileInputStream(f);
@@ -191,7 +207,7 @@ public class ServerController {
             is.read(b);
             is.close();
             String s = new String(b, "UTF-8");
-            listConfigs = createServerConfigs(s);
+            listConfigs = createServerConfigs(s,nettyPort);
             return;
         }
         throw new Exception("ServerController init error ...... ");

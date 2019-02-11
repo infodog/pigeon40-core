@@ -6,10 +6,7 @@ import net.xinshi.pigeon.server.distributedserver.writeaheadlog.LogRecord;
 import org.apache.zookeeper.*;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.omg.PortableServer.THREAD_POLICY_ID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
+
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -20,9 +17,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +39,8 @@ public abstract class BaseServer implements IServer, Watcher {
     String startTime;
     protected long writes = 0;
     protected long reads = 0;
-    private static final Logger LOG = LoggerFactory.getLogger(BaseServer.class);
+    Logger logger = Logger.getLogger(BaseServer.class.getName());
+
 
     protected long txid = 0;
     protected String shardFullPath = "";
@@ -151,8 +148,10 @@ public abstract class BaseServer implements IServer, Watcher {
         Thread.sleep(1000);
 //        writer = dlm.startLogSegmentNonPartitioned();
         if (!checkMaster()) {
+            logger.info("going to start download thread : " + sc.shardFullPath);
             startdownloadLogThread();
         } else {
+            logger.info("switching to master:"+sc.shardFullPath);
             switchToMaster();
         }
         startCheckMasterThread();
@@ -220,9 +219,13 @@ public abstract class BaseServer implements IServer, Watcher {
 
     void downloadLog() throws IOException {
         long nextTxId = getLocalLastTxId();
+        logger.info("downloadLog,nextTxId:" + nextTxId + ", " + sc.shardFullPath);
         logManager.seek(0,nextTxId);
         while (true) {
             List<LogRecord> logRecords = logManager.poll(Duration.ofSeconds(1));
+            if(logRecords.size()>0) {
+                logger.info("the logRecords.size=" + logRecords.size() + ", " + sc.shardFullPath);
+            }
             for (LogRecord r : logRecords) {
                 updateLog(r);
             }
@@ -233,6 +236,7 @@ public abstract class BaseServer implements IServer, Watcher {
     }
 
     protected long writeLog(LogRecord logRecord) throws IOException, ExecutionException, InterruptedException {
+        logger.info("writeLog:" + sc.shardFullPath);
         return logManager.writeLog(logRecord.getKey(),logRecord.getValue());
     }
 
@@ -296,26 +300,32 @@ public abstract class BaseServer implements IServer, Watcher {
             isSwitchingToMaster = true; //通知downloadThread to stop
             downloadLogThread.join(); //等待downloadThread to exit
         }
+        downloadLogThread = null;
         long lastShardTxId = 0;
 
         try {
             lastShardTxId = logManager.getLastOffset();
+            logger.info("the lastShardTxId=" + lastShardTxId+ "," + sc.shardFullPath);
         } catch (Exception e) {
             System.out.println(this.shardFullPath + " log is empty.");
         }
         long localTxid = getLocalLastTxId();
+        logger.info("localTxid=" + localTxid+"," + sc.shardFullPath);
         if (lastShardTxId <= localTxid) {
             //成为了Master
             setMaster(true);
             return;
         }
         //如果不是则下载日志到最新
-        while (localTxid < lastShardTxId) {
+        while (localTxid < lastShardTxId-1) {
+            logManager.seek(0,localTxid);
             List<LogRecord> logs = logManager.poll(Duration.ofSeconds(1));
+            logger.info("logs.size=" +logs.size()+"," + sc.shardFullPath);
             for(LogRecord r : logs){
                 updateLog(r);
                 localTxid = r.getOffset();
             }
+            logger.info("localTxid=" + localTxid+"," + sc.shardFullPath);
         }
         try {
             //现在再检查一下还是不是master
@@ -333,6 +343,7 @@ public abstract class BaseServer implements IServer, Watcher {
 
     protected boolean checkMaster() throws KeeperException, InterruptedException {
         try {
+//            logger.info("checking master:" + sc.shardFullPath);
             List<String> svrs = getZk().getChildren(sc.shardFullPath, this);
             Collections.sort(svrs);
             if (svrs.size() == 0) {
@@ -340,9 +351,12 @@ public abstract class BaseServer implements IServer, Watcher {
             }
             String svrName = svrs.get(0);
             String fullpath = sc.shardFullPath + "/" + svrName;
+//            logger.info("fullpath=" + fullpath + ",this.serverPath="+this.serverPath);
             if (fullpath.equals(this.serverPath)) {
+//                logger.info("true is master,fullpath=" + fullpath + ",this.serverPath="+this.serverPath);
                 return true;
             } else {
+//                logger.info("false is not master,fullpath=" + fullpath + ",this.serverPath="+this.serverPath);
                 return false;
             }
         }

@@ -9,6 +9,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class KafkaLogManager  implements ILogManager, Callback {
     String groupId;
     String topic;
     long offset;
-    boolean isAsyncWrite;
+    boolean isAsyncWrite = false;
 
     public boolean isAsyncWrite() {
         return isAsyncWrite;
@@ -74,7 +75,9 @@ public class KafkaLogManager  implements ILogManager, Callback {
         properties.put("key.deserializer","");
         ByteArrayDeserializer deserializer = new ByteArrayDeserializer();
         consumer = new KafkaConsumer<>(properties,deserializer,deserializer);
-        consumer.subscribe(Arrays.asList(topic));
+//        consumer.subscribe(Arrays.asList(topic));
+        TopicPartition topicPartition = new TopicPartition(topic,0);
+        consumer.assign(Arrays.asList(topicPartition));
 
         //producer
         Properties props = new Properties();
@@ -84,7 +87,8 @@ public class KafkaLogManager  implements ILogManager, Callback {
         props.put("batch.size", 16384);
         props.put("linger.ms", 0);
         props.put("buffer.memory", 33554432);
-        producer = new KafkaProducer<>(props);
+        ByteArraySerializer serializer = new ByteArraySerializer();
+        producer = new KafkaProducer<>(props,serializer,serializer);
     }
 
     @Override
@@ -96,7 +100,7 @@ public class KafkaLogManager  implements ILogManager, Callback {
         }
         else{
             producer.send(record,this);
-            return -1;
+            return ++offset;
         }
     }
 
@@ -104,7 +108,7 @@ public class KafkaLogManager  implements ILogManager, Callback {
     public List<LogRecord> poll(Duration timeout) {
 
         List<LogRecord> logRecs = new ArrayList<>();
-        ConsumerRecords<byte[], byte[]> records = consumer.poll(30);
+        ConsumerRecords<byte[], byte[]> records = consumer.poll(timeout);
         for (ConsumerRecord<byte[], byte[]> record : records) {
 //            System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
             LogRecord r = new LogRecord();
@@ -133,9 +137,16 @@ public class KafkaLogManager  implements ILogManager, Callback {
 
     }
 
+    @Override
+    public void setAsync(boolean async) {
+        isAsyncWrite = async;
+    }
+
 
     @Override
     public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-        offset = recordMetadata.offset();
+        if(offset < recordMetadata.offset()) {
+            offset = recordMetadata.offset();
+        }
     }
 }

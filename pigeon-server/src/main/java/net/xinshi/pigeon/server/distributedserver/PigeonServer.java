@@ -124,8 +124,10 @@ public class PigeonServer implements IServerHandler {
 
     public static void startNettyServers(int nettyPort,String configfile) throws Exception {
         controller = new ServerController(configfile);
-        controller.init();
+        controller.init(nettyPort);
+        logger.info("going to start servers.....");
         controller.start();
+        logger.info("servers started......");
         ChannelFactory factory =
                 new NioServerSocketChannelFactory(
                         Executors.newCachedThreadPool(),
@@ -143,7 +145,9 @@ public class PigeonServer implements IServerHandler {
         bootstrap.setOption("child.tcpNoDelay", true);
         bootstrap.setOption("child.keepAlive", true);
         bootstrap.setOption("reuseAddress", true);
+        logger.info("bootstrap bind " + nettyPort);
         bootstrap.bind(new InetSocketAddress(nettyPort));
+        logger.info("bootstrap bind completed!");
 
         //register servers to zookeeper
 

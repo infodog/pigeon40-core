@@ -1,4 +1,5 @@
 {
+  "kafkaBootstrapServers": "localhost:9092",
   "pods":[{
     "name":"%podname%",
     "desc": "saas 平台的主pigeon",
@@ -60,6 +61,15 @@
     },
     "file_cluster":{
       "name":"file1",
+      "name":"file1",
+      "enableAliyun": true,
+      "apiEndPoint": "oss-cn-shenzhen-internal.aliyuncs.com",
+      "internalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen-internal.aliyuncs.com",
+      "externalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen.aliyuncs.com",
+      "accessKeyId": "chouchouyaossapi@1679140868706031.onaliyun.com",
+      "accessKeySecret": "LTAIsOUvd6NUsztZ",
+      "bucketName": "chouchouyaossapi",
+      "includeList": "",
       "shards":[
         {
           "name":"shard1",

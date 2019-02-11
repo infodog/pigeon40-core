@@ -83,7 +83,7 @@ public class BaseServerFactory {
         lowlevelds.setDriverClassName(driverClass);
         lowlevelds.setUrl(sc.getDbUrl());
         logger.log(Level.INFO,"database url is:"+sc.getDbUrl());
-        System.out.println("database url is:" + sc.getDbUrl());
+//        System.out.println("database url is:" + sc.getDbUrl());
         lowlevelds.setUsername(sc.getDbUserName());
         lowlevelds.setPassword(sc.getDbPassword());
         lowlevelds.addConnectionProperty("socketTimeout", "1200000");
@@ -99,6 +99,7 @@ public class BaseServerFactory {
         ds = new TransactionAwareDataSourceProxy(lowlevelds);
         txManager = new DataSourceTransactionManager();
         txManager.setDataSource(this.ds);
+        logger.info("createDs finished!");
         return ds;
     }
 

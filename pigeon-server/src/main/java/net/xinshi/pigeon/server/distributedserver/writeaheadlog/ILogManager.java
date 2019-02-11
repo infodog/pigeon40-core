@@ -8,4 +8,5 @@ public interface ILogManager {
     List<LogRecord> poll(java.time.Duration timeout);
     void seek(int partition,long offset);
     long getLastOffset();
+    void setAsync(boolean async);
 }

@@ -88,7 +88,9 @@ public class Client extends Thread implements Comparable<Client> {
 
     void makeConnection(){
         Channel channel = null;
+        logger.info("connecting to " + host + ":" + port);
         ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(host, port));
+
         while(true){
             connectFuture.awaitUninterruptibly();
             if(connectFuture.isDone()){
@@ -99,7 +101,11 @@ public class Client extends Thread implements Comparable<Client> {
 //                    vecChannels.add(channel);
                     logger.log(Level.INFO,"channel connected,channel id is " + channel.getId());
                 }
+
                 break;
+            }
+            else{
+                logger.info("server not online " + host + ":" + port );
             }
         }
     }

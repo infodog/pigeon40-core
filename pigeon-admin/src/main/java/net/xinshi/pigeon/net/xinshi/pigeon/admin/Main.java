@@ -3,6 +3,7 @@ package net.xinshi.pigeon.net.xinshi.pigeon.admin;
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
@@ -18,6 +19,7 @@ import java.security.acl.Acl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
@@ -29,6 +31,7 @@ import static org.apache.zookeeper.CreateMode.PERSISTENT;
 
 public class Main {
     static String g_zooConnectString;
+    static String g_kafkaBootstrapString;
     public static void main(String[] args) throws IOException, JSONException, KeeperException, InterruptedException, URISyntaxException {
         int max_int = Integer.MAX_VALUE;
         String zooConnectString = args[0];
@@ -48,9 +51,15 @@ public class Main {
             podName = args[2];
         }
 
+        if(args.length>3){
+            g_kafkaBootstrapString = args[3];
+        }
         configString = configString.replaceAll("%podname%",podName);
         JSONObject jconfig = new JSONObject(configString);
-        System.out.println("connectString=" + zooConnectString + ",podName=" + podName + ", configString=" + configString);
+        if(g_kafkaBootstrapString==null){
+            g_kafkaBootstrapString = jconfig.optString("kafkaBootstrapServers");
+        }
+        System.out.println("connectString=" + zooConnectString + ",podName=" + podName +",g_kafkaBootstrapString=" + g_kafkaBootstrapString);
 
         try {
             zk.create("/pigeon50", "pigeon50 root".getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
@@ -121,39 +130,62 @@ public class Main {
         System.out.println("create pod succeeded.");
     }
 
-    private static void createLogTopic(String logName, AdminClient kafkaAdminClient){
+    private static void createLogTopic(String logName, AdminClient kafkaAdminClient) throws ExecutionException, InterruptedException {
         //kafka topic
         NewTopic topic = new NewTopic(logName,1, (short) 1);
-        kafkaAdminClient.createTopics(Arrays.<NewTopic>asList(topic));
+        CreateTopicsResult result = kafkaAdminClient.createTopics(Arrays.<NewTopic>asList(topic));
+        Object o = result.all().get();
+//        System.out.println(o.toString());
     }
 
     private static void createCluster(ZooKeeper zk,String parentPath, JSONObject cluster,String type) throws JSONException, IOException, KeeperException, InterruptedException {
         JSONObject data = new JSONObject();
+        JSONArray shards = cluster.optJSONArray("shards");
+        data = cluster;
         data.put("name",cluster.optString("name"));
         data.put("type", type);
+        data.remove("shards");
+
         String clusterPath = parentPath + "/" + type;
         java.util.Properties properties = new java.util.Properties();
 
-        properties.setProperty("bootstrap.servers",g_zooConnectString);
+        properties.setProperty("bootstrap.servers",g_kafkaBootstrapString);
         properties.setProperty("client.id","pigeon50.admin");
         AdminClient kafkaAdminClient = AdminClient.create(properties);
-
         try {
+            try {
+                zk.create(clusterPath, data.toString().getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
+                System.out.println("create node " + clusterPath);
+            }
+            catch(Exception e){
+                System.out.println("create clusterPath failed," + clusterPath);
+            }
 
-            zk.create(clusterPath, data.toString().getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
-            System.out.println("create node " + clusterPath);
-            JSONArray shards = cluster.optJSONArray("shards");
             if (shards != null) {
                 for (int i = 0; i < shards.length(); i++) {
                     JSONObject jshard = shards.optJSONObject(i);
                     JSONObject shardData = jshard;
                     String shardPath = clusterPath + "/shard" + i;
-                    zk.create(shardPath, shardData.toString().getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
-                    String logName = shardData.optString("logName");
-                    if (StringUtils.isNotBlank(logName)) {
-                        createLogTopic(logName,kafkaAdminClient);
-                    }
+                    try {
+                        zk.create(shardPath, shardData.toString().getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, PERSISTENT);
 
+                        System.out.println("create shard " + i + " succeeded.");
+                    }
+                    catch(Exception e){
+                        //e.printStackTrace();
+                        System.out.println("create shard " + i + " failed." + e.getMessage());
+                    }
+                    String logName = shardData.optString("logName");
+                    try {
+
+                        if (StringUtils.isNotBlank(logName)) {
+                            createLogTopic(logName, kafkaAdminClient);
+                        }
+                        System.out.println("create log topic succeeded." + logName);
+                    }
+                    catch(Exception e){
+                        System.out.println("create log topic failed." + logName);
+                    }
                 }
             }
             System.out.println("create node " + clusterPath + " succeeded!");
@@ -161,6 +193,5 @@ public class Main {
         catch(Exception e){
             System.out.println("create cluster failed:" + clusterPath);
         }
-
     }
 }

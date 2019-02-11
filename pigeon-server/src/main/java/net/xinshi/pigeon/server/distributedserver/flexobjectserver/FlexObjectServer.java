@@ -53,8 +53,8 @@ public class FlexObjectServer extends BaseServer {
         LogRecord logRecord = new LogRecord();
         logRecord.setValue(os.toByteArray());
         logRecord.setKey(entry.getName().getBytes("utf-8"));
-
 //        writeLog(txid,os.toByteArray());
+        txid = writeLog(logRecord);
         return txid;
     }
 
