@@ -61,15 +61,13 @@
     },
     "file_cluster":{
       "name":"file1",
-      "name":"file1",
       "enableAliyun": true,
-      "apiEndPoint": "oss-cn-shenzhen-internal.aliyuncs.com",
-      "internalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen-internal.aliyuncs.com",
-      "externalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen.aliyuncs.com",
-      "accessKeyId": "chouchouyaossapi@1679140868706031.onaliyun.com",
-      "accessKeySecret": "LTAIsOUvd6NUsztZ",
-      "bucketName": "chouchouyaossapi",
-      "includeList": "",
+      "apiEndPoint": "oss-cn-shenzhen.aliyuncs.com",
+      "internalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen-internal.aliyuncs.com/",
+      "externalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen.aliyuncs.com/",
+      "accessKeyId": "LTAIM74VlMZVX6mb",
+      "accessKeySecret": "mKAwqKJv14TnqtYIoL7iUmL6AFVkQ8",
+      "bucketName": "chouchouyapics",
       "shards":[
         {
           "name":"shard1",
