@@ -90,11 +90,16 @@ public class AliyunOssClient implements IFileSystem {
 
     public void setIncludeList(String includeList) {
         this.includeList = includeList;
-        this.includeFileExts = includeList.split(",");
+        if(StringUtils.isBlank(includeList)){
+            this.includeFileExts = null;
+        }
+        else {
+            this.includeFileExts = includeList.split(",");
+        }
     }
 
     boolean isIncluded(String filePath){
-        if(includeFileExts.length==0){
+        if(this.includeFileExts==null){
             return true;
         }
         String ext = getExtension(filePath);

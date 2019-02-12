@@ -91,7 +91,7 @@
     "file_cluster":{
       "name":"file1",
       "enableAliyun": true,
-      "apiEndPoint": "oss-cn-shenzhen-internal.aliyuncs.com",
+      "apiEndPoint": "oss-cn-shenzhen.aliyuncs.com",
       "internalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen-internal.aliyuncs.com",
       "externalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen.aliyuncs.com",
       "accessKeyId": "chouchouyaossapi@1679140868706031.onaliyun.com",

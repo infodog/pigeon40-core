@@ -11,7 +11,7 @@ public class TestFileClient {
     @BeforeClass
     static public void init() throws Exception {
         String zkConnectString = "127.0.0.1:2181";
-        String podPath = "/pigeon50/pigeonSaas";
+        String podPath = "/pigeon50/platform";
         try {
             pigeonStoreEngine = new ZooKeeperPigeonEngine(zkConnectString, podPath);
             System.out.println("init called ...........");

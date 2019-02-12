@@ -113,60 +113,48 @@ public class FileServer extends BaseServer {
         else{
             finishedTxids.add(txid);
         }
-
     }
 
     private void downloadFile(String fileId,long txid) throws Exception {
-        FileID fileRec = FileID.parse(fileId);
-        String internalUrl = getInternalUrl(fileRec.getNodeName(),fileRec.getInstanceName());
-        if(internalUrl==null){
-            logger.warn("no internalUrl, the server maybe down. fileId=" + fileId );
-            logger.error("download error:<" + fileId + "><" + txid + ">" );
-            setTxFinished(txid);
-            return;
-        }
-        internalUrl +=  fileRec.getPath();
-        URL url = new URL(internalUrl);
-        InputStream in = url.openStream();
-
-       /* HttpClient client = httpClientManager.getHttpClient();
-
-        HttpGet get = new HttpGet(internalUrl);
-
-        InputStream in = client.execute(get,new ResponseHandler<InputStream>(){
-            @Override
-            public InputStream handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    return entity.getContent();
-                } else {
-
-                    return null;
-                }
+            FileID fileRec = FileID.parse(fileId);
+            String internalUrl = getInternalUrl(fileRec.getNodeName(),fileRec.getInstanceName());
+            if(internalUrl==null){
+                logger.warn("no internalUrl, the server maybe down. fileId=" + fileId );
+                logger.error("download error:<" + fileId + "><" + txid + ">" );
+                setTxFinished(txid);
+                return;
             }
-        });
-*/
-        if(in == null){
-            logger.warn("no internalUrl, the server maybe down. fileId=" + fileId );
-            logger.error("download error:<" + fileId + "><" + txid + ">" );
+            internalUrl +=  fileRec.getPath();
+        try {
+            URL url = new URL(internalUrl);
+            InputStream in = url.openStream();
+
+            if(in == null){
+                logger.warn("no internalUrl, the server maybe down. fileId=" + fileId );
+                logger.error("download error:<" + fileId + "><" + txid + ">" );
+                setTxFinished(txid);
+                return;
+            }
+            int pos  = fileRec.getPath().lastIndexOf("/");
+            String path = fileRec.getPath().substring(0,pos);
+            File fileDir = new File(getSc().getBaseDir(),path);
+            fileDir.mkdirs();
+            byte[] buf = new byte[8192];
+            File fullFile = new File(getSc().getBaseDir(),fileRec.getPath());
+            FileOutputStream fos = new FileOutputStream(fullFile);
+            int n;
+            while((n = in.read(buf)) >= 0){
+                fos.write(buf,0,n);
+            }
+            fos.close();
+            in.close();
             setTxFinished(txid);
-            return;
+            LOG.info("filedownload fileId=" + fileId +", txid=" +txid);
+        } catch (IOException e) {
+            logger.error("txid:" + txid + ",url not downloaded:::" + internalUrl);
+            setTxFinished(txid);
         }
-        int pos  = fileRec.getPath().lastIndexOf("/");
-        String path = fileRec.getPath().substring(0,pos);
-        File fileDir = new File(getSc().getBaseDir(),path);
-        fileDir.mkdirs();
-        byte[] buf = new byte[8192];
-        File fullFile = new File(getSc().getBaseDir(),fileRec.getPath());
-        FileOutputStream fos = new FileOutputStream(fullFile);
-        int n;
-        while((n = in.read(buf)) >= 0){
-            fos.write(buf,0,n);
-        }
-        fos.close();
-        in.close();
-        setTxFinished(txid);
-        LOG.warn("filedownload fileId=" + fileId +", txid=" +txid);
+
 
     }
 
@@ -308,6 +296,7 @@ public class FileServer extends BaseServer {
         try {
             FileInputStream fis = new FileInputStream(f);
             txid = CommonTools.readLong(fis);
+            logger.info("fileserver txid="+txid);
 
         }
         catch(Exception e){

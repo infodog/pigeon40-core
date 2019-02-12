@@ -19,7 +19,11 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.json.JSONObject;
 
+import java.util.logging.Logger;
+
 public class ZooKeeperPigeonEngine implements IPigeonEngine {
+
+    Logger logger = Logger.getLogger("ZooKeeperPigeonEngine");
 
     private NodesDispatcher nodesDispatcher = null;
     DistributedFlexObjectFactory flexobjectFactory;
@@ -50,14 +54,14 @@ public class ZooKeeperPigeonEngine implements IPigeonEngine {
         Stat stat = zk.exists(podPath + "/file_cluster",null);
         if(stat!=null){
             //not exists
-            this.fileSystem = new NettyFileClient(this.nodesDispatcher,connectString,podPath + "/file_cluster");
-            this.fileSystem.init();
+
             Stat stat1 = new Stat();
             byte[] data = zk.getData(podPath + "/file_cluster", false, stat1);
             String s = new String(data, "utf-8");
             JSONObject jsonObject = new JSONObject(s);
             boolean enableAliyun = jsonObject.optBoolean("enableAliyun");
             if(enableAliyun){
+
                 String apiEndPoint = jsonObject.optString("apiEndPoint");
                 String internalUrlPrefix = jsonObject.optString("internalUrlPrefix");
                 String externalUrlPrefix = jsonObject.optString("externalUrlPrefix");
@@ -75,9 +79,13 @@ public class ZooKeeperPigeonEngine implements IPigeonEngine {
                 aliyunOssClient.setBucketName(bucketName);
                 aliyunOssClient.setIncludeList(includeList);
                 aliyunOssClient.setLocalFileSystem(this.fileSystem);
+                aliyunOssClient.init();
                 this.fileSystem = aliyunOssClient;
-
             }
+        }
+        else{
+            this.fileSystem = new NettyFileClient(this.nodesDispatcher,connectString,podPath + "/file_cluster");
+            this.fileSystem.init();
         }
 
         zk.close();
