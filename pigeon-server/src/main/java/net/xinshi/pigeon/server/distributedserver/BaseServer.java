@@ -149,10 +149,12 @@ public abstract class BaseServer implements IServer, Watcher {
 //        writer = dlm.startLogSegmentNonPartitioned();
         if (!checkMaster()) {
             logger.info("going to start download thread : " + sc.shardFullPath);
+            isMaster = false;
             startdownloadLogThread();
         } else {
-            logger.info("switching to master:"+sc.shardFullPath);
+            logger.info("on start, become:"+sc.shardFullPath);
             switchToMaster();
+            System.out.println("on start switchedToMaster.");
         }
         startCheckMasterThread();
     }
@@ -171,7 +173,7 @@ public abstract class BaseServer implements IServer, Watcher {
 
     protected synchronized long getNextTxid() {
         long newTxid = getLocalLastTxId() + 1;
-        System.out.println("getNextTxid,newId=" + newTxid);
+//        System.out.println("getNextTxid,newId=" + newTxid);
         return newTxid;
     }
 
@@ -183,6 +185,7 @@ public abstract class BaseServer implements IServer, Watcher {
                 switchToMaster();
             }
             if (!goMaster && isMaster) {
+                System.out.println("check master failed, now switch to slave.");
                 switchToSlave();
             }
         } catch (Exception e) {
@@ -190,7 +193,7 @@ public abstract class BaseServer implements IServer, Watcher {
         }
     }
 
-    public static String registerServerToZookeeper(ZooKeeper zk, ServerConfig sc) throws UnsupportedEncodingException, KeeperException, InterruptedException, JSONException {
+    static public  String registerServerToZookeeper(ZooKeeper zk, ServerConfig sc) throws UnsupportedEncodingException, KeeperException, InterruptedException, JSONException {
         JSONObject jnodeData = new JSONObject(sc);
         jnodeData.put("shardExternalUrl",sc.getShardExternalUrl());
         jnodeData.put("shardInternalUrl",sc.getShardInternalUrl());
@@ -202,12 +205,14 @@ public abstract class BaseServer implements IServer, Watcher {
         jnodeData.remove("driverClass");
         byte[] nodeData = jnodeData.toString().getBytes("utf-8");
         String serverPath = sc.shardFullPath + "/server_";
+        System.out.println("registering " + serverPath);
         String actualServerPath = zk.create(serverPath, nodeData, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+        System.out.println("registered " + actualServerPath);
         return actualServerPath;
     }
 
     public String registerServerToZookeeper(ZooKeeper zk) throws UnsupportedEncodingException, KeeperException, InterruptedException, JSONException {
-        this.serverPath = registerServerToZookeeper(zk, this.sc);
+        this.serverPath = BaseServer.registerServerToZookeeper(zk, this.sc);
         return this.serverPath;
     }
 
@@ -217,14 +222,14 @@ public abstract class BaseServer implements IServer, Watcher {
     protected abstract long getLocalLastTxId();
 
 
-    void downloadLog() throws IOException {
+    synchronized  void downloadLog() throws IOException {
         long nextTxId = getLocalLastTxId();
-        logger.info("downloadLog,nextTxId:" + nextTxId + ", " + sc.shardFullPath);
+        logger.fine("downloadLog,nextTxId:" + nextTxId + ", " + sc.shardFullPath);
         logManager.seek(0,nextTxId);
         while (true) {
             List<LogRecord> logRecords = logManager.poll(Duration.ofSeconds(1));
             if(logRecords.size()>0) {
-                logger.info("the logRecords.size=" + logRecords.size() + ", " + sc.shardFullPath);
+                logger.fine("downloading logs， the logRecords.size=" + logRecords.size() + ", " + sc.shardFullPath);
             }
             for (LogRecord r : logRecords) {
                 updateLog(r);
@@ -236,11 +241,13 @@ public abstract class BaseServer implements IServer, Watcher {
     }
 
     protected long writeLog(LogRecord logRecord) throws IOException, ExecutionException, InterruptedException {
-        logger.info("writeLog:" + sc.shardFullPath);
+        logger.fine("writeLog:" + sc.shardFullPath);
         return logManager.writeLog(logRecord.getKey(),logRecord.getValue());
     }
 
-    protected void startdownloadLogThread() throws IOException {
+    protected void startdownloadLogThread() throws IOException, InterruptedException {
+        stopDownloadThread();
+
         isSwitchingToMaster = false;
         downloadLogThread = new Thread(new Runnable() {
             @Override
@@ -281,6 +288,7 @@ public abstract class BaseServer implements IServer, Watcher {
         this.isMaster = false;
         try {
             getZk().delete(this.serverPath, -1);
+            System.out.println("switch to slave......");
             registerServerToZookeeper(getZk());
             startdownloadLogThread();
         } catch (Exception e) {
@@ -292,27 +300,39 @@ public abstract class BaseServer implements IServer, Watcher {
 
     }
 
-
-    protected void switchToMaster() throws IOException, InterruptedException {
-        //TODO:download logs, when we are caught up, setMaster(true)
-//        setMaster(true);
+    synchronized  void stopDownloadThread() throws InterruptedException {
         if (downloadLogThread != null) {
             isSwitchingToMaster = true; //通知downloadThread to stop
             downloadLogThread.join(); //等待downloadThread to exit
         }
         downloadLogThread = null;
+    }
+
+    protected void switchToMaster() throws IOException, InterruptedException {
+        //TODO:download logs, when we are caught up, setMaster(true)
+//        setMaster(true);
+        if(isMaster){
+            return;
+        }
+        System.out.println("switching to master...");
+        isSwitchingToMaster = true;
+
+        stopDownloadThread();
+        System.out.println("download thread stoped...");
         long lastShardTxId = 0;
 
         try {
             lastShardTxId = logManager.getLastOffset();
-            logger.info("the lastShardTxId=" + lastShardTxId+ "," + sc.shardFullPath);
+//            logger.fine("the lastShardTxId=" + lastShardTxId+ "," + sc.shardFullPath);
         } catch (Exception e) {
             System.out.println(this.shardFullPath + " log is empty.");
         }
         long localTxid = getLocalLastTxId();
-        logger.info("localTxid=" + localTxid+"," + sc.shardFullPath);
+//        logger.fine("localTxid=" + localTxid+"," + sc.shardFullPath);
         if (lastShardTxId <= localTxid) {
             //成为了Master
+            isSwitchingToMaster = false;
+
             setMaster(true);
             return;
         }
@@ -320,17 +340,20 @@ public abstract class BaseServer implements IServer, Watcher {
         while (localTxid < lastShardTxId-1) {
             logManager.seek(0,localTxid);
             List<LogRecord> logs = logManager.poll(Duration.ofSeconds(1));
-            logger.info("logs.size=" +logs.size()+"," + sc.shardFullPath);
+//            logger.fine("logs.size=" +logs.size()+"," + sc.shardFullPath);
             for(LogRecord r : logs){
                 updateLog(r);
                 localTxid = r.getOffset();
             }
-            logger.info("localTxid=" + localTxid+"," + sc.shardFullPath);
+//            logger.fine("localTxid=" + localTxid+"," + sc.shardFullPath);
         }
         try {
             //现在再检查一下还是不是master
             if (checkMaster()) {
+                isSwitchingToMaster = false;
+
                 setMaster(true);
+
             } else {
                 //不能成为master继续下载日志
                 startdownloadLogThread();
@@ -347,7 +370,12 @@ public abstract class BaseServer implements IServer, Watcher {
             List<String> svrs = getZk().getChildren(sc.shardFullPath, this);
             Collections.sort(svrs);
             if (svrs.size() == 0) {
-                return false;
+                //如果目前没有master,我们自己先注册自己作为master
+                System.out.println("svrs.size==0,current server is " + this.serverPath);
+                getZk().delete(this.serverPath, -1);
+                registerServerToZookeeper(zk);
+                System.out.println("after re register server, serverpath=" + this.serverPath);
+                return true;
             }
             String svrName = svrs.get(0);
             String fullpath = sc.shardFullPath + "/" + svrName;
@@ -369,9 +397,12 @@ public abstract class BaseServer implements IServer, Watcher {
 
     @Override
     public void joinCluster(ZooKeeper zk, ILogManager logManager) throws Exception {
-        this.zk = zk;
-        this.logManager = logManager;
-        this.serverPath = registerServerToZookeeper(zk);
+//        this.zk = zk;
+//        this.logManager = logManager;
+//        this.serverPath = registerServerToZookeeper(zk);
+
+        throw new Exception("not implemented.");
+
     }
 
 
@@ -385,12 +416,15 @@ public abstract class BaseServer implements IServer, Watcher {
     }
 
     public void setMaster(boolean master) {
+
         isMaster = master;
     }
 
     @Override
     public void process(WatchedEvent event) {
-        try {
+        System.out.println("process zookeeper event:" + event.toString() + ", return ......");
+
+        /*try {
             if (checkMaster()) {
                 switchToMaster();
             }
@@ -400,7 +434,7 @@ public abstract class BaseServer implements IServer, Watcher {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }
 

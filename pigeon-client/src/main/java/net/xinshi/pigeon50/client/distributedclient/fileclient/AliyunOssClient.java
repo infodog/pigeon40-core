@@ -167,7 +167,12 @@ public class AliyunOssClient implements IFileSystem {
     }
 
     public void setInternalUrlPrefix(String internalUrlPrefix) {
-        this.internalUrlPrefix = internalUrlPrefix;
+        if(internalUrlPrefix.endsWith("/")) {
+            this.internalUrlPrefix = internalUrlPrefix;
+        }
+        else{
+            this.internalUrlPrefix = "/" + internalUrlPrefix;
+        }
     }
 
     public String getExternalUrlPrefix() {
@@ -175,7 +180,12 @@ public class AliyunOssClient implements IFileSystem {
     }
 
     public void setExternalUrlPrefix(String externalUrlPrefix) {
-        this.externalUrlPrefix = externalUrlPrefix;
+        if(externalUrlPrefix.endsWith("/")) {
+            this.externalUrlPrefix = externalUrlPrefix;
+        }
+        else {
+            this.externalUrlPrefix = "/" + externalUrlPrefix;
+        }
     }
 
     public String getAccessKeyId() {
@@ -211,7 +221,7 @@ public class AliyunOssClient implements IFileSystem {
             if(path.startsWith("/")){
                 path = path.substring(1);
             }
-            return "po/" + path;
+            return "img/" + path;
         }
         else{
             return "pn/" + fileId;
@@ -308,6 +318,7 @@ public class AliyunOssClient implements IFileSystem {
             String filePath = getFilePath();
             String fileId = bucketName + filePath + getExtension(name);
             String aliyunId = getAliYunObjectId(fileId);
+            System.out.println("addbytes to aliyun " + aliyunId);;
             ossClient.putObject(bucketName, aliyunId, new ByteArrayInputStream(bytes));
             return fileId;
         }

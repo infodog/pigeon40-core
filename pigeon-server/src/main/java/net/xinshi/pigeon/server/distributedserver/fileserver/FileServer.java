@@ -149,7 +149,7 @@ public class FileServer extends BaseServer {
             fos.close();
             in.close();
             setTxFinished(txid);
-            LOG.info("filedownload fileId=" + fileId +", txid=" +txid);
+            LOG.debug("filedownload fileId=" + fileId +", txid=" +txid);
         } catch (IOException e) {
             logger.error("txid:" + txid + ",url not downloaded:::" + internalUrl);
             setTxFinished(txid);
@@ -174,7 +174,7 @@ public class FileServer extends BaseServer {
     }
 
     synchronized long writeDeleteFileLog(String fileId) throws IOException, ExecutionException, InterruptedException {
-        long txid = getNextTxid();
+//        long txid = getNextTxid();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         CommonTools.writeString(os, "delete");
         CommonTools.writeString(os, fileId);
@@ -296,7 +296,7 @@ public class FileServer extends BaseServer {
         try {
             FileInputStream fis = new FileInputStream(f);
             txid = CommonTools.readLong(fis);
-            logger.info("fileserver txid="+txid);
+            logger.debug("fileserver txid="+txid);
 
         }
         catch(Exception e){

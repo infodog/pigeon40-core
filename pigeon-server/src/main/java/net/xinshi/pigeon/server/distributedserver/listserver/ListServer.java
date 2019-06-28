@@ -59,7 +59,7 @@ public class ListServer extends BaseServer {
             CommonTools.writeString(os, listId);
             CommonTools.writeString(os, key);
             CommonTools.writeString(os, objId);
-            long txid = getNextTxid();
+//            long txid = getNextTxid();
             byte[] data = os.toByteArray();
             LogRecord logRecord = new LogRecord();
             logRecord.setValue(data);
@@ -81,7 +81,7 @@ public class ListServer extends BaseServer {
             CommonTools.writeString(os, key);
             CommonTools.writeString(os, objid);
 
-            long txid = getNextTxid();
+//            long txid = getNextTxid();
             byte[] data = os.toByteArray();
             LogRecord logRecord = new LogRecord();
             logRecord.setValue(data);
@@ -104,7 +104,7 @@ public class ListServer extends BaseServer {
             CommonTools.writeString(os, oldobjid);
             CommonTools.writeString(os, key);
             CommonTools.writeString(os, objid);
-            long txid = getNextTxid();
+//            long txid = getNextTxid();
             byte[] data = os.toByteArray();
             LogRecord logRecord = new LogRecord();
             logRecord.setValue(data);
@@ -205,17 +205,17 @@ public class ListServer extends BaseServer {
             long txid = 0;
             try {
                 txid = writeAddLog(listId, key, objid);
-                System.out.println("writeAddLog " + listId + "," + key + "," + objid+","+txid);
+//                System.out.println("writeAddLog " + listId + "," + key + "," + objid+","+txid);
             } catch (Exception e) {
                 e.printStackTrace();
-                switchToSlave();
+//                switchToSlave();
                 CommonTools.writeString(out, "error:" + e.getMessage());
                 return;
             }
             llist = factory.getList(listId, true);
-            System.out.println("getList " + listId);
+//            System.out.println("getList " + listId);
             result = llist.add(new SortListObject(key, objid, txid));
-            System.out.println("list.add " + key + "," + objid + "," + txid + ",result=" + result);
+//            System.out.println("list.add " + key + "," + objid + "," + txid + ",result=" + result);
             if (result) {
                 CommonTools.writeString(out, "ok");
             } else {
@@ -278,7 +278,7 @@ public class ListServer extends BaseServer {
                     txid = writeAddLog(listId, obj.getKey(), obj.getObjid());
                 } catch (Exception e) {
                     e.printStackTrace();
-                    switchToSlave();
+//                    switchToSlave();
                     CommonTools.writeString(out, "error:" + e.getMessage());
                     return;
                 }
@@ -410,7 +410,7 @@ public class ListServer extends BaseServer {
                 txid = writeReorderLog(listId, old_key, old_objid, new_key, new_objid);
             } catch (Exception e) {
                 e.printStackTrace();
-                switchToSlave();
+//                switchToSlave();
                 CommonTools.writeString(out, "error:" + e.getMessage());
                 return;
             }

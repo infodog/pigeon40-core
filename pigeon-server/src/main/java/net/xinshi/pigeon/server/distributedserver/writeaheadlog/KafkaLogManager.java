@@ -67,12 +67,13 @@ public class KafkaLogManager  implements ILogManager, Callback {
         this.topic = topic;
     }
 
-    public void init(){
+    synchronized  public void init(){
         Properties properties = new Properties();
         properties.put("bootstrap.servers",bootstrapServers);
         properties.put("group.id",groupId);
         properties.put("enable.auto.commit","false");
         properties.put("key.deserializer","");
+        properties.put("max.partition.fetch.bytes",1024*1024*16);
         ByteArrayDeserializer deserializer = new ByteArrayDeserializer();
         consumer = new KafkaConsumer<>(properties,deserializer,deserializer);
 //        consumer.subscribe(Arrays.asList(topic));
@@ -85,6 +86,7 @@ public class KafkaLogManager  implements ILogManager, Callback {
         props.put("acks", "all");
         props.put("delivery.timeout.ms", 30000);
         props.put("batch.size", 16384);
+        props.put("max.request.size", 1024*1024*16);//10M
         props.put("linger.ms", 0);
         props.put("buffer.memory", 33554432);
         ByteArraySerializer serializer = new ByteArraySerializer();
@@ -92,7 +94,7 @@ public class KafkaLogManager  implements ILogManager, Callback {
     }
 
     @Override
-    public long writeLog(byte[] key, byte[] value) throws ExecutionException, InterruptedException {
+    synchronized   public long writeLog(byte[] key, byte[] value) throws ExecutionException, InterruptedException {
         ProducerRecord<byte[],byte[]> record = new ProducerRecord<byte[],byte[]>(topic, key, value);
         if(isAsyncWrite==false) {
             offset = producer.send(record).get().offset();
@@ -105,7 +107,7 @@ public class KafkaLogManager  implements ILogManager, Callback {
     }
 
     @Override
-    public List<LogRecord> poll(Duration timeout) {
+    synchronized  public List<LogRecord> poll(Duration timeout) {
 
         List<LogRecord> logRecs = new ArrayList<>();
         ConsumerRecords<byte[], byte[]> records = consumer.poll(timeout);
@@ -122,19 +124,18 @@ public class KafkaLogManager  implements ILogManager, Callback {
     }
 
     @Override
-    public void seek(int partition, long offset) {
+    synchronized  public void seek(int partition, long offset) {
         consumer.seek(new TopicPartition(topic,partition),offset);
     }
 
     @Override
-    public long getLastOffset() {
+    synchronized  public long getLastOffset() {
         List<TopicPartition> partitions = new ArrayList<>();
         TopicPartition actualTopicPartition = new TopicPartition(topic, 0);
         partitions.add(actualTopicPartition);
         Long actualEndOffset = this.consumer.endOffsets(partitions).get(actualTopicPartition);
 //        long actualPosition = consumer.position(actualTopicPartition);
        return actualEndOffset;
-
     }
 
     @Override

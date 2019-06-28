@@ -48,6 +48,8 @@ public class FlexObjectServer extends BaseServer {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         long txid = getNextTxid();
+//        System.out.println("flex object getNextTxid,newId=" + txid);
+
         entry.setTxid(txid);
         CommonTools.writeEntry(os,entry);
         LogRecord logRecord = new LogRecord();
@@ -138,7 +140,8 @@ public class FlexObjectServer extends BaseServer {
                 entry.setTxid(txid);
             }
             catch(Exception e){
-                switchToSlave();
+                e.printStackTrace();
+//                switchToSlave();
                 CommonTools.writeString(os, e.getMessage());
                 return;
             }
@@ -191,7 +194,8 @@ public class FlexObjectServer extends BaseServer {
                     entry.setTxid(txid);
                 }
                 catch(Exception e){
-                    switchToSlave();
+                    e.printStackTrace();
+//                    switchToSlave();
                     CommonTools.writeString(os, e.getMessage());
                     return;
                 }
@@ -228,8 +232,10 @@ public class FlexObjectServer extends BaseServer {
                     obj.setTxid(txid);
                 }
                 catch(Exception e){
-                    switchToSlave();
+//                    switchToSlave();
+                    e.printStackTrace();
                     CommonTools.writeString(os, e.getMessage());
+
                     return;
                 }
                 flexObjectFactory.saveFlexObject(entry);

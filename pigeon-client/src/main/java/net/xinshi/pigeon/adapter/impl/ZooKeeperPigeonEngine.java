@@ -58,6 +58,7 @@ public class ZooKeeperPigeonEngine implements IPigeonEngine {
             Stat stat1 = new Stat();
             byte[] data = zk.getData(podPath + "/file_cluster", false, stat1);
             String s = new String(data, "utf-8");
+            System.out.printf(s);
             JSONObject jsonObject = new JSONObject(s);
             boolean enableAliyun = jsonObject.optBoolean("enableAliyun");
             if(enableAliyun){

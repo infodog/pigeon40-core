@@ -134,7 +134,8 @@ public class PigeonServer implements IServerHandler {
                         Executors.newCachedThreadPool());
         ServerBootstrap bootstrap = new ServerBootstrap(factory);
         final ExecutionHandler eh = new ExecutionHandler(
-                new ThreadPoolExecutor(5,500,20L,TimeUnit.SECONDS, new SynchronousQueue<Runnable>()));
+                new ThreadPoolExecutor(15,1000,20L,TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+                Executors.defaultThreadFactory(),new ThreadPoolExecutor.CallerRunsPolicy()));
         final ServerHandler sh = new ServerHandler(new PigeonServer());
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() throws Exception {

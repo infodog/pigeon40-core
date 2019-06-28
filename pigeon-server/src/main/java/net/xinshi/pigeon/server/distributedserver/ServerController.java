@@ -168,11 +168,11 @@ public class ServerController {
         logManager.setGroupId(sc.getNodeName());
         logManager.init();
         return logManager;
-
     }
 
+
     public void startServers() throws Exception {
-        ZooKeeper zk = new ZooKeeper(zkConnectString,8000,null);
+        ZooKeeper zk = new ZooKeeper(zkConnectString,30000,null);
         for (ServerConfig sc : listConfigs) {
             try {
                 start(zk,sc);

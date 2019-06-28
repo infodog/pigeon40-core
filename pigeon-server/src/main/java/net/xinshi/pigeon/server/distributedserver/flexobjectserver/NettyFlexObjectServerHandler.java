@@ -49,7 +49,7 @@ public class NettyFlexObjectServerHandler {
             return out;
         } catch (Exception e) {
             //e.printStackTrace();
-            logger.info(e.getMessage());
+            logger.severe(e.getMessage());
             CommonTools.writeString(out, e.getMessage());
         }
         return null;

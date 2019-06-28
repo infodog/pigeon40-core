@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 public class IdServer extends BaseServer {
 
     long writeGetIdAndForwardLog(String idName, int count) throws IOException, ExecutionException, InterruptedException {
-        long txid = getNextTxid();
+//        long txid = getNextTxid();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         CommonTools.writeString(os,idName);
         CommonTools.writeLong(os,count);
@@ -71,7 +71,7 @@ public class IdServer extends BaseServer {
             txid = writeGetIdAndForwardLog(idName, (int) count);
         } catch (Exception e) {
             e.printStackTrace();
-            switchToSlave();
+//            switchToSlave();
             CommonTools.writeString(out, "failed:" + e.getMessage());
             return;
         }

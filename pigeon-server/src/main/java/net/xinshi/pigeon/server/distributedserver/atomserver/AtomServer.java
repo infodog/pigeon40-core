@@ -130,7 +130,7 @@ public class AtomServer extends BaseServer {
                 txid = writeCreateAndSetLog(name, value);
             } catch (Exception e) {
                 e.printStackTrace();
-                switchToSlave();
+//                switchToSlave();
                 CommonTools.writeString(os, "error:" + e.getMessage());
                 return;
             }
@@ -166,7 +166,7 @@ public class AtomServer extends BaseServer {
                 txid = writeGreaterAndIncLog(name, value,inc);
             } catch (Exception e) {
                 e.printStackTrace();
-                switchToSlave();
+//                switchToSlave();
                 CommonTools.writeString(os, "failed:" + e.getMessage());
                 return;
             }
@@ -180,15 +180,15 @@ public class AtomServer extends BaseServer {
                     return;
                 }
             }
-            logger.info("name is null:" + (null==name));
-            logger.info("value is null:" + (null==incValue));
+            logger.severe(e.getMessage());
+//            logger.info("value is null:" + (null==incValue));
             e.printStackTrace();
             if(e.getMessage()!=null) {
                 CommonTools.writeString(os, e.getMessage());
             }
             else{
                 CommonTools.writeString(os,"failed");
-                System.out.println("atom name=" + null);
+//                System.out.println("atom name=" + null);
             }
         }
     }
@@ -211,7 +211,7 @@ public class AtomServer extends BaseServer {
                 txid = writeLessAndIncLog(name, value,inc);
             } catch (Exception e) {
                 e.printStackTrace();
-                switchToSlave();
+//                switchToSlave();
                 CommonTools.writeString(os, "failed:" + e.getMessage());
                 return;
             }
@@ -225,15 +225,15 @@ public class AtomServer extends BaseServer {
                     return;
                 }
             }
-            logger.info("name is null:" + (null==name));
-            logger.info("value is null:" + (null==incValue));
+            logger.severe(e.getMessage());
+//            logger.info("value is null:" + (null==incValue));
             e.printStackTrace();
             if(e.getMessage()!=null) {
                 CommonTools.writeString(os, e.getMessage());
             }
             else{
                 CommonTools.writeString(os,"failed");
-                System.out.println("atom name=" + null);
+//                System.out.println("atom name=" + null);
             }
         }
     }

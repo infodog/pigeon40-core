@@ -50,6 +50,7 @@ public class PigeonNode {
         pnode.setNo(no);
         return pnode;
     }
+
     public static int getTypeCode(String type) {
         int t = 0;
         if (type.equals("flexobject")) {

@@ -286,13 +286,13 @@ public class NodesDispatcher {
     }
 
     public PigeonFuture commitAsync(int typeCode, String name, ByteArrayOutputStream out) throws Exception {
-        Shard shard = dispatchToShard(typeCode, name);
-        if (shard.getState() != Shard.SHARD_OK) {
-            throw new Exception("Shard is changing server!");
-        }
-        if (shard.getServers().size() == 0) {
-            throw new Exception("shard has no live server,the shard has down");
-        }
+//        Shard shard = dispatchToShard(typeCode, name);
+//        if (shard.getState() != Shard.SHARD_OK) {
+//            throw new Exception("Shard is changing server!");
+//        }
+//        if (shard.getServers().size() == 0) {
+//            throw new Exception("shard has no live server,the shard has down");
+//        }
         PigeonNode head = getPigeonNode(typeCode,name);
         Client client = head.client;
 
@@ -359,8 +359,9 @@ public class NodesDispatcher {
             if (ok) {
                 return new ByteArrayInputStream(pf.getData(), Constants.PACKET_PREFIX_LENGTH, pf.getData().length - Constants.PACKET_PREFIX_LENGTH);
             } else {
-                String detail = "data : [typecode:" + typeCode + ":" + name + "]";
-                throw new Exception("netty commit pf == null " + detail);
+                Shard shard = dispatchToShard(typeCode, name);
+                String detail = "data : [typecode:" + typeCode + ":" + name + ",length=" + out.size() + ",shard=" + shard.getFullPath()  + "]";
+                throw new Exception("netty commit timeout:" + detail);
             }
         }
         return null;

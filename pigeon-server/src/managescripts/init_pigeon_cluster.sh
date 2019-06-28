@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 export BOOKIE_CONF=/Users/zhengxiangyang/appSdk/bookkeeper-server-4.7.0/conf/bk1.conf
 export BOOKIE_LOG_CONF=/Users/zhengxiangyang/appSdk/bookkeeper-server-4.7.0/conf/log4j_1.properties
 ./bookkeeper shell initnewcluster
