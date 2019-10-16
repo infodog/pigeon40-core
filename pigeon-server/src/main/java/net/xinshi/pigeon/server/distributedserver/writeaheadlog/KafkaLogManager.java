@@ -74,6 +74,7 @@ public class KafkaLogManager  implements ILogManager, Callback {
         properties.put("enable.auto.commit","false");
         properties.put("key.deserializer","");
         properties.put("max.partition.fetch.bytes",1024*1024*16);
+        properties.put("fetch.message.max.bytes",32*1024*1024);
         ByteArrayDeserializer deserializer = new ByteArrayDeserializer();
         consumer = new KafkaConsumer<>(properties,deserializer,deserializer);
 //        consumer.subscribe(Arrays.asList(topic));

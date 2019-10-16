@@ -17,7 +17,8 @@ public class ThreadLocalStorage {
     Map<Thread, Map> tlsMap = Collections.synchronizedMap(new HashMap<Thread, Map>());
 
     public boolean isOpen() {
-        return tlsMap.get(Thread.currentThread()) == null ? false : true;
+//        return tlsMap.get(Thread.currentThread()) == null ? false : true;
+        return false;
     }
 
     public void setOpen(boolean open) {

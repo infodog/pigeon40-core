@@ -48,6 +48,7 @@ public class DistributedFlexObjectFactory implements IFlexObjectFactory {
         this.nodesDispatcher = nodesDispatcher;
     }
 
+    @Override
     public String getContent(String name) throws Exception {
         IdChecker.assertValidId(name);
         boolean fresh = false;
@@ -363,16 +364,19 @@ public class DistributedFlexObjectFactory implements IFlexObjectFactory {
         }
     }
 
+    @Override
     public void init() throws Exception {
         System.out.println("distributed flexobject init ...... ");
         LRUMap cache = new LRUMap<String, FlexObjectEntry>(10000);
         mapConstant = Collections.synchronizedMap(cache);
     }
 
+    @Override
     public void stop() throws Exception {
         System.out.println("distributed flexobject stop ...... ");
     }
 
+    @Override
     public void set_state_word(int state_word) throws Exception {
         System.out.println("distributed flexobject set_state_word ...... ");
     }
