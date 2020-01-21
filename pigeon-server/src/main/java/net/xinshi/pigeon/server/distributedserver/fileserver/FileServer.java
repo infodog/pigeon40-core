@@ -285,6 +285,7 @@ public class FileServer extends BaseServer {
 
 
 
+    @Override
     public void start() throws Exception {
         registerServerToZookeeper(getZk());
         Thread.sleep(1000);

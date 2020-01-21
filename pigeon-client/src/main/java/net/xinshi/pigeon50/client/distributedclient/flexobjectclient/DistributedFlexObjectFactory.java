@@ -426,7 +426,7 @@ public class DistributedFlexObjectFactory implements IFlexObjectFactory {
             entry.setHash(0);
             putTlsCache(name, entry);
         } else {
-            throw new Exception("saveTemporaryContent() must setTlsMode(true) ... ");
+//            throw new Exception("saveTemporaryContent() must setTlsMode(true) ... ");
         }
     }
 

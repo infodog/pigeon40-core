@@ -3,6 +3,7 @@ package net.xinshi.pigeon.server.distributedserver;
 
 import net.xinshi.pigeon.server.distributedserver.writeaheadlog.ILogManager;
 import net.xinshi.pigeon.server.distributedserver.writeaheadlog.LogRecord;
+//import org.apache.log4j.Logger;
 import org.apache.zookeeper.*;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -143,6 +144,7 @@ public abstract class BaseServer implements IServer, Watcher {
         this.logManager = logManager;
     }
 
+    @Override
     public void start() throws Exception {
         registerServerToZookeeper(getZk());
         Thread.sleep(1000);
@@ -159,6 +161,7 @@ public abstract class BaseServer implements IServer, Watcher {
         startCheckMasterThread();
     }
 
+    @Override
     public void stop() throws Exception {
         isStopping = true;
         if (downloadLogThread != null) {
@@ -224,12 +227,12 @@ public abstract class BaseServer implements IServer, Watcher {
 
     synchronized  void downloadLog() throws IOException {
         long nextTxId = getLocalLastTxId();
-        logger.fine("downloadLog,nextTxId:" + nextTxId + ", " + sc.shardFullPath);
+        logger.info("downloadLog,nextTxId:" + nextTxId + ", " + sc.shardFullPath);
         logManager.seek(0,nextTxId);
         while (true) {
             List<LogRecord> logRecords = logManager.poll(Duration.ofSeconds(1));
             if(logRecords.size()>0) {
-                logger.fine("downloading logs， the logRecords.size=" + logRecords.size() + ", " + sc.shardFullPath);
+                logger.info("downloading logs， the logRecords.size=" + logRecords.size() + ", " + sc.shardFullPath);
             }
             for (LogRecord r : logRecords) {
                 updateLog(r);
@@ -241,7 +244,7 @@ public abstract class BaseServer implements IServer, Watcher {
     }
 
     protected long writeLog(LogRecord logRecord) throws IOException, ExecutionException, InterruptedException {
-        logger.fine("writeLog:" + sc.shardFullPath);
+        logger.info("writeLog:" + sc.shardFullPath);
         return logManager.writeLog(logRecord.getKey(),logRecord.getValue());
     }
 
@@ -314,7 +317,7 @@ public abstract class BaseServer implements IServer, Watcher {
         if(isMaster){
             return;
         }
-        System.out.println("switching to master...");
+        System.out.println("switching to master, please wait......");
         isSwitchingToMaster = true;
 
         stopDownloadThread();
@@ -322,13 +325,15 @@ public abstract class BaseServer implements IServer, Watcher {
         long lastShardTxId = 0;
 
         try {
+            logger.info("before logManager.getLastOffset()");
             lastShardTxId = logManager.getLastOffset();
-//            logger.fine("the lastShardTxId=" + lastShardTxId+ "," + sc.shardFullPath);
+            logger.info("after logManager.getLastOffset, the lastShardTxId=" + lastShardTxId+ "," + sc.shardFullPath);
         } catch (Exception e) {
             System.out.println(this.shardFullPath + " log is empty.");
         }
         long localTxid = getLocalLastTxId();
-//        logger.fine("localTxid=" + localTxid+"," + sc.shardFullPath);
+        logger.info("localTxid=" + localTxid+"," + sc.shardFullPath);
+        System.out.println("localTxid=" + localTxid+"," + sc.shardFullPath);
         if (lastShardTxId <= localTxid) {
             //成为了Master
             isSwitchingToMaster = false;
@@ -338,14 +343,29 @@ public abstract class BaseServer implements IServer, Watcher {
         }
         //如果不是则下载日志到最新
         while (localTxid < lastShardTxId-1) {
+
             logManager.seek(0,localTxid);
-            List<LogRecord> logs = logManager.poll(Duration.ofSeconds(1));
-//            logger.fine("logs.size=" +logs.size()+"," + sc.shardFullPath);
+            List<LogRecord> logs = logManager.poll(Duration.ofSeconds(2));
+            logger.info("logs.size=" +logs.size()+"," + sc.shardFullPath);
+            if(logs.size()==0){
+                logger.severe("poll kafka got 0 records, localTxid=" + localTxid + ", lastShardTxId=" + lastShardTxId);
+                break;
+
+            }
             for(LogRecord r : logs){
                 updateLog(r);
-                localTxid = r.getOffset();
+                long newlocalTxid = r.getOffset();
+                if(newlocalTxid == localTxid){
+                    //死循环了，直接跳出
+                    logger.info("newlocalTxid ==  localTxid,可能出现死循环了。");
+                    localTxid = lastShardTxId-1;
+                    break;
+                }
+                localTxid = newlocalTxid;
+
             }
-//            logger.fine("localTxid=" + localTxid+"," + sc.shardFullPath);
+
+            logger.info("localTxid=" + localTxid+"," + sc.shardFullPath);
         }
         try {
             //现在再检查一下还是不是master
