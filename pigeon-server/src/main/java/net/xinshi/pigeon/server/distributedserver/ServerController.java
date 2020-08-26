@@ -13,6 +13,7 @@ import net.xinshi.pigeon.server.distributedserver.idserver.IdServerFactory;
 import net.xinshi.pigeon.server.distributedserver.listserver.ListServer;
 import net.xinshi.pigeon.server.distributedserver.listserver.ListServerFactory;
 import net.xinshi.pigeon.server.distributedserver.lockserver.NettyLockServerHandler;
+import net.xinshi.pigeon.server.distributedserver.util.Tools;
 import net.xinshi.pigeon.server.distributedserver.writeaheadlog.ILogManager;
 import net.xinshi.pigeon.server.distributedserver.writeaheadlog.KafkaLogManager;
 import org.apache.commons.lang.StringUtils;
@@ -172,7 +173,7 @@ public class ServerController {
 
 
     public void startServers() throws Exception {
-        ZooKeeper zk = new ZooKeeper(zkConnectString,30000,null);
+        ZooKeeper zk = new ZooKeeper(zkConnectString,300000,null);
         for (ServerConfig sc : listConfigs) {
             try {
                 start(zk,sc);
@@ -207,6 +208,7 @@ public class ServerController {
             is.read(b);
             is.close();
             String s = new String(b, "UTF-8");
+            s = Tools.expandEnvOrSystemProperties(s);
             listConfigs = createServerConfigs(s,nettyPort);
             return;
         }

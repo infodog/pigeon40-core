@@ -339,10 +339,30 @@ public class AliyunOssClient implements IFileSystem {
             if (isOnAliYun(fileId)) {
                 String externalUrl = getUrl(fileId);
                 String lower = spec.toLowerCase();
-                String[] w_h = lower.split("x");
+
+                String[] parts = lower.split(";");
+
+                String[] w_h = parts[0].split("x");
                 String w = w_h[0];
                 String h = w_h[1];
-                return externalUrl + "?x-oss-process=image/resize,w_" + w + ",h_" + h;
+
+                String ratio = null;
+                String format = null;
+                if(parts.length>2){
+                    format = parts[1];
+                }
+                if(parts.length>3){
+                    ratio = parts[2];
+                }
+
+                String ret =  externalUrl + "?x-oss-process=image/resize,w_" + w + ",h_" + h;
+                if(StringUtils.isNotBlank(format)){
+                    ret = ret + "/format," + format;
+                }
+                if(StringUtils.isNotBlank(ratio)){
+                    ret = ret + "/quality,Q_" + ratio;
+                }
+                return ret;
             }
             else{
                 return localFileSystem.getRelatedUrl(fileId,spec);

@@ -34,6 +34,7 @@ public class SoftLRUCache extends LRUCache {
         return ref.get();
     }
 
+    @Override
     protected boolean removeEldestEntry(Map.Entry eldest) {
         SoftReference ref = (SoftReference) eldest.getValue();
         if (ref == null) {

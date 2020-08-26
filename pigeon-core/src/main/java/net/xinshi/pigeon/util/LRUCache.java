@@ -30,6 +30,7 @@ public class LRUCache<K,V> extends LinkedHashMap<K,V> {
         this.maxEntries = maxEntries;
     }
 
+    @Override
     protected boolean removeEldestEntry(Map.Entry eldest) {
 
         if (this.size() > maxEntries) {

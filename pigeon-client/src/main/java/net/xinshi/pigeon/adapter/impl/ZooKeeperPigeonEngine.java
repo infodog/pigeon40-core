@@ -62,7 +62,6 @@ public class ZooKeeperPigeonEngine implements IPigeonEngine {
             JSONObject jsonObject = new JSONObject(s);
             boolean enableAliyun = jsonObject.optBoolean("enableAliyun");
             if(enableAliyun){
-
                 String apiEndPoint = jsonObject.optString("apiEndPoint");
                 String internalUrlPrefix = jsonObject.optString("internalUrlPrefix");
                 String externalUrlPrefix = jsonObject.optString("externalUrlPrefix");

@@ -69,7 +69,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
    /* protected String merge_insert_sql = "INSERT INTO T_FLEXOBJECT(NAME, CONTENT, HASH, ISCOMPRESSED, ISSTRING,txid) VALUES (?, ?, ?, ?, ?,?) " +
             "ON DUPLICATE KEY UPDATE CONTENT=VALUES(CONTENT), HASH=VALUES(HASH), ISCOMPRESSED=VALUES(ISCOMPRESSED), ISSTRING=VALUES(ISSTRING),txid=VALUES(txid) ";*/
 
-    String update_sql = "update T_FLEXOBJECT set CONTENT=?, ISCOMPRESSED=?,ISSTRING=?,HASH=?,txid=? where NAME=?";
+    String update_sql = "update t_flexobject set content=?, isCompressed=?,isString=?,hash=?,txid=? where name=?";
 
     public CommonFlexObjectFactory() {
         //flusherWaiter = new Object();
@@ -99,10 +99,12 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         this.versionKeyName = versionKeyName;
     }
 
+    @Override
     public void stop() throws InterruptedException {
         logger.info("stop = null");
     }
 
+    @Override
     public void set_state_word(int state_word) throws Exception {
         logger.info("CommonFlexObjectFactory set_state_word : " + state_word);
         this.state_word = state_word;
@@ -237,6 +239,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
 
     Object syncOnceLocker = new Object();
 
+    @Override
     public void syncVersion(long begin, long end) throws Exception {
         //do nothing intentionally, do not sync in core
     }
@@ -283,10 +286,12 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         this.sizeToCompress = sizeToCompress;
     }
 
+    @Override
     public void saveContent(String name, String content) throws Exception {
         throw new Exception("deprecated, not supported any more.");
     }
 
+    @Override
     public List<String> getContents(List<String> names) throws Exception {
         Vector result = new Vector();
         for (String name : names) {
@@ -906,10 +911,10 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         }
         hasTxidInDB = DBUtils.hasColumn(ds,"t_flexobject","txid");
         if(hasTxidInDB){
-            update_sql = "update T_FLEXOBJECT set CONTENT=?, ISCOMPRESSED=?,ISSTRING=?,HASH=?,txid=? where NAME=?";
+            update_sql = "update t_flexobject set content=?, isCompressed=?,isString=?,hash=?,txid=? where name=?";
         }
         else{
-            update_sql = "update T_FLEXOBJECT set CONTENT=?, ISCOMPRESSED=?,ISSTRING=?,HASH=? where NAME=?";
+            update_sql = "update t_flexobject set content=?, isCompressed=?,isString=?,hash=? where name=?";
         }
         new Thread(new Flusher()).start();
         //重新读取数据库中的version,现在应该是dbVersion为准
