@@ -486,6 +486,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
 
 
 
+    @Override
     public String getContent(String name) throws Exception {
         FlexObjectEntry entry = getFlexObject(name);
         if (entry == null) {
@@ -494,6 +495,7 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
         return entry.getContent();
     }
 
+    @Override
     public String getConstant(String name) throws Exception {
         throw new Exception("not implement getConstant() ...... ");
     }
@@ -501,6 +503,9 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
     private FlexObjectEntry getEntryFromDB(String name) throws SQLException {
         FlexObjectEntry result = new FlexObjectEntry();
         String sql = "select * from " + tableName + " where name=?";
+        long begin = System.currentTimeMillis();
+
+
         Connection conn = null;
         try {
             conn = ds.getConnection();
@@ -518,10 +523,14 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
 
                 rs.close();
                 stmt.close();
+                long end = System.currentTimeMillis();
+                logger.info("sql="+sql + ",name=" + name+ ",result=found, time=" + (end-begin) + "ms");
                 return result;
             } else {
                 rs.close();
                 stmt.close();
+                long end = System.currentTimeMillis();
+                logger.info("sql="+sql + ",name=" + name+ ",result=not found, time=" + (end-begin) + "ms");
                 return null;
             }
         } finally {
@@ -563,7 +572,6 @@ public class CommonFlexObjectFactory implements IFlexObjectFactory, IPigeonPersi
                 isOK = true;
                 return true;
             }
-//            PreparedStatement updateStmt = conn.prepareStatement(merge_insert_sql);
             PreparedStatement deleteStmt = conn.prepareStatement(deleteSQL);
             for (FlexObjectEntry en : entries) {
                 logger.debug(en.getName());

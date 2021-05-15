@@ -1,0 +1,119 @@
+{
+  "kafkaBootstrapServers": "localhost:9092",
+  "pods":[{
+    "name":"%podname%",
+    "desc": "saas 平台的主pigeon",
+    "object_cluster":{
+      "name":"flexobject1",
+      "shards":[
+        {
+          "name":"shard1",
+          "min":-2147483648,
+          "max":0,
+          "logName":"%podname%_flexobject1_shard1"
+        },
+        {
+          "name":"shard2",
+          "min":1,
+          "max":2147483647,
+          "logName":"%podname%_flexobject1_shard2"
+        }
+      ]
+    },
+    "list_cluster":{
+      "name":"list1",
+      "shards":[
+        {
+          "name":"shard1",
+          "min":-2147483648,
+          "max":0,
+          "logName":"%podname%_list1_shard1"
+        },
+        {
+          "name":"shard2",
+          "min":1,
+          "max":2147483647,
+          "logName":"%podname%_list1_shard2"
+        }
+      ]
+    },
+    "id_cluster":{
+      "name":"id1",
+      "shards":[
+        {
+          "name":"shard1",
+          "min":-2147483648,
+          "max":0,
+          "logName":"%podname%_id1_shard1"
+        },
+        {
+          "name":"shard2",
+          "min":1,
+          "max":2147483647,
+          "logName":"%podname%_id1_shard2"
+
+        }
+      ]
+
+    },
+    "atom_cluster":{
+      "name":"atom1",
+      "shards":[
+        {
+          "name":"shard1",
+          "min":-2147483648,
+          "max":0,
+          "logName":"%podname%_atom1_shard1"
+        },
+        {
+          "name":"shard2",
+          "min":1,
+          "max":2147483647,
+          "logName":"%podname%_atom1_shard2"
+        }
+      ]
+    },
+    "locks_cluster":{
+      "name":"lock1",
+      "shards":[
+        {
+          "name":"shard1",
+          "min":-2147483648,
+          "max":0
+        },
+        {
+          "name":"shard2",
+          "min":1,
+          "max":2147483647
+        }
+      ]
+    },
+    "file_cluster":{
+      "name":"file1",
+      "enableAliyun": true,
+      "apiEndPoint": "oss-cn-shenzhen.aliyuncs.com",
+      "internalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen.aliyuncs.com/",
+      "externalUrlPrefix": "https://chouchouyapics.oss-cn-shenzhen.aliyuncs.com/",
+      "accessKeyId": "LTAI5RDGXsdTYdTZ",
+      "accessKeySecret": "byXNFlGTgMMFpvbnXPj8p1hWcZi0uJ",
+      "bucketName": "chouchouyapics",
+      "includeList": "",
+      "shards":[
+        {
+          "name":"shard1",
+          "min":-2147483648,
+          "max":0,
+          "logName":"%podname%_file1_shard1"
+        },
+        {
+          "name":"shard2",
+          "min":1,
+          "max":2147483647,
+          "logName":"%podname%_file1_shard2"
+        }
+      ]
+    }
+  }
+  ]
+
+}

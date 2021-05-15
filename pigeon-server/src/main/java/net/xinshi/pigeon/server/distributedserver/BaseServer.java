@@ -227,7 +227,7 @@ public abstract class BaseServer implements IServer, Watcher {
 
     synchronized  void downloadLog() throws IOException {
         long nextTxId = getLocalLastTxId();
-        logger.info("downloadLog,nextTxId:" + nextTxId + ", " + sc.shardFullPath);
+        logger.fine("downloadLog,nextTxId:" + nextTxId + ", " + sc.shardFullPath);
         logManager.seek(0,nextTxId);
         while (true) {
             List<LogRecord> logRecords = logManager.poll(Duration.ofSeconds(1));
@@ -244,7 +244,7 @@ public abstract class BaseServer implements IServer, Watcher {
     }
 
     protected long writeLog(LogRecord logRecord) throws IOException, ExecutionException, InterruptedException {
-        logger.info("writeLog:" + sc.shardFullPath);
+        logger.fine("writeLog:" + sc.shardFullPath);
         return logManager.writeLog(logRecord.getKey(),logRecord.getValue());
     }
 

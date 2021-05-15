@@ -1,14 +1,16 @@
 package net.xinshi.pigeon.netty.server;
 
 import net.xinshi.pigeon.util.CommonTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.*;
 
-import java.util.logging.Logger;
 
 public class ServerHandler extends SimpleChannelHandler {
 
-    static Logger logger = Logger.getLogger(ServerHandler.class.getName());
+//    static Logger logger = Logger.getLogger(ServerHandler.class.getName());
+    Logger logger = LoggerFactory.getLogger(ServerHandler.class);
     IServerHandler ish = null;
 
     public ServerHandler() {
@@ -24,21 +26,21 @@ public class ServerHandler extends SimpleChannelHandler {
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         // System.out.println("netty channel id " + ctx.getChannel().getId() + " channelConnected ... ");
-        logger.info("netty channel id " + ctx.getChannel().getId() + " channelConnected ... ");
+        logger.debug("netty channel id " + ctx.getChannel().getId() + " channelConnected ... ");
         ish.channelConnected(ctx.getChannel());
     }
 
     @Override
     public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 //        System.out.println("netty channel id " + ctx.getChannel().getId() + " channelClosed ... ");
-        logger.info("netty channel id " + ctx.getChannel().getId() + " channelClosed ... ");
+        logger.debug("netty channel id " + ctx.getChannel().getId() + " channelClosed ... ");
         ish.channelClosed(ctx.getChannel());
 
     }
 
+    @Override
     public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-        // System.out.println("netty channel id " + ctx.getChannel().getId() + " channelDisconnected ... ");
-        logger.info("netty channel id " + ctx.getChannel().getId() + " channelDisconnected ... ");
+        logger.debug("netty channel id " + ctx.getChannel().getId() + " channelDisconnected ... ");
         ish.channelClosed(ctx.getChannel());
     }
 
@@ -47,13 +49,11 @@ public class ServerHandler extends SimpleChannelHandler {
         byte[] buf = (byte[]) e.getMessage();
         int n = buf.length;
         if (n < 10) {
-            System.out.println("messageReceived ...... s1 n < 10" + " channel id " + ctx.getChannel().getId());
             e.getChannel().close();
             return;
         }
         int len = CommonTools.bytes2intJAVA(buf);
         if (n != len) {
-            System.out.println("messageReceived ...... s2 len = " + len + ", n = " + n + " channel id " + ctx.getChannel().getId());
             e.getChannel().close();
             return;
         }

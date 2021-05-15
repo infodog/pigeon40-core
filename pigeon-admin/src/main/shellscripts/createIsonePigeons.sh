@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+##########
+# $1 zooConnectString
+# $2 configFile
+# $3 g_kafkaBootstrapString
+#########
 java -jar pigeonadmin.5.0-jar-with-dependencies.jar  $1 $2 platform $3
 java -jar pigeonadmin.5.0-jar-with-dependencies.jar  $1 $2 saasadmin $3
 java -jar pigeonadmin.5.0-jar-with-dependencies.jar  $1 $2 saasstat $3

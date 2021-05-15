@@ -67,7 +67,7 @@ public class Main {
         catch(Exception e){
             //do nothing;
         }
-        //检查jconfig是否和zookeeper商现有的数据冲突
+        //检查jconfig是否和zookeeper现有的数据冲突
         //如果当前的pod已经存在，那么就退出, 如果当前pod不存在，那么就建立当前的pod
 
 

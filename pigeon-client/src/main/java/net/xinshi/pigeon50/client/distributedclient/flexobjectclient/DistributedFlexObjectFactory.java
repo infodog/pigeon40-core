@@ -71,6 +71,7 @@ public class DistributedFlexObjectFactory implements IFlexObjectFactory {
         removeTlsCache(name);
     }
 
+    @Override
     public String getConstant(String name) throws Exception {
         IdChecker.assertValidId(name);
         FlexObjectEntry entry = (FlexObjectEntry) mapConstant.get(name);
@@ -90,6 +91,7 @@ public class DistributedFlexObjectFactory implements IFlexObjectFactory {
         }
     }
 
+    @Override
     public void saveContent(String name, String content) throws Exception {
         IdChecker.assertValidId(name);
         if (content == null) {
@@ -121,6 +123,7 @@ public class DistributedFlexObjectFactory implements IFlexObjectFactory {
         return result;
     }
 
+    @Override
     public List<String> getContents(List<String> names) throws Exception {
         for(String name : names){
             IdChecker.assertValidId(name);
@@ -228,10 +231,12 @@ public class DistributedFlexObjectFactory implements IFlexObjectFactory {
     public void saveBytes(String name, byte[] content) throws Exception {
         IdChecker.assertValidId(name);
         boolean isCompressed = false;
-        if (content.length > sizeToCompress) {
+
+        if (content!=null && content.length > sizeToCompress) {
             content = CommonTools.zip(content);
             isCompressed = true;
         }
+
         FlexObjectEntry entry = new FlexObjectEntry();
         entry.setName(name);
         entry.setAdd(false);
